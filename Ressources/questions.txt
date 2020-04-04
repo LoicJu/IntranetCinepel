@@ -1,3 +1,3 @@
-accès base de données
+accès base de données -> changement nécessaire, nouvelle table: planning, nouveaux dans user
 accès serveur
 support django ? -> Laravel possible ?

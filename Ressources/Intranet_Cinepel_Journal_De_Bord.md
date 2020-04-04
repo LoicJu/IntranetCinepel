@@ -11,3 +11,6 @@ Objectifs à faire :
 * Commencer les maquettes
 
 ## Mardi 10.03.2020
+
+L'état de l'art à avancer, les maquettes également.
+
