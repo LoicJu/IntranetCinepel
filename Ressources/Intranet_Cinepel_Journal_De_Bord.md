@@ -14,3 +14,16 @@ Objectifs à faire :
 
 L'état de l'art à avancer, les maquettes également.
 
+## Mardi 17.03.2020
+
+Pour le planning, le problème de la forme de l'enregistrement se pose toujours. Le remplissage du planning reste aussi questionnable. Le mieux sera sans doute d'avoir un template qu'on met ensuite sur le planning réél. Il faut refaire des maquettes de cette idée
+
+## Mardi 24.03.2020
+
+Rendez-vous par skype avec M. Soussi et M. Ouerhani. Un serveur sera mit à ma disposition et la base de données sera faite par moi. Il faut donc faire le model de la base de donnée
+
+## Mardi 31.03.2020
+
+Le model de la base de donnée est fait, il faut également compléter les maquettes ainsi que les issues et les spécifications détaillées.
+
+## Mardi 07.03.2020

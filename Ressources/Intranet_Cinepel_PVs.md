@@ -52,3 +52,9 @@ Il y a des serveurs internes qui seraient à disposition à Neuchâtel. Ils util
 Je pourrai donc créer ma base de données. Le serveur sera à l'Apollo.
 
 ## PV du 07.04.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+* Alexandre Soussi
+* Sandrine Liscia
