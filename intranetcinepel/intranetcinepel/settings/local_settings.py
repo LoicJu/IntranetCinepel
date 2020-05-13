@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 from intranetcinepel.settings.common import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = 'lp2&^p2$1=vbanx@ljfjet%v!l0x_h(z29-)b)qe8o0ip*uv6^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
