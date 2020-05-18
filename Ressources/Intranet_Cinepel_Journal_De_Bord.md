@@ -26,4 +26,17 @@ Rendez-vous par skype avec M. Soussi et M. Ouerhani. Un serveur sera mit à ma d
 
 Le model de la base de donnée est fait, il faut également compléter les maquettes ainsi que les issues et les spécifications détaillées.
 
-## Mardi 07.03.2020
+## Mardi 07.04.2020
+
+Les spécifications détaillées ont été faites
+
+# Mardi 21.04.2020
+
+Le model de la base de donnée est complété, les maquettes sont faites
+
+## Mardi 28.04.2020
+
+Des recherches ont été éfféctuées afin de potentiellement changer de direction sur le choix de faire une API django.
+
+## Lundi 18.05.2020
+
