@@ -11,4 +11,5 @@ class User(AbstractUser):
     permission = models.CharField(max_length=50, default='placeur')
     isboss = models.BooleanField(default=False)
     city = models.CharField(max_length=50, default='Neuchatel')
+    infos = models.CharField(max_length=150, default='nothing')
 
