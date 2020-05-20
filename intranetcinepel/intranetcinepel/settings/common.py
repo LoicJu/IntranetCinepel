@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'intranetapp',
     'rest_framework',
+    'knox',
     ]
 
 MIDDLEWARE = [

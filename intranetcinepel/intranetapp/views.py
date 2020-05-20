@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 
-from .serializers import UserSerializer, TemplateSerializer, CalendarSerializer
+from .serializers import UserSerializer, TemplateSerializer, CalendarSerializer, RegisterSerializer, LoginSerializer
 from .models import Intranet_User, Template, Calendar
 
 from rest_framework import generics, permissions
