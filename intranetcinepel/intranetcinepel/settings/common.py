@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'intranetapp',
     'rest_framework',
     'knox',
+    'intranet_frontend_app', # enable the frontend app
     ]
 
 REST_FRAMEWORK = {
