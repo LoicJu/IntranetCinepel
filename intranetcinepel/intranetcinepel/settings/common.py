@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Application definition
 
-AUTH_USER_MODEL = 'intranetapp.User'
+AUTH_USER_MODEL = 'intranetapp.Intranet_User'
 
 # added 'intranetapp' and 'rest_framework'
 INSTALLED_APPS = [
@@ -30,7 +30,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'intranetapp',
     'rest_framework',
+    'knox',
     ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

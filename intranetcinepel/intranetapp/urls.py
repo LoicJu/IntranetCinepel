@@ -1,17 +1,15 @@
-from django.urls import path
-from rest_framework import routers
+from django.urls import path, include 
 from . import views
-from django.conf.urls import include
+from knox import views as knox_views
 
-# this is only to visualize our api
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'templates', views.TemplateViewSet)
-router.register(r'calendar', views.CalendarViewSet)
-
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('users/<int:pk>', views.UserView.as_view()),
+    path('auth/', include('knox.urls')),
+    path('auth/register', views.RegistrationAPI.as_view()),
+    path('auth/login', views.LoginAPI.as_view()),
+    path('auth/user', views.AuthAPI.as_view()),
+    path('auth/resetPassword', views.ResetPassord.as_view()),
+    path('auth/logout', knox_views.LogoutView.as_view(), name='knox_logout'),
+    path('template/<int:pk>', views.TemplateDetail.as_view()),
+    path('calendar/<int:pk>', views.CalendarDetail.as_view()),
 ]
