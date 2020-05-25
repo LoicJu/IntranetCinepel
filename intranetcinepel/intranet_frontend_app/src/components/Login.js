@@ -70,7 +70,6 @@ render() {
   }
   return (
     <div className="container pt-4">
-      <div className="csruby-bg-darkest p-3">
         <form onSubmit={this.submit_form}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -111,7 +110,6 @@ render() {
                 </small>
               </div>
           </form>
-        </div>
       </div>
     );
   }

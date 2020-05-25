@@ -4,6 +4,7 @@
 *   - Header (usually the case)
 *******************************************************************************************/
 import React, { Component } from 'react';
+import M from 'materialize-css';
 import {
   Route,
   NavLink,
@@ -11,7 +12,7 @@ import {
   Switch,
 } from 'react-router-dom';
 
-import Dashboard from './Dashboard';
+//import Dashboard from './Dashboard';
 
 //import Profile from './Profile';
 //import UpdateUser from './UpdateUser';
@@ -32,6 +33,10 @@ import Error from './Error';
 // when a link is clicked, a CSS class is automatically added to the element nammed 'active'
 
 class Main extends Component {
+  // get a reference to the element after the component has mounted
+  componentDidMount(){
+    M.Sidenav.init(this.sidenav);
+  }
   render() {
     // The HashRouter component provides the foundation for the navigation and browser history handling that routing is made up of
     return (
@@ -39,35 +44,21 @@ class Main extends Component {
         <AuthProvider>
           <MessageProvider>
             <header>
-              <nav className="navbar navbar-expand-lg navbar-dark csruby-bg-darkest">
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav d-lg-none d-block">
-                        <li className="nav-item active">
-                            <NavLink className="nav-link text-danger" exact to="/"><i className="fas fa-home"></i> Dashboard</NavLink>
-                        </li>
-                    </ul>
-                  <ul className="navbar-nav ml-auto">
-                    <li className="nav-item active">
-                      <AuthContext.Consumer>
-                      {(context) =>
-                        (context.getIsAuthenticated() &&
-                          <NavLink className="nav-link text-danger" exact to="/logout"><i className="fas fa-sign-out-alt"></i> Logout</NavLink>
-                        )
-                      }
-                      </AuthContext.Consumer>
-                    </li>
+            <div className="App">
+              <nav>
+                <div className="container">
+                  <ul id="nav-mobile" className="right hide-on-med-and-down">
+                      <li><NavLink exact to="/logout">Logout</NavLink></li>
+                      <li><NavLink to="/signup">Signup</NavLink></li>
+                      <li><NavLink to="/login">Login</NavLink></li>
+                      <li><NavLink to="/resetPassword">resetPassword</NavLink></li>
                   </ul>
                 </div>
               </nav>
-              <div className="csruby-nav-underline csruby-bg-red">
-              </div>
+          </div>
             </header>
             <div className="content text-light mt-5">
               <Switch>
-
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/signup" component={Signup}/>
                 <Route exact path="/logout" component={Logout}/>
@@ -76,17 +67,7 @@ class Main extends Component {
                 <Route exact render={(props) => <Error {...props} status={'404 Not Found'} detail={'Requested page not found.'}/> }/>
               </Switch>
             </div>
-            <footer className="csruby-bg-darkest text-white py-4 mt-5">
-              <div className="container">
-                <div className="row">
-                  <div className="col-lg">
-                    <h5 className="my-3">&nbsp;</h5>
-                    <p className="text-lg-right">&copy; Intranet Cinepel</p>
-                  </div>
-                </div>
-              </div>
-            </footer>
-          </MessageProvider>
+            </MessageProvider>
         </AuthProvider>
       </HashRouter>
     );

@@ -14,7 +14,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = CSRuby_User.objects.create_user(
+        user = Intranet_User.objects.create_user(
             validated_data['email'],
             validated_data['username'],
             validated_data['password'],
