@@ -20,8 +20,6 @@ class MessageProvider extends Component {
     {this.props.children}
 
     </MContext.Provider>)
-
-    // {this.props.children} indicates that the global store is accessible to all the child tags with Provider as Parent
   }
 }
 
