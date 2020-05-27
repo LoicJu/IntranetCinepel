@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthProvider';
 import { Redirect } from 'react-router';
-import InfiniteScroll from 'react-infinite-scroller';
 class userHandler extends Component {
   static contextType = AuthContext
 
@@ -47,9 +46,9 @@ class userHandler extends Component {
 
   render(){
     let usersList = [];
-    this.state.users.map(function(Object, i){
+    this.state.users.map(User =>{
       usersList.push(
-        <li className="collection-item" key={i}> {Object.email}</li>
+        <li className="collection-item" key={User.id}> {User.username}</li>
       )
     });
 
