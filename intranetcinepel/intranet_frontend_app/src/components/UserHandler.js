@@ -9,39 +9,36 @@ class userHandler extends Component {
     super(props);
     this.state = {
       users: [],
-      loaded: false,
-      placeholder: 'Loading',
+      error: null,
     };
   }
-
+  // TODO edit and delete
+  // TODO state loader and placeholder for loading ?
   //fetch all users in users
   componentDidMount(){
-    this.fetchUsers();
-  }
-
-  fetchUsers() {
-    this.setState({
-      loaded: false,
-    })
     axios({
       method: 'get',
       url: '/users/all',
     })
-      .then((response) => {
-        if (response.status === 200) { //add test if connected and manager
-          let allData = this.state.users;
-          response.data.map(user => allData.push(user));
-          this.setState({
-            users: allData,
-            loaded: true,
-          });
-        }
-      })
-      .catch((error) => {
+    .then((response) => {
+      if (response.status === 200) { //add test if connected and manager
+        let allData = this.state.users;
+        response.data.map(user => allData.push(user));
         this.setState({
-          placeholder: 'Something went wrong!'
+          users: allData,
         });
-      });
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
   }
 
   render(){
@@ -54,6 +51,9 @@ class userHandler extends Component {
 
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
+    }
+    if (this.state.error) {
+      return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     return (
       <div className="result-container" id="result-container">
