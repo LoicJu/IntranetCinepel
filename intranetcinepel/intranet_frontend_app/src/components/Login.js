@@ -43,7 +43,7 @@ class Login extends Component {
 
     axios({
       method: 'post',
-      url: '/auth/login',
+      url: 'api/auth/login',
       data: userFormData,
     })
     .then((response) => {

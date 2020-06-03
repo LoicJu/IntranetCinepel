@@ -27,7 +27,7 @@ class AuthProvider extends Component {
     if(token != null) {
       axios({
         method: 'get',
-        url: '/auth/user',
+        url: 'api/auth/user',
         headers: { 'Authorization': 'Token ' + token },
         })
         .then((response) => {

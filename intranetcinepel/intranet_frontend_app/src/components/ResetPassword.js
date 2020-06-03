@@ -40,7 +40,7 @@ class ResetPassword extends Component {
 
     axios({
       method: 'patch',
-      url: '/auth/resetPassword',
+      url: 'api/auth/resetPassword',
       data: userFormData,
     })
     .then((response) => {

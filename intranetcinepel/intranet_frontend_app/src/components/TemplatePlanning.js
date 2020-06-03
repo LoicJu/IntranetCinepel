@@ -3,6 +3,7 @@ import { AuthContext } from './AuthProvider';
 import { Redirect } from 'react-router';
 import Error from './Error';
 import axios from 'axios';
+import { useTable } from 'react-table'
 
 class TemplatePlanning extends Component {
   static contextType = AuthContext
@@ -10,43 +11,57 @@ class TemplatePlanning extends Component {
     super(props);
     this.state={
       name : '',
-      template : [],
+      columns : [],
+      data : null,
       is_created : false,
       error : null,
     };
     this.submit_form = this.submit_form.bind(this);
     this.getTemplate = this.getTemplate.bind(this);
   };
-
+  
+  // store a new template
   submit_form(event) {
     event.preventDefault();
 
-    var templateFormData = new FormData();
-    templateFormData.append('name', 'test');
+    // TODO store elsewhere than session ? see security
+    let authed_user = sessionStorage.getItem('authed_user');
 
+    var templateFormData = new FormData();
+    templateFormData.append('name');
+    templateFormData.append('id_create', authed_user);
+    templateFormData.append('content', this.baseTemplate)
     axios({
       method: 'post',
-      url: '/template/create',
+      url: 'api/template/',
       data: templateFormData,
     })
     .then((response) => {
       if (response.status === 200) {
         this.setState({ is_created: true });
       }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
     });
   }
-  // get in function of a name (scrolllist where there is all the name of the templates) and so get by the id
+  // TODO get in function of a name (scrolllist where there is all the name of the templates) and so get by the id
   getTemplate(){
     axios({
       method: 'get',
-      url: '/template/1',
+      url: 'api/template/3',
     })
     .then((response) => {
       if (response.status === 200) {
-        let allData = this.state.template;
-        response.data.map(template => allData.push(template));
         this.setState({
-          template: allData,
+          columns: response.data.content,
         });
       }
     })
@@ -61,7 +76,9 @@ class TemplatePlanning extends Component {
       }
     });
   }
-
+  componentDidMount(){
+    this.getTemplate()
+  }
   render(){
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
@@ -73,8 +90,9 @@ class TemplatePlanning extends Component {
       <div className="container">
         <form onSubmit={this.submit_form}>
           <div className="form-group">
-            <label htmlFor="email">name</label>
+            <label>name</label>
             <input
+              name="name"
               type="text"
               className="form-control"
               />
@@ -85,20 +103,52 @@ class TemplatePlanning extends Component {
         </form>
         <button onClick={this.getTemplate}>get</button>
         <div className="col-xs-12">
-        <h1>Calendar</h1>
-        {this.state.template.map((template) => (
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">template title</h5>
-              <h6 className="card-subtitle mb-2 text-muted">            
-              </h6>
-            </div>
-          </div>
-        ))}
+          <Table columns={columns} data={this.state.data} />  
         </div>
        </div>
     );
   }
+}
+
+function Table({ columns, data }) {
+  // Use the state and functions returned from useTable to build your UI
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+  } = useTable({
+    columns,
+    data,
+  })
+
+  // Render the UI for your table
+  return (
+    <table {...getTableProps()}>
+      <thead>
+        {headerGroups.map(headerGroup => (
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map(column => (
+              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {rows.map((row, i) => {
+          prepareRow(row)
+          return (
+            <tr {...row.getRowProps()}>
+              {row.cells.map(cell => {
+                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+              })}
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  )
 }
 
 export default TemplatePlanning;

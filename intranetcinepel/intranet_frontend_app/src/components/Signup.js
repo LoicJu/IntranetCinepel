@@ -89,7 +89,7 @@ class Signup extends Component {
 
     axios({
       method: 'post',
-      url: '/auth/register',
+      url: 'api/auth/register',
       data: userFormData,
     })
     .then((response) => {

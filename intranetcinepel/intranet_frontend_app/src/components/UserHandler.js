@@ -18,7 +18,7 @@ class userHandler extends Component {
   componentDidMount(){
     axios({
       method: 'get',
-      url: '/users/all',
+      url: 'api/users/all',
     })
     .then((response) => {
       if (response.status === 200) { //add test if connected and manager

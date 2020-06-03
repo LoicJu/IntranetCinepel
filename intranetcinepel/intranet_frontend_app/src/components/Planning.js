@@ -11,11 +11,11 @@ class Planning extends Component {
     planning : [],
     error: null,
   }
-  
+  /*
   componentDidMount(){
     axios({
       method: 'get',
-      url: '/calendar/1',
+      url: 'api/calendar/1',
     })
     .then((response) => {
       if (response.status === 200) {
@@ -37,7 +37,7 @@ class Planning extends Component {
       }
     });
   }
-
+  */
   render(){
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
@@ -49,15 +49,6 @@ class Planning extends Component {
       <div className="container">
         <div className="col-xs-12">
         <h1>Calendar</h1>
-        {this.state.planning.map((planning) => (
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">{planning.title}</h5>
-              <h6 className="card-subtitle mb-2 text-muted">            
-              </h6>
-            </div>
-          </div>
-        ))}
         </div>
        </div>
     );

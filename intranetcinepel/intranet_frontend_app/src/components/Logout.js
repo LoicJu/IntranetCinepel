@@ -17,7 +17,7 @@ class Logout extends Component {
   {
     axios({
       method: 'post',
-      url: '/auth/logout',
+      url: 'api/auth/logout',
       headers: { 'Authorization': 'Token ' + this.context.getToken() }
       })
       .then((response) => {
