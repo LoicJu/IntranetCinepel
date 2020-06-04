@@ -68,6 +68,9 @@ render() {
   if (this.state.is_authenticated) {
     return (<Redirect to ="/" />);
   }
+  if (this.context.getIsAuthenticated()) {
+    return (<Redirect to ="/"/>);
+  }
   return (
     <div className="container pt-4">
         <form onSubmit={this.submit_form}>
