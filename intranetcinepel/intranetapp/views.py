@@ -47,6 +47,11 @@ class AuthAPI(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+class UserList(generics.ListCreateAPIView):
+    serializer_class = UserSerializer
+    queryset = Intranet_User.objects.all()
+    #permission_classes = [permissions.IsAuthenticated] # TODO change to only admin or only manager
+
 class UserView(generics.GenericAPIView):
     serializer_class = UserSerializer
     user_not_found = Response(data={'detail': 'User not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -59,41 +64,13 @@ class UserView(generics.GenericAPIView):
             user = None
 
             try:
-                user = CSRuby_User.objects.get(id__exact=user_id)
+                user = Intranet_User.objects.get(id__exact=user_id)
             except Exception as e:
                 return self.user_not_found
 
             response_body =  {
                 'user': UserSerializer(user).data,
             }
-
-            items_to_buy, items_to_sell, favorite_items = CSRuby_User.objects.get_user_trades(user_id)
-
-            # Constructing response with each item in items_to_buy, items_to_sell and favorite_items.
-            # Response will have an array of items and will be constructed with ItemProfileSerializer.
-            response_body['user']['items_to_buy'] = []
-
-            if items_to_buy:
-                for item_to_buy in items_to_buy:
-                    response_body['user']['items_to_buy'].append(ItemProfileSerializer(item_to_buy).data)
-            else:
-                response_body['user']['items_to_buy'] = None
-
-            response_body['user']['items_to_sell'] = []
-
-            if items_to_sell:
-                for item_to_sell in items_to_sell:
-                    response_body['user']['items_to_sell'].append(ItemProfileSerializer(item_to_sell).data)
-            else:
-                response_body['user']['items_to_sell'] = None
-
-            response_body['user']['favorite_items'] = []
-
-            if favorite_items:
-                for favorite_item in favorite_items:
-                    response_body['user']['favorite_items'].append(ItemProfileSerializer(favorite_item).data)
-            else:
-                response_body['user']['favorite_items'] = None
 
             return Response(response_body)
         return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -105,7 +82,7 @@ class UserView(generics.GenericAPIView):
             user_id = kwargs['pk']
 
             try:
-                user = CSRuby_User.objects.patch_user(user_id, request)
+                user = Intranet_User.objects.patch_user(user_id, request)
             except Exception as e:
                 return self.user_not_found
 
@@ -124,7 +101,7 @@ class UserView(generics.GenericAPIView):
             user = None
 
             try:
-                user = CSRuby_User.objects.get(id__exact=user_id)
+                user = Intranet_User.objects.get(id__exact=user_id)
             except Exception as e:
                 return self.user_not_found
 
@@ -135,23 +112,21 @@ class UserView(generics.GenericAPIView):
 
 class ResetPassord(generics.GenericAPIView):
     serializer_class = UserSerializer
-    subject = 'CSRuby - Requested password reset'
-    sender = 'noreply@csruby.ch'
+    subject = 'Intranet Cinepel Requested password reset'
+    sender = 'noreply@intranet.ch' # need to put in place
     html_message ='''
     <h2>Hello {0},</h2>
     <p>You have requested to change your password for our website.</p>
     <p>Your new password is: <b style="font-size:1.5em">{1}</b></p>
     <p>You can change this password by updating your profile.</p>
-    <p>Have a nice day,<br>
-    The CSRuby team</p>
+    <p>Have a nice day</p>
     '''
     message ='''
     Hello {0},
     You have requested to change your password for our website.
     Your new password is: {1}
     You can change this password by updating your profile.
-    Have a nice day,
-    The CSRuby team
+    Have a nice day
     '''
 
     def patch(self, request, *args, **kwargs):
@@ -159,7 +134,7 @@ class ResetPassord(generics.GenericAPIView):
         if email:
             dest=[]
             try:
-                user = CSRuby_User.objects.get(email__exact=email)
+                user = Intranet_User.objects.get(email__exact=email)
                 dest.append(email)
                 # Generating new random temporary password
                 new_password = get_random_string(8)
@@ -185,18 +160,14 @@ class ResetPassord(generics.GenericAPIView):
 
         return Response(response_body)
 
-class TemplateDetail(generics.RetrieveAPIView):
+# TODO permission not only authenticated
+
+# create retrieve update or delete template
+class TemplateView(viewsets.ModelViewSet):
+    queryset = Template.objects.all()
     serializer_class = TemplateSerializer
 
-    def get_queryset(self):
-        queryset = Template.objects.all()
 
-        return queryset
-
-class CalendarDetail(generics.RetrieveAPIView):
+class CalendarView(viewsets.ModelViewSet):
+    queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
-
-    def get_queryset(self):
-        queryset = Calendar.objects.all()
-
-        return queryset

@@ -5,6 +5,8 @@ from django.contrib.auth.models import (
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from rest_framework import status
+from django.conf import settings
+import os
 
 # Substituting a custom User model, adding necessary fields
 class Intranet_UserManager(BaseUserManager):
@@ -41,17 +43,18 @@ class Intranet_User(AbstractBaseUser):
 
 # model template
 class Template(models.Model):
+    def gettemplatecity():
+      file_path = os.path.join(settings.MEDIA_ROOT, 'defaultTemplate/templateNE.txt')
+      data_file = open(file_path , 'r')       
+      return data_file.read()
+    templateCity = gettemplatecity()
+
     id_create = models.ForeignKey(Intranet_User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=50, default='template')
-    # the json will be in charfield, we can deserialize as it's json
-    content = models.CharField(max_length=500)
-    def __str__(self):
-        return self.name
+    content = models.TextField(default=templateCity)
 
 # model calendar
 class Calendar(models.Model):
-    id_Template = models.ForeignKey(Template, on_delete=models.SET_NULL, blank=True, null=True)
-    month = models.CharField(max_length=50, default="mois")
-    specific_content = models.CharField(max_length=500)
-    def __str__(self):
-        return self.month
+    id_template = models.ForeignKey(Template, on_delete=models.SET_NULL, blank=True, null=True)
+    date = models.DateTimeField(auto_now=True)
+    specific_content = models.TextField(default="[]")

@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Intranet_User
-        fields = ('email', 'is_active', 'is_admin', 'permission', 'is_manager', 'city', 'infos', 'holidays')
+        fields = ('id', 'username', 'email', 'is_active', 'is_admin', 'permission', 'is_manager', 'city', 'infos', 'holidays')
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,11 +32,14 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError('Incorrect credentials')
 
 class TemplateSerializer(serializers.ModelSerializer):
+    content = serializers.JSONField(required=False)
     class Meta:
         model = Template
-        fields = ('idCreate', 'name', 'content')
+        fields = ('id', 'id_create', 'name', 'content')
+
 
 class CalendarSerializer(serializers.ModelSerializer):
+    specific_content = serializers.JSONField(required=False)
     class Meta:
         model = Calendar
-        fields = ('idTemplate', 'month', 'specificContent')
+        fields = ('id', 'id_template','date', 'specific_content')
