@@ -11,26 +11,32 @@ class TemplatePlanning extends Component {
     super(props);
     this.state={
       name : '',
+      nameTemplate : 'a',
       columns : [],
       data : null,
       is_created : false,
       error : null,
+      is_delete : null,
     };
-    this.submit_form = this.submit_form.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.submitTemplate = this.submitTemplate.bind(this);
     this.getTemplate = this.getTemplate.bind(this);
+    this.deleteTemplate = this.deleteTemplate.bind(this);
   };
   
+  handleChange(event){    
+    this.setState({name: event.target.value});
+  }
   // store a new template
-  submit_form(event) {
+  submitTemplate(event) {
     event.preventDefault();
 
     // TODO store elsewhere than session ? see security
     let authed_user = sessionStorage.getItem('authed_user');
 
     var templateFormData = new FormData();
-    templateFormData.append('name');
+    templateFormData.append('name', this.state.name);
     templateFormData.append('id_create', authed_user);
-    templateFormData.append('content', this.baseTemplate)
     axios({
       method: 'post',
       url: 'api/template/',
@@ -52,6 +58,7 @@ class TemplatePlanning extends Component {
       }
     });
   }
+
   // TODO get in function of a name (scrolllist where there is all the name of the templates) and so get by the id
   getTemplate(){
     axios({
@@ -61,6 +68,7 @@ class TemplatePlanning extends Component {
     .then((response) => {
       if (response.status === 200) {
         this.setState({
+          nameTemplate : response.data.name,
           columns: response.data.content,
         });
       }
@@ -76,9 +84,31 @@ class TemplatePlanning extends Component {
       }
     });
   }
-  componentDidMount(){
-    this.getTemplate()
+  
+  deleteTemplate(){
+    axios({
+      method: 'delete',
+      url: 'api/template/1',
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        this.setState({
+          is_delete: true,
+        });
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
   }
+
   render(){
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
@@ -88,13 +118,16 @@ class TemplatePlanning extends Component {
     }
     return (
       <div className="container">
-        <form onSubmit={this.submit_form}>
+        <div className="intranet_classic">
+        <form onSubmit={this.submitTemplate}>
           <div className="form-group">
             <label>name</label>
             <input
               name="name"
               type="text"
               className="form-control"
+              value={this.state.name}
+              onChange={this.handleChange}
               />
           </div>
           <div className="form-group">
@@ -102,53 +135,14 @@ class TemplatePlanning extends Component {
           </div>
         </form>
         <button onClick={this.getTemplate}>get</button>
-        <div className="col-xs-12">
-          <Table columns={columns} data={this.state.data} />  
+        <div>
+          <h4>{this.state.nameTemplate}</h4>
+        </div>
+        <button onClick={this.deleteTemplate}>del</button>
         </div>
        </div>
     );
   }
-}
-
-function Table({ columns, data }) {
-  // Use the state and functions returned from useTable to build your UI
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({
-    columns,
-    data,
-  })
-
-  // Render the UI for your table
-  return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row)
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-              })}
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  )
 }
 
 export default TemplatePlanning;

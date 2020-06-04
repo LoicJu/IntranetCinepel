@@ -6,23 +6,27 @@ import axios from 'axios';
 
 class Planning extends Component {
   static contextType = AuthContext
+  constructor(props) {
+    super(props);
+    this.state={
+      planning : [],
+      dateCalendar : 'test',
+      error: null,
+    };
+    this.getCalendar = this.getCalendar.bind(this);
+  };
+  
 
-  state={
-    planning : [],
-    error: null,
-  }
-  /*
-  componentDidMount(){
+  getCalendar(){
     axios({
       method: 'get',
       url: 'api/calendar/1',
     })
     .then((response) => {
       if (response.status === 200) {
-        let allData = this.state.planning;
-        response.data.map(user => allData.push(user));
         this.setState({
-          planning: allData,
+          dateCalendar : response.data.date,
+          planning: response.data.specific_content,
         });
       }
     })
@@ -37,7 +41,7 @@ class Planning extends Component {
       }
     });
   }
-  */
+  
   render(){
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
@@ -47,8 +51,10 @@ class Planning extends Component {
     }
     return (
       <div className="container">
-        <div className="col-xs-12">
-        <h1>Calendar</h1>
+        <div className="intranet_classic">
+          <h1>Calendar</h1>
+          <button onClick={this.getCalendar}>get</button>
+          <h2>{this.state.dateCalendar}</h2>
         </div>
        </div>
     );

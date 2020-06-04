@@ -66,7 +66,6 @@ render() {
   }
   return (
     <div className="container py-4">
-      <div className="csruby-bg-darkest p-3">
       {this.state.is_reset &&
         <div>
           <h1>Password is reset</h1>
@@ -94,7 +93,6 @@ render() {
           </div>
         </form>
         </div>}
-      </div>
     </div>
     );
   }
