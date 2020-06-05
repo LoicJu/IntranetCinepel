@@ -29,6 +29,7 @@ import Profile from './Profile';
 
 import Error from './Error';
 
+// TODO not only authenticated
 class Main extends Component {
   render() {
     // The HashRouter component provides the foundation for the navigation and browser history handling that routing is made up of
