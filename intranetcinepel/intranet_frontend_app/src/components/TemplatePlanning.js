@@ -13,7 +13,17 @@ class TemplatePlanning extends Component {
     this.state={
       namePost : '',
       nameTemplate : '',
-      columns : [],
+      columns : [
+        'Product name',
+        'SKU',
+        'Stock quantity',
+        'Wholesale cost',
+        'Sale price',
+        'Quantity sold',
+        'Gross sales',
+        'Net sales',
+        'Notes',
+      ],
       data : null,
       is_created : false,
       error : null,
@@ -64,14 +74,14 @@ class TemplatePlanning extends Component {
   getTemplate(){
     axios({
       method: 'get',
-      url: 'api/template/8',
+      url: 'api/template/11',
       responseType: 'json',
     })
     .then((response) => {
       if (response.status === 200) {
         this.setState({
           nameTemplate : response.data.name,
-          columns: response.data.content,
+          columns: response.data.columns,
           data : { tableData: response.data.content },
         });
       }
@@ -169,7 +179,7 @@ class TemplatePlanning extends Component {
           <button onClick={this.deleteTemplate}>del</button>
           <AppProvider>
             <Page title="Data table">
-              <Table headings={headings} rows={rows} />
+              <Table headings={this.state.columns} rows={rows} />
             </Page>
           </AppProvider>
         </div>
