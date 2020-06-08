@@ -13,17 +13,7 @@ class TemplatePlanning extends Component {
     this.state={
       namePost : '',
       nameTemplate : '',
-      columns : [
-        'Product name',
-        'SKU',
-        'Stock quantity',
-        'Wholesale cost',
-        'Sale price',
-        'Quantity sold',
-        'Gross sales',
-        'Net sales',
-        'Notes',
-      ],
+      columns : [],
       data : [],
       is_created : false,
       error : null,
@@ -74,15 +64,15 @@ class TemplatePlanning extends Component {
   getTemplate(){
     axios({
       method: 'get',
-      url: 'api/template/13',
+      url: 'api/template/15',
       responseType: 'json',
     })
     .then((response) => {
       if (response.status === 200) {
         const arrCol = [];
         const arrData = [];
-        Object.keys(response.data.columns).forEach(key => arrCol.push({name: key, value: response.data.columns[key]}));
-        Object.keys(response.data.content).forEach(key => arrData.push({name: key, value: response.data.content[key]}));
+        Object.keys(response.data.columns).forEach(key => arrCol.push(response.data.columns[key]));
+        Object.keys(response.data.content).forEach(key => arrData.push(response.data.content[key]));
         this.setState({
           nameTemplate : response.data.name,
           columns : arrCol,
@@ -127,30 +117,6 @@ class TemplatePlanning extends Component {
   }
 
   render(){
-    const headings = [
-      'Product name',
-      'SKU',
-      'Stock quantity',
-      'Wholesale cost',
-      'Sale price',
-      'Quantity sold',
-      'Gross sales',
-      'Net sales',
-      'Notes',
-    ];
-    const rows = [
-      [
-        'Red and black plaid scarf with thin red stripes and thick black stripes',
-        124689325,
-        28,
-        '$35.00',
-        '$60.00',
-        12,
-        '$720.00',
-        '$300.00',
-        '',
-      ],
-    ];
     console.log(this.state.columns)
     console.log(this.state.data)
     if (!this.context.getIsAuthenticated()) {
@@ -184,7 +150,7 @@ class TemplatePlanning extends Component {
           <button onClick={this.deleteTemplate}>del</button>
           <AppProvider>
             <Page title="Data table">
-              <Table headings={this.state.columns} rows={rows} />
+              <Table headings={this.state.columns} rows={this.state.data} />
             </Page>
           </AppProvider>
         </div>
