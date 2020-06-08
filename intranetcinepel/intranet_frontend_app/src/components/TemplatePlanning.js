@@ -24,7 +24,7 @@ class TemplatePlanning extends Component {
         'Net sales',
         'Notes',
       ],
-      data : null,
+      data : [],
       is_created : false,
       error : null,
       is_delete : null,
@@ -74,15 +74,19 @@ class TemplatePlanning extends Component {
   getTemplate(){
     axios({
       method: 'get',
-      url: 'api/template/11',
+      url: 'api/template/13',
       responseType: 'json',
     })
     .then((response) => {
       if (response.status === 200) {
+        const arrCol = [];
+        const arrData = [];
+        Object.keys(response.data.columns).forEach(key => arrCol.push({name: key, value: response.data.columns[key]}));
+        Object.keys(response.data.content).forEach(key => arrData.push({name: key, value: response.data.content[key]}));
         this.setState({
           nameTemplate : response.data.name,
-          columns: response.data.columns,
-          data : { tableData: response.data.content },
+          columns : arrCol,
+          data : arrData,
         });
       }
     })
@@ -148,6 +152,7 @@ class TemplatePlanning extends Component {
       ],
     ];
     console.log(this.state.columns)
+    console.log(this.state.data)
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
