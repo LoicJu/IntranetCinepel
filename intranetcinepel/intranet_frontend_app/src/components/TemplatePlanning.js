@@ -115,10 +115,12 @@ class TemplatePlanning extends Component {
       }
     });
   }
+  
+  componentDidMount(){
+    
+  }
 
   render(){
-    console.log(this.state.columns)
-    console.log(this.state.data)
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }

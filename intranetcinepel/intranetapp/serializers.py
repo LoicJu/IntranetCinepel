@@ -31,11 +31,13 @@ class LoginSerializer(serializers.Serializer):
             return user
         raise serializers.ValidationError('Incorrect credentials')
 
+
 class TemplateSerializer(serializers.ModelSerializer):
+    columns = serializers.JSONField(required=False)
     content = serializers.JSONField(required=False)
     class Meta:
         model = Template
-        fields = ('id', 'id_create', 'name', 'content')
+        fields = ('id', 'id_create', 'name', 'columns', 'content')
 
 
 class CalendarSerializer(serializers.ModelSerializer):

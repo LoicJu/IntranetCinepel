@@ -160,7 +160,7 @@ class ResetPassord(generics.GenericAPIView):
 
         return Response(response_body)
 
-# TODO permission not only authenticated
+# TODO permissions
 
 # create retrieve update or delete template
 class TemplateView(viewsets.ModelViewSet):

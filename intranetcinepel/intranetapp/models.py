@@ -7,6 +7,7 @@ from django.utils import timezone
 from rest_framework import status
 from django.conf import settings
 import os
+from jsonfield import JSONField
 
 # Substituting a custom User model, adding necessary fields
 class Intranet_UserManager(BaseUserManager):
@@ -44,17 +45,25 @@ class Intranet_User(AbstractBaseUser):
 # model template
 class Template(models.Model):
     def gettemplatecity():
-      file_path = os.path.join(settings.MEDIA_ROOT, 'defaultTemplate/templateNE.txt')
-      data_file = open(file_path , 'r')       
-      return data_file.read()
+        file_path = os.path.join(settings.MEDIA_ROOT, 'defaultTemplate/templateNE.json')
+        data_file = open(file_path , 'r')       
+        return data_file.read()
+
+    def gettemplatedate():
+        file_path = os.path.join(settings.MEDIA_ROOT, 'defaultTemplate/templateDate.json')
+        data_file = open(file_path , 'r')       
+        return data_file.read()
+    
     templateCity = gettemplatecity()
+    templateDate = gettemplatedate()
 
     id_create = models.ForeignKey(Intranet_User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=50, default='template')
-    content = models.TextField(default=templateCity)
+    columns = JSONField(default=templateCity)
+    content = JSONField(default=templateDate)
 
 # model calendar
 class Calendar(models.Model):
     id_template = models.ForeignKey(Template, on_delete=models.SET_NULL, blank=True, null=True)
     date = models.DateTimeField(auto_now=True)
-    specific_content = models.TextField(default="[]")
+    specific_content = JSONField(null=True)
