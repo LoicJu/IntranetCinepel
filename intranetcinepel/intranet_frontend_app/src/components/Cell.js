@@ -10,7 +10,7 @@ export default function Cell({
       {content}
     </th>
   ) : (
-    <td className="Cell">
+    <td className="Cell" contentEditable="true">
       {content}
     </td>
   );

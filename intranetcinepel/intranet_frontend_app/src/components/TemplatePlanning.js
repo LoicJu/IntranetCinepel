@@ -1,11 +1,18 @@
-import React, { Component,useMemo, useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import { AuthContext } from './AuthProvider';
 import { Redirect } from 'react-router';
 import Error from './Error';
 import axios from 'axios';
-import Table from "./Table";
-import {AppProvider, Page} from '@shopify/polaris';
-import Select from 'react-select'
+import Select from 'react-select';
+import 'materialize-css';
+import { Button} from 'react-materialize';
+import {ShowTable} from './Table';
+
+const RenderRow = (props) =>{
+  return props.keys.map((key, index)=>{
+  return <td key={props.data[key]}>{props.data[key]}</td>
+  })
+ }
 
 class TemplatePlanning extends Component {
   static contextType = AuthContext
@@ -17,8 +24,7 @@ class TemplatePlanning extends Component {
       nameTemplate : '',
       nameIdTemplate : {},
       nameAllTemplate : [],
-      columns : [],
-      data : [],
+      content : [{}],
       is_created : false,
       error : null,
       is_delete : null,
@@ -26,8 +32,10 @@ class TemplatePlanning extends Component {
     this.handleChangePost = this.handleChangePost.bind(this);
     this.handleChangeGet = this.handleChangeGet.bind(this);
     this.handleChangeDel = this.handleChangeDel.bind(this);
+
     this.submitTemplate = this.submitTemplate.bind(this);
     this.deleteTemplate = this.deleteTemplate.bind(this);
+    this.saveTemplate = this.saveTemplate.bind(this);
   };
 
   handleChangeState(){
@@ -55,12 +63,11 @@ class TemplatePlanning extends Component {
         });
       }
     });
-
-  }
+  };
 
   handleChangePost(event){    
     this.setState({namePost: event.target.value});
-  }
+  };
 
   // store a new template
   submitTemplate(event) {
@@ -92,24 +99,19 @@ class TemplatePlanning extends Component {
         });
       }
     });
-  }
-
+  };
   // handle change and get 
   handleChangeGet(event){
     let id = this.state.nameIdTemplate[event.value]
     axios({
       method: 'get',
       url: 'api/template/' + id,
-      responseType: 'json',
     })
-    .then((response) => {
+    .then(response => {
       if (response.status === 200) {
-        this.state.columns = [];
-        this.state.data = [];
-        Object.keys(response.data.columns).forEach(key => this.state.columns.push(response.data.columns[key]));
-        Object.keys(response.data.content).forEach(key => this.state.data.push(response.data.content[key]));
         this.setState({
           nameTemplate : response.data.name,
+          content : response.data.content,
         });
       }
     })
@@ -123,11 +125,11 @@ class TemplatePlanning extends Component {
         });
       }
     });
-  }
+  };
   
   handleChangeDel(event){
     this.setState({nameDel: event.value});
-  }
+  };
 
   // delete a template
   deleteTemplate(){
@@ -154,7 +156,13 @@ class TemplatePlanning extends Component {
         });
       }
     });
-  }
+  };
+  
+
+  saveTemplate(){
+    console.log(document.getElementById('tableTemplate'))
+  };
+
   
   componentDidMount(){
     axios({
@@ -177,9 +185,31 @@ class TemplatePlanning extends Component {
         });
       }
     });
+  };
+  
+  getHeader = function(){
+    var keys = this.getKeys();
+    return keys.map((key, index)=>{
+      return {
+        Header: key,
+        accessor: key
+      };
+    })
   }
+  getKeys = function(){
+    return Object.keys(this.state.content[0]);
+  }
+  getRowsData = function(){
+    var items = this.state.content;
+    var keys = this.getKeys();
+    return items.map((row, index)=>{
+      return row
+    })
+    }
 
   render(){
+    const columns= this.getHeader();
+    const content = this.getRowsData();
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
@@ -201,7 +231,9 @@ class TemplatePlanning extends Component {
                 />
             </div>
             <div className="form-group">
-              <button type="submit" className="btn btn-danger">créer</button>
+              <Button type="submit" variant="info">
+              Créer
+              </Button>
             </div>
           </form>
           <Select 
@@ -209,17 +241,19 @@ class TemplatePlanning extends Component {
             onChange={this.handleChangeDel}
             options={this.state.nameAllTemplate}
           />
-          <button onClick={this.deleteTemplate}>supprimer</button>
+          <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
           <Select 
             placeholder="Choisissez le template"
             onChange={this.handleChangeGet}
             options={this.state.nameAllTemplate}
-         />
-          <AppProvider>
-            <Page title={this.state.nameTemplate}>
-              <Table headings={this.state.columns} rows={this.state.data} />
-            </Page>
-          </AppProvider>
+          />
+          <div className="container">
+            <h2>{this.state.nameTemplate}</h2>
+            <ShowTable columns={columns} dataSend={content}/>
+          </div>
+          <Button variant="info">
+            Sauvegarder
+          </Button>
         </div>
        </div>
     );
