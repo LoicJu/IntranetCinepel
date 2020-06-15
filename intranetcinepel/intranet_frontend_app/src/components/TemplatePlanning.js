@@ -6,13 +6,7 @@ import axios from 'axios';
 import Select from 'react-select';
 import 'materialize-css';
 import { Button} from 'react-materialize';
-import {ShowTable} from './Table';
-
-const RenderRow = (props) =>{
-  return props.keys.map((key, index)=>{
-  return <td key={props.data[key]}>{props.data[key]}</td>
-  })
- }
+import {ShowTable, GetData} from './Table';
 
 class TemplatePlanning extends Component {
   static contextType = AuthContext
@@ -111,7 +105,7 @@ class TemplatePlanning extends Component {
       if (response.status === 200) {
         this.setState({
           nameTemplate : response.data.name,
-          content : response.data.content,
+          content : response.data.template_content,
         });
       }
     })
@@ -160,7 +154,33 @@ class TemplatePlanning extends Component {
   
 
   saveTemplate(){
-    console.log(document.getElementById('tableTemplate'))
+    let id = this.state.nameIdTemplate[this.state.nameTemplate]
+    var templateSaveData = new FormData();
+    templateSaveData.append('template_content', this.state.content);
+    console.log(this.state.content)
+    axios({
+      method: 'patch',
+      url: 'api/template/' + id +'/',
+      data: templateSaveData,
+    })
+    .then((response) => {
+      console.log(response)
+      if (response.status === 204) {
+        this.setState({
+          is_delete: true,
+        });
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
   };
 
   
@@ -186,30 +206,60 @@ class TemplatePlanning extends Component {
       }
     });
   };
-  
+
   getHeader = function(){
     var keys = this.getKeys();
+    var nestedKeys = this.getNestedKeys();
     return keys.map((key, index)=>{
-      return {
-        Header: key,
-        accessor: key
-      };
+      let isNested = false;
+      let nesting = [];
+      for(var obj in nestedKeys){
+        if (nestedKeys[obj].key == key && nestedKeys[obj].key != "Date"){
+          isNested = true;
+          nesting.push({'Header' : nestedKeys[obj].value  ,  'accessor' : nestedKeys[obj].value },);
+        }
+      }
+      if(isNested){
+        return{
+          Header: key,
+          columns:nesting,
+        }
+      }
+      else{
+        return {
+          Header: key,
+          accessor: key
+        };
+      }
     })
+  }
+  getNestedKeys = function(){
+    let nestedKeys = [];
+    for (var keyCont in this.state.content[0]){
+      for (var test in this.state.content[0][keyCont]){
+        nestedKeys.push({
+          key : keyCont,
+          value : test
+        })
+      } 
+    }
+    
+    return nestedKeys;
   }
   getKeys = function(){
     return Object.keys(this.state.content[0]);
   }
+
   getRowsData = function(){
     var items = this.state.content;
-    var keys = this.getKeys();
     return items.map((row, index)=>{
       return row
     })
-    }
+  }
 
   render(){
     const columns= this.getHeader();
-    const content = this.getRowsData();
+    const content_data = this.getRowsData();
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
@@ -249,9 +299,9 @@ class TemplatePlanning extends Component {
           />
           <div className="container">
             <h2>{this.state.nameTemplate}</h2>
-            <ShowTable columns={columns} dataSend={content}/>
+            <ShowTable columns={columns} dataSend={content_data}/>
           </div>
-          <Button variant="info">
+          <Button variant="info" onClick={this.saveTemplate}>
             Sauvegarder
           </Button>
         </div>
