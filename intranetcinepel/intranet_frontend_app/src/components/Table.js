@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import { useTable } from 'react-table';
 
-let data = '';
-
-export const GetData = () =>{
-  return data;
-}
-
 export const ShowTable = ({ columns, dataSend})=>{  
-  data = dataSend
+  let data = dataSend
   const updateMyData = (rowIndex, columnId, value) => {
     data.map((row, index) => {
         if (index === rowIndex) {

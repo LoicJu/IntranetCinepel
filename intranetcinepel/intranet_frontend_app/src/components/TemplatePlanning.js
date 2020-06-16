@@ -6,7 +6,7 @@ import axios from 'axios';
 import Select from 'react-select';
 import 'materialize-css';
 import { Button} from 'react-materialize';
-import {ShowTable, GetData} from './Table';
+import {ShowTable} from './Table';
 
 class TemplatePlanning extends Component {
   static contextType = AuthContext
@@ -157,7 +157,6 @@ class TemplatePlanning extends Component {
     let id = this.state.nameIdTemplate[this.state.nameTemplate]
     var templateSaveData = new FormData();
     templateSaveData.append('template_content', this.state.content);
-    console.log(this.state.content)
     axios({
       method: 'patch',
       url: 'api/template/' + id +'/',
