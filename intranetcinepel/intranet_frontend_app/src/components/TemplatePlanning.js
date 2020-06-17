@@ -154,16 +154,16 @@ class TemplatePlanning extends Component {
   
 
   saveTemplate(){
-    let id = this.state.nameIdTemplate[this.state.nameTemplate]
+    let id = this.state.nameIdTemplate[this.state.nameTemplate];
     var templateSaveData = new FormData();
-    templateSaveData.append('template_content', this.state.content);
+    let dataTemplate = JSON.stringify(this.state.content);
+    templateSaveData.append('template_content', dataTemplate);
     axios({
-      method: 'patch',
-      url: 'api/template/' + id +'/',
+      method: 'put',
+      url: 'api/template/' + id + '/',
       data: templateSaveData,
     })
     .then((response) => {
-      console.log(response)
       if (response.status === 204) {
         this.setState({
           is_delete: true,
@@ -206,6 +206,7 @@ class TemplatePlanning extends Component {
     });
   };
 
+  // PROBLEME HERE TODO
   getHeader = function(){
     var keys = this.getKeys();
     var nestedKeys = this.getNestedKeys();
@@ -235,14 +236,15 @@ class TemplatePlanning extends Component {
   getNestedKeys = function(){
     let nestedKeys = [];
     for (var keyCont in this.state.content[0]){
-      for (var test in this.state.content[0][keyCont]){
-        nestedKeys.push({
-          key : keyCont,
-          value : test
-        })
+      for (var value in this.state.content[0][keyCont]){
+        if(this.state.content[0][keyCont] instanceof Object){
+          nestedKeys.push({
+            key : keyCont,
+            value : value
+          })
+        }
       } 
     }
-    
     return nestedKeys;
   }
   getKeys = function(){

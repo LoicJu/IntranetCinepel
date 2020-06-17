@@ -7,7 +7,7 @@ import Select from 'react-select';
 import 'materialize-css';
 import { Button} from 'react-materialize';
 import {ShowTable} from './Table';
-import {getCurrentDate, getMonth, getDay} from './DateUtils';
+import {getCurrentDate, getMonth, getDay, getDaysInMonth} from './DateUtils';
 import MonthPickerInput from 'react-month-picker-input';
 require('react-month-picker-input/dist/react-month-picker-input.css');
 
@@ -16,15 +16,27 @@ class Planning extends Component {
   constructor(props) {
     super(props);
     this.state={
-      specificContent : [{}],
+      // to choose from the different templates
+      idTemplateGet : null,
       idTemplate : null,
       nameIdTemplate : {},
       nameAllTemplate : [],
-      dateCalendar : '',
+      // content of the planning
+      content : [{}],
+      // the specific content from the planning
+      specificContent : [{}],
+      // date of the calendar
+      datePlanning : '',
+      // to show all the planning
       nameAllPlanning : '',
       nameIdPlanning : '',
+      // to get the current planning
       idPlanning : null,
-      dateCalendarSubmit : null,
+      // the date of the planning we'll create 
+      datePlanningSubmit : null,
+      // TODO get all dates from planning
+      allDatePlanning : null,
+      // to show created, delete, error
       is_created : false,
       is_delete : false,
       error: null,
@@ -50,7 +62,7 @@ class Planning extends Component {
           nameIdPlanning : {},
         });
         Object.keys(response.data).forEach(key => this.state.nameAllPlanning.push({"value" : response.data[key].date, "label" : response.data[key].date}));
-        Object.keys(response.data).forEach(key => this.state.nameIdTemplate[response.data[key].date] = response.data[key].id);
+        Object.keys(response.data).forEach(key => this.state.nameIdPlanning[response.data[key].date] = response.data[key].id);
       }
     })
     .catch((error) => {
@@ -67,21 +79,30 @@ class Planning extends Component {
 
   // get the correct id of the template from the calendar we want to submit
   handleChangeSubmit(event){
+    console.log(event.value)
     let id = this.state.nameIdTemplate[event.value]
-    this.setState({idPlanning : id});
+    this.setState({idTemplate : id});
   };
 
   handleChangeSubmitMonth(event){
-    console.log(event)
+    let dateEvent = event.split('/')
+    // year, month, day, hours, minutes, seconds, milliseconds
+    let newDate = new Date(dateEvent[1], dateEvent[0]-1, 1, 0, 0, 0, 0)
+    this.setState({datePlanningSubmit : newDate});
   }
   // store a new calendar TODO test if calendar for this month already exist
   submitPlanning() {
     let authed_user = sessionStorage.getItem('authed_user');
 
+    // to get all the content from the template
+    this.getTemplate()
+    .then(res => console.log(res))
+    this.parseTemplateToPlanning()
+    // we create the formData to post
     var planningFormData = new FormData();
     planningFormData.append('id_template', this.state.idTemplate);
     planningFormData.append('id_creator', authed_user);
-    planningFormData.append('date', this.state.dateCalendarSubmit);
+    planningFormData.append('date', this.state.datePlanningSubmit);
     planningFormData.append('specific_content', this.state.specificContent);
     axios({
       method: 'post',
@@ -106,9 +127,56 @@ class Planning extends Component {
     });
   };
 
-  parseTemplateToPlanning(){
-    
+  getTemplate(){
+    // getting the content of the template to create the content of the planning
+    console.log("do axios")
+    axios({
+      method: 'get',
+      url: 'api/template/' + this.state.idTemplate,
+    })
+    .then(response => {
+      console.log("catch respose")
+      console.log(response)
+      if (response.status === 200) {
+        this.setState({
+          content : response.data.template_content,
+        });
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
   }
+
+  parseTemplateToPlanning(){
+    let month = this.state.datePlanningSubmit.getMonth();
+    let year = this.state.datePlanningSubmit.getFullYear();
+    let days = getDaysInMonth(month, year);
+    let keysTemplate = this.getKeysTemplate();
+    let nestedKeysTemplate = this.getNestedKeysTemplate();
+    console.log(keysTemplate)
+    days.map((day)=>{
+      let dataNested = []
+      for(var key in keysTemplate){
+        for(var nestedKey in nestedKeysTemplate){
+          console.log(nestedKey)
+          if (nestedKeysTemplate[nestedKey].key == key){
+            isNested = true;
+            dataNested.push({'Header' : nestedKeysTemplate[nestedKey].value  ,  'accessor' : nestedKeysTemplate[nestedKey].value },);
+          }
+        }
+      }
+    });
+    console.log("end")
+  }
+
   // change the id from the selected name
   handleChangeDel(event){
     let id = this.state.nameIdPlanning[event.value]
@@ -151,9 +219,9 @@ class Planning extends Component {
     .then((response) => {
       if (response.status === 200) {
         this.setState({
-          dateCalendar : response.data.date,
+          datePlanning : response.data.date,
           specificContent : response.data.specific_content,
-          idTemplate : response.data.id_template,
+          idTemplateGet : response.data.id_template,
         });
       }
     })
@@ -240,17 +308,35 @@ class Planning extends Component {
       }
     })
   }
-  getNestedKeys = function(){
+
+  getNestedKeysTemplate = function(){
     let nestedKeys = [];
-    for (var keyCont in this.state.specificContent[0]){
-      for (var test in this.state.specificContent[0][keyCont]){
+    for (var keyCont in this.state.content[0]){
+      for (var test in this.state.content[0][keyCont]){
         nestedKeys.push({
           key : keyCont,
           value : test
         })
       } 
     }
-    
+    return nestedKeys;
+  }
+  getKeysTemplate = function(){
+    return Object.keys(this.state.content[0]);
+  }
+
+  getNestedKeys = function(){
+    let nestedKeys = [];
+    for (var keyCont in this.state.specificContent[0]){
+      for (var value in this.state.specificContent[0][keyCont]){
+        if(this.state.content[0][keyCont] instanceof Object){
+          nestedKeys.push({
+            key : keyCont,
+            value : value
+          })
+        }
+      } 
+    }
     return nestedKeys;
   }
   getKeys = function(){
@@ -320,7 +406,7 @@ class Planning extends Component {
           />
           <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
           <div className="container">
-            <h2>{this.state.dateCalendar}</h2>
+            <h2>{this.state.datePlanning}</h2>
             <ShowTable columns={columns} dataSend={content_data}/>
           </div>
         </div>
