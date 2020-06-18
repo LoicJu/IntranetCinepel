@@ -7,9 +7,12 @@ import Select from 'react-select';
 import 'materialize-css';
 import { Button} from 'react-materialize';
 import {ShowTable} from './Table';
-import {getCurrentDate, getMonth, getDay, getDaysInMonth} from './DateUtils';
+import {getCurrentDate, getMonthName, getDayName, getDaysInMonth} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
+import regeneratorRuntime from "regenerator-runtime";
 require('react-month-picker-input/dist/react-month-picker-input.css');
+
+
 
 class Planning extends Component {
   static contextType = AuthContext
@@ -26,34 +29,37 @@ class Planning extends Component {
       // the specific content from the planning
       specificContent : [{}],
       // date of the calendar
-      datePlanning : '',
-      // to show all the planning
-      nameAllPlanning : '',
-      nameIdPlanning : '',
+      datePlanningGet : '',
+      // to show all the planning, the "name" of the planning is the date
+      nameIdPlanning : {},
+      nameAllPlanning : [],
       // to get the current planning
-      idPlanning : null,
+      idPlanningDel : null,
+      // data to submit
+      specificContentToSubmit : [{}],
       // the date of the planning we'll create 
-      datePlanningSubmit : null,
-      // TODO get all dates from planning
-      allDatePlanning : null,
+      datePlanningSubmit : new Date(2020, 5, 1, 0, 0, 0, 0),
       // to show created, delete, error
       is_created : false,
       is_delete : false,
       error: null,
     };
-    this.pickAMonth = React.createRef()
+    this.pickAMonth = React.createRef();
 
-    this.getPlanning = this.getPlanning.bind(this);
+    this.handleGetPlanning = this.handleGetPlanning.bind(this);
+
     this.submitPlanning = this.submitPlanning.bind(this);
-
     this.handleChangeSubmit = this.handleChangeSubmit.bind(this);
-    this.handleChangeSubmitMonth = this.handleChangeSubmitMonth.bind(this)
+    this.handleChangeSubmitMonth = this.handleChangeSubmitMonth.bind(this);
+
+    this.handleChangeDel = this.handleChangeDel.bind(this);
+    this.deletePlanning = this.deletePlanning.bind(this);;
   };
   
   handleChangeState(){
     axios({
       method: 'get',
-      url: 'api/template/',
+      url: 'api/calendar/',
     })
     .then((response) => {
       if (response.status === 200) {
@@ -79,31 +85,49 @@ class Planning extends Component {
 
   // get the correct id of the template from the calendar we want to submit
   handleChangeSubmit(event){
-    console.log(event.value)
-    let id = this.state.nameIdTemplate[event.value]
+    let id = this.state.nameIdTemplate[event.value];
     this.setState({idTemplate : id});
   };
 
   handleChangeSubmitMonth(event){
     let dateEvent = event.split('/')
     // year, month, day, hours, minutes, seconds, milliseconds
-    let newDate = new Date(dateEvent[1], dateEvent[0]-1, 1, 0, 0, 0, 0)
-    this.setState({datePlanningSubmit : newDate});
+    this.setState({datePlanningSubmit : new Date(dateEvent[1], dateEvent[0]-1, 1, 0, 0, 0, 0)});
   }
   // store a new calendar TODO test if calendar for this month already exist
-  submitPlanning() {
+  async submitPlanning() {
     let authed_user = sessionStorage.getItem('authed_user');
 
     // to get all the content from the template
-    this.getTemplate()
-    .then(res => console.log(res))
+    await axios({
+      method: 'get',
+      url: 'api/template/' + this.state.idTemplate,
+    })
+    .then(response => {
+      if (response.status === 200) {
+        this.setState({
+          content : response.data.template_content,
+        });
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
+    // parsing the content of the template in the content of the planning
     this.parseTemplateToPlanning()
     // we create the formData to post
     var planningFormData = new FormData();
     planningFormData.append('id_template', this.state.idTemplate);
     planningFormData.append('id_creator', authed_user);
     planningFormData.append('date', this.state.datePlanningSubmit);
-    planningFormData.append('specific_content', this.state.specificContent);
+    planningFormData.append('specific_content', JSON.stringify(this.state.specificContentToSubmit));
     axios({
       method: 'post',
       url: 'api/calendar/',
@@ -127,67 +151,40 @@ class Planning extends Component {
     });
   };
 
-  getTemplate(){
-    // getting the content of the template to create the content of the planning
-    console.log("do axios")
-    axios({
-      method: 'get',
-      url: 'api/template/' + this.state.idTemplate,
-    })
-    .then(response => {
-      console.log("catch respose")
-      console.log(response)
-      if (response.status === 200) {
-        this.setState({
-          content : response.data.template_content,
-        });
-      }
-    })
-    .catch((error) => {
-      if(error.response) {
-        this.setState({
-          error: {
-            status: error.response.status + ' ' + error.response.statusText,
-            detail: error.response.data.detail,
-          }
-        });
-      }
-    });
-  }
-
   parseTemplateToPlanning(){
-    let month = this.state.datePlanningSubmit.getMonth();
-    let year = this.state.datePlanningSubmit.getFullYear();
-    let days = getDaysInMonth(month, year);
-    let keysTemplate = this.getKeysTemplate();
-    let nestedKeysTemplate = this.getNestedKeysTemplate();
-    console.log(keysTemplate)
-    days.map((day)=>{
-      let dataNested = []
-      for(var key in keysTemplate){
-        for(var nestedKey in nestedKeysTemplate){
-          console.log(nestedKey)
-          if (nestedKeysTemplate[nestedKey].key == key){
-            isNested = true;
-            dataNested.push({'Header' : nestedKeysTemplate[nestedKey].value  ,  'accessor' : nestedKeysTemplate[nestedKey].value },);
-          }
-        }
+    const month = this.state.datePlanningSubmit.getMonth();
+    const year = this.state.datePlanningSubmit.getFullYear();
+    const days = getDaysInMonth(month, year);
+    const dataTemplate = this.getRowsDataTemplate();
+    let allData = [];
+    const dayOfWeek = (days[0].getDay() + 6) % 7;
+    // we parse for all the day in the month
+    days.forEach(function(day){
+      let numberDate = day.getDate()
+      let dayToParse = (numberDate-1 + dayOfWeek);
+      let dataTempCopy = JSON.parse(JSON.stringify(dataTemplate));
+      let dataToPush = dataTempCopy[dayToParse%28];
+      let strDate = getDayName(day) + ' ' + numberDate;
+      dataToPush.Date = strDate;
+      allData.push(dataToPush);
       }
+    );
+    this.setState({
+      specificContentToSubmit: allData,
     });
-    console.log("end")
   }
 
   // change the id from the selected name
   handleChangeDel(event){
     let id = this.state.nameIdPlanning[event.value]
-    this.setState({idPlanning : id});
+    this.setState({idPlanningDel : id});
   }
 
   // delete a planning
-  deleteCalendar(){
+  deletePlanning(){
     axios({
       method: 'delete',
-      url: 'api/calendar/' + this.state.idPlanning,
+      url: 'api/calendar/' + this.state.idPlanningDel,
     })
     .then((response) => {
       if (response.status === 204) {
@@ -210,7 +207,7 @@ class Planning extends Component {
   }
   
   // get the chosen calendar
-  getPlanning(event){
+  handleGetPlanning(event){
     let id = this.state.nameIdPlanning[event.value]
     axios({
       method: 'get',
@@ -219,10 +216,12 @@ class Planning extends Component {
     .then((response) => {
       if (response.status === 200) {
         this.setState({
-          datePlanning : response.data.date,
+          datePlanningGet : new Date(response.data.date),
           specificContent : response.data.specific_content,
           idTemplateGet : response.data.id_template,
         });
+        console.log(getMonthName(this.state.datePlanningGet))
+        console.log(this.state.datePlanningSubmit)
       }
     })
     .catch((error) => {
@@ -281,6 +280,13 @@ class Planning extends Component {
     });
   };
 
+  getRowsDataTemplate = function(){
+    var items = this.state.content;
+    return items.map((row, index)=>{
+      return row
+    })
+  }
+
   // this functions get the datas from the database and parse them for the react table
   getHeader = function(){
     var keys = this.getKeys();
@@ -289,7 +295,7 @@ class Planning extends Component {
       let isNested = false;
       let nesting = [];
       for(var obj in nestedKeys){
-        if (nestedKeys[obj].key == key && nestedKeys[obj].key != "Date"){
+        if (nestedKeys[obj].key == key){
           isNested = true;
           nesting.push({'Header' : nestedKeys[obj].value  ,  'accessor' : nestedKeys[obj].value },);
         }
@@ -309,27 +315,11 @@ class Planning extends Component {
     })
   }
 
-  getNestedKeysTemplate = function(){
-    let nestedKeys = [];
-    for (var keyCont in this.state.content[0]){
-      for (var test in this.state.content[0][keyCont]){
-        nestedKeys.push({
-          key : keyCont,
-          value : test
-        })
-      } 
-    }
-    return nestedKeys;
-  }
-  getKeysTemplate = function(){
-    return Object.keys(this.state.content[0]);
-  }
-
   getNestedKeys = function(){
     let nestedKeys = [];
     for (var keyCont in this.state.specificContent[0]){
       for (var value in this.state.specificContent[0][keyCont]){
-        if(this.state.content[0][keyCont] instanceof Object){
+        if(this.state.specificContent[0][keyCont] instanceof Object){
           nestedKeys.push({
             key : keyCont,
             value : value
@@ -350,7 +340,6 @@ class Planning extends Component {
     })
   }
 
-  // TODO add a select to choose the date to create and to get
   render(){
     // data to parse in table
     const columns= this.getHeader();
@@ -388,25 +377,19 @@ class Planning extends Component {
               </Button>
             </div>
           </form>
-          <form onSubmit={this.getPlanning}>
-            <div className="form-group">
-            <Select 
-              placeholder="Choisissez le planning"
-              options={this.state.nameAllPlanning}
-            />
-            </div>
-            <div className="form-group">
-            <button type="submit" variant="info">afficher le calendrier</button>
-            </div>
-          </form>
           <Select 
             placeholder="Choisissez le planning à supprimer"
             onChange={this.handleChangeDel}
             options={this.state.nameAllPlanning}
           />
-          <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
+          <Button onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
+          <Select 
+            placeholder="Choisissez le planning"
+            onChange={this.handleGetPlanning}
+            options={this.state.nameAllPlanning}
+          />
           <div className="container">
-            <h2>{this.state.datePlanning}</h2>
+            <h2></h2>
             <ShowTable columns={columns} dataSend={content_data}/>
           </div>
         </div>

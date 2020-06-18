@@ -5,14 +5,14 @@ export function getCurrentDate(){
     return newDate
 }
 
-export function getMonth(date){
+export function getMonthName(date){
     let monthNumber = (date.getMonth()+1);
     let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return(monthNames[monthNumber])
 }
 
 
-export function getDay(date){
+export function getDayName(date){
     let dateNumber = date.getDay();
     let dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
     return (dayNames[dateNumber]);

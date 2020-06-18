@@ -205,8 +205,7 @@ class TemplatePlanning extends Component {
       }
     });
   };
-
-  // PROBLEME HERE TODO
+  
   getHeader = function(){
     var keys = this.getKeys();
     var nestedKeys = this.getNestedKeys();
@@ -214,7 +213,7 @@ class TemplatePlanning extends Component {
       let isNested = false;
       let nesting = [];
       for(var obj in nestedKeys){
-        if (nestedKeys[obj].key == key && nestedKeys[obj].key != "Date"){
+        if (nestedKeys[obj].key == key){
           isNested = true;
           nesting.push({'Header' : nestedKeys[obj].value  ,  'accessor' : nestedKeys[obj].value },);
         }
