@@ -220,8 +220,6 @@ class Planning extends Component {
           specificContent : response.data.specific_content,
           idTemplateGet : response.data.id_template,
         });
-        console.log(getMonthName(this.state.datePlanningGet))
-        console.log(this.state.datePlanningSubmit)
       }
     })
     .catch((error) => {
@@ -390,7 +388,7 @@ class Planning extends Component {
           />
           <div className="container">
             <h2></h2>
-            <ShowTable columns={columns} dataSend={content_data}/>
+            
           </div>
         </div>
        </div>

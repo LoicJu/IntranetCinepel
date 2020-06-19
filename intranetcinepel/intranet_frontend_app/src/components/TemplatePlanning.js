@@ -19,6 +19,7 @@ class TemplatePlanning extends Component {
       nameIdTemplate : {},
       nameAllTemplate : [],
       content : [{}],
+      is_get : false,
       is_created : false,
       error : null,
       is_delete : null,
@@ -106,6 +107,7 @@ class TemplatePlanning extends Component {
         this.setState({
           nameTemplate : response.data.name,
           content : response.data.template_content,
+          is_get : true,
         });
       }
     })
@@ -258,13 +260,18 @@ class TemplatePlanning extends Component {
   }
 
   render(){
-    const columns= this.getHeader();
+    const columns = this.getHeader();
     const content_data = this.getRowsData();
+    console.log(this.state.content)
+    let table = <div></div>;
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
     if (this.state.error) {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
+    }
+    if(this.state.is_get){
+      table = <ShowTable columns={columns} dataSend={content_data}/>
     }
     return (
       <div className="container">
@@ -297,9 +304,10 @@ class TemplatePlanning extends Component {
             onChange={this.handleChangeGet}
             options={this.state.nameAllTemplate}
           />
+          
           <div className="container">
             <h2>{this.state.nameTemplate}</h2>
-            <ShowTable columns={columns} dataSend={content_data}/>
+            {table}
           </div>
           <Button variant="info" onClick={this.saveTemplate}>
             Sauvegarder
