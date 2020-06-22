@@ -7,7 +7,7 @@ class Error extends Component {
     return(
         <div className="container pt-4">
             <div className="text-center">
-                <div>
+                <div className="intranet_classic">
                     <h1 className="text-danger">Oops!</h1>
                     <h2 className="mt-3">{this.props.status}</h2>
                     <div>

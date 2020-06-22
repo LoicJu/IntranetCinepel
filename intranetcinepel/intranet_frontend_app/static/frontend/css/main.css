@@ -1,11 +1,8 @@
 .intranet_classic{
-    color:black !important;
+    color:black;
 }
 
-thead {color:green;}
-tbody {color:blue;}table, th, td {
- border: 1px solid black;
-}
-td, th{
- padding: 5px;
-}
+th {
+    background-color: #4CAF50;
+    color: white;
+  }

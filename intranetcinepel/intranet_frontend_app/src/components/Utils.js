@@ -1,17 +1,12 @@
 
-// get the date of today
-export function getCurrentDate(){
-    let newDate = new Date()
-    return newDate
-}
-
+// get the name of the month to parse in the planning
 export function getMonthName(date){
     let monthNumber = (date.getMonth()+1);
     let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return(monthNames[monthNumber])
 }
 
-
+// get the name of the day
 export function getDayName(date){
     let dateNumber = date.getDay();
     let dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -28,3 +23,4 @@ export function getDaysInMonth(month, year){
     }
     return days;
 }
+

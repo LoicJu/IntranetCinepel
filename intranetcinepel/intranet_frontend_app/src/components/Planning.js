@@ -4,14 +4,12 @@ import { Redirect } from 'react-router';
 import Error from './Error';
 import axios from 'axios';
 import Select from 'react-select';
-import 'materialize-css';
 import { Button} from 'react-materialize';
-import {ShowTable} from './Table';
-import {getCurrentDate, getMonthName, getDayName, getDaysInMonth} from './Utils';
+import {ShowTable, getDatas} from './Table';
+import {getMonthName, getDayName, getDaysInMonth} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
 require('react-month-picker-input/dist/react-month-picker-input.css');
-
 
 
 class Planning extends Component {
@@ -28,6 +26,8 @@ class Planning extends Component {
       content : [{}],
       // the specific content from the planning
       specificContent : [{}],
+      specificColumn : '',
+      specificData : '',
       // date of the calendar
       datePlanningGet : '',
       // to show all the planning, the "name" of the planning is the date
@@ -42,6 +42,8 @@ class Planning extends Component {
       // to show created, delete, error
       is_created : false,
       is_delete : false,
+      is_get : false,
+      is_save : false,
       error: null,
     };
     this.pickAMonth = React.createRef();
@@ -53,7 +55,8 @@ class Planning extends Component {
     this.handleChangeSubmitMonth = this.handleChangeSubmitMonth.bind(this);
 
     this.handleChangeDel = this.handleChangeDel.bind(this);
-    this.deletePlanning = this.deletePlanning.bind(this);;
+    this.deletePlanning = this.deletePlanning.bind(this);
+    this.savePlanning = this.savePlanning.bind(this);
   };
   
   handleChangeState(){
@@ -219,6 +222,9 @@ class Planning extends Component {
           datePlanningGet : new Date(response.data.date),
           specificContent : response.data.specific_content,
           idTemplateGet : response.data.id_template,
+          is_get : true,
+          specificColumn : this.getHeader(),
+          specificData : this.getRowsData(),
         });
       }
     })
@@ -234,6 +240,60 @@ class Planning extends Component {
     });
   }
   
+  savePlanning(){
+    this.setDatas();
+    let id = this.state.nameIdPlanning[this.state.datePlanningGet];
+    var planningSaveData = new FormData();
+    let dataPlanning = JSON.stringify(this.state.specificContent);
+    planningSaveData.append('specific_content', dataPlanning);
+    console.log(dataPlanning)
+    axios({
+      method: 'put',
+      url: 'api/calendar/' + id + '/',
+      data: planningSaveData,
+    })
+    .then((response) => {
+      if (response.status === 204) {
+        this.setState({
+          is_save: true,
+        });
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        console.log(error.response)
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
+  }
+
+  setDatas = function(){
+    let datas = this.state.specificContent;
+    let datasToSave = getDatas();
+    datas.map((row, index)=>{
+      Object.entries(row).map(([key1,value1])=>{
+        if(typeof value1 === 'object'){
+          Object.entries(value1).map(([key2,value2])=>{
+            if(key2 in datasToSave[index]){
+              datas[index][key1][key2] = datasToSave[index][key2]
+            }
+          })
+        }
+        else{
+          if(key1 in datasToSave[index]){
+            datas[index][key1] = datasToSave[index][key1]
+          }
+        }
+      });
+    });
+    // no need to setState because datas is a copy of state.content
+  }
+
   // get all templates names and plannings names 
   componentDidMount(){
     axios({
@@ -333,24 +393,41 @@ class Planning extends Component {
 
   getRowsData = function(){
     var items = this.state.specificContent;
-    return items.map((row, index)=>{
-      return row
-    })
+    var datas = [];
+    items.map((row, index)=>{
+      var rowData = {}
+      Object.entries(row).map(([key1,value1])=>{
+        if(typeof value1 === 'object'){
+          Object.entries(value1).map(([key2,value2])=>{
+            rowData[key2] = value2;
+          })
+        }
+        else{
+          rowData[key1] = value1;
+        }
+      });
+      datas.push(rowData)
+    });
+    return datas;
   }
 
   render(){
     // data to parse in table
-    const columns= this.getHeader();
-    const content_data = this.getRowsData();
+    let table = <div></div>;
+    let button = <div></div>;
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
     if (this.state.error) {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
+    if(this.state.is_get){
+      table = <ShowTable columns={this.state.specificColumn} dataSend={this.state.specificContent}/>
+      button = <Button variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
+    }
     return (
-      <div className="container">
-        <div className="intranet_classic">
+      <div className="intranet_classic">
+        <div className="container">
           <h1>Calendar</h1>
           <form onSubmit={this.submitPlanning}>
             <div className="form-group">
@@ -386,11 +463,12 @@ class Planning extends Component {
             onChange={this.handleGetPlanning}
             options={this.state.nameAllPlanning}
           />
-          <div className="container">
-            <h2></h2>
-            
-          </div>
         </div>
+          <div>
+            <h2></h2>
+            {table}
+          </div>
+          {button}
        </div>
     );
   }

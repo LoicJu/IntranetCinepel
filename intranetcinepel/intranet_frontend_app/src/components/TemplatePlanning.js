@@ -4,9 +4,8 @@ import { Redirect } from 'react-router';
 import Error from './Error';
 import axios from 'axios';
 import Select from 'react-select';
-import 'materialize-css';
 import { Button} from 'react-materialize';
-import {ShowTable} from './Table';
+import {ShowTable, getDatas} from './Table';
 
 class TemplatePlanning extends Component {
   static contextType = AuthContext
@@ -21,6 +20,7 @@ class TemplatePlanning extends Component {
       content : [{}],
       is_get : false,
       is_created : false,
+      is_save : false,
       error : null,
       is_delete : null,
     };
@@ -156,10 +156,12 @@ class TemplatePlanning extends Component {
   
 
   saveTemplate(){
+    this.setDatas();
     let id = this.state.nameIdTemplate[this.state.nameTemplate];
     var templateSaveData = new FormData();
     let dataTemplate = JSON.stringify(this.state.content);
     templateSaveData.append('template_content', dataTemplate);
+    console.log(dataTemplate)
     axios({
       method: 'put',
       url: 'api/template/' + id + '/',
@@ -168,7 +170,7 @@ class TemplatePlanning extends Component {
     .then((response) => {
       if (response.status === 204) {
         this.setState({
-          is_delete: true,
+          is_save: true,
         });
       }
     })
@@ -208,6 +210,28 @@ class TemplatePlanning extends Component {
     });
   };
   
+  setDatas = function(){
+    let datasContent = this.state.content;
+    let datasToSave = getDatas();
+    datasContent.map((row, index)=>{
+      Object.entries(row).map(([key1,value1])=>{
+        if(typeof value1 === 'object'){
+          Object.entries(value1).map(([key2,value2])=>{
+            if(key2 in datasToSave[index]){
+              datasContent[index][key1][key2] = datasToSave[index][key2]
+            }
+          })
+        }
+        else{
+          if(key1 in datasToSave[index]){
+            datasContent[index][key1] = datasToSave[index][key1]
+          }
+        }
+      });
+    });
+    // no need to setState because datas is a copy of state.content
+  }
+
   getHeader = function(){
     var keys = this.getKeys();
     var nestedKeys = this.getNestedKeys();
@@ -254,15 +278,25 @@ class TemplatePlanning extends Component {
 
   getRowsData = function(){
     var items = this.state.content;
-    return items.map((row, index)=>{
-      return row
-    })
+    var datas = [];
+    items.map((row, index)=>{
+      var rowData = {}
+      Object.entries(row).map(([key1,value1])=>{
+        if(typeof value1 === 'object'){
+          Object.entries(value1).map(([key2,value2])=>{
+            rowData[key2] = value2;
+          })
+        }
+        else{
+          rowData[key1] = value1;
+        }
+      });
+      datas.push(rowData)
+    });
+    return datas;
   }
 
   render(){
-    const columns = this.getHeader();
-    const content_data = this.getRowsData();
-    console.log(this.state.content)
     let table = <div></div>;
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
@@ -271,11 +305,11 @@ class TemplatePlanning extends Component {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     if(this.state.is_get){
-      table = <ShowTable columns={columns} dataSend={content_data}/>
+      table = <ShowTable columns={this.getHeader()} dataSend={this.getRowsData()}/>
     }
     return (
-      <div className="container">
-        <div className="intranet_classic">
+      <div className="intranet_classic">
+        <div className="container">
           <form onSubmit={this.submitTemplate}>
             <div className="form-group">
               <label>name</label>
@@ -304,15 +338,14 @@ class TemplatePlanning extends Component {
             onChange={this.handleChangeGet}
             options={this.state.nameAllTemplate}
           />
-          
-          <div className="container">
+        </div>
+          <div>
             <h2>{this.state.nameTemplate}</h2>
             {table}
           </div>
           <Button variant="info" onClick={this.saveTemplate}>
             Sauvegarder
           </Button>
-        </div>
        </div>
     );
   }
