@@ -161,7 +161,6 @@ class TemplatePlanning extends Component {
     var templateSaveData = new FormData();
     let dataTemplate = JSON.stringify(this.state.content);
     templateSaveData.append('template_content', dataTemplate);
-    console.log(dataTemplate)
     axios({
       method: 'put',
       url: 'api/template/' + id + '/',
@@ -298,6 +297,7 @@ class TemplatePlanning extends Component {
 
   render(){
     let table = <div></div>;
+    let button = <div></div>
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
@@ -306,6 +306,7 @@ class TemplatePlanning extends Component {
     }
     if(this.state.is_get){
       table = <ShowTable columns={this.getHeader()} dataSend={this.getRowsData()}/>
+      button = <Button variant="info" onClick={this.saveTemplate}>Sauvegarder</Button>
     }
     return (
       <div className="intranet_classic">
@@ -343,9 +344,7 @@ class TemplatePlanning extends Component {
             <h2>{this.state.nameTemplate}</h2>
             {table}
           </div>
-          <Button variant="info" onClick={this.saveTemplate}>
-            Sauvegarder
-          </Button>
+          {button}
        </div>
     );
   }

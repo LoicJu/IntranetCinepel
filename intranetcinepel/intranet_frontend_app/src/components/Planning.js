@@ -246,7 +246,6 @@ class Planning extends Component {
     var planningSaveData = new FormData();
     let dataPlanning = JSON.stringify(this.state.specificContent);
     planningSaveData.append('specific_content', dataPlanning);
-    console.log(dataPlanning)
     axios({
       method: 'put',
       url: 'api/calendar/' + id + '/',
@@ -261,7 +260,6 @@ class Planning extends Component {
     })
     .catch((error) => {
       if(error.response) {
-        console.log(error.response)
         this.setState({
           error: {
             status: error.response.status + ' ' + error.response.statusText,
@@ -422,7 +420,7 @@ class Planning extends Component {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     if(this.state.is_get){
-      table = <ShowTable columns={this.state.specificColumn} dataSend={this.state.specificContent}/>
+      table = <ShowTable columns={this.state.specificColumn} dataSend={this.state.specificData}/>
       button = <Button variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
     }
     return (
