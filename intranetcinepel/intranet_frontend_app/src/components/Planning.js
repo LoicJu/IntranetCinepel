@@ -5,8 +5,8 @@ import Error from './Error';
 import axios from 'axios';
 import Select from 'react-select';
 import { Button} from 'react-materialize';
-import {ShowTable, getDatas} from './Table';
-import {getMonthName, getDayName, getDaysInMonth} from './Utils';
+import {ShowTable} from './Table';
+import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
 require('react-month-picker-input/dist/react-month-picker-input.css');
@@ -26,8 +26,6 @@ class Planning extends Component {
       content : [{}],
       // the specific content from the planning
       specificContent : [{}],
-      specificColumn : '',
-      specificData : '',
       // date of the calendar
       datePlanningGet : '',
       // to show all the planning, the "name" of the planning is the date
@@ -158,7 +156,7 @@ class Planning extends Component {
     const month = this.state.datePlanningSubmit.getMonth();
     const year = this.state.datePlanningSubmit.getFullYear();
     const days = getDaysInMonth(month, year);
-    const dataTemplate = this.getRowsDataTemplate();
+    const dataTemplate = getRowsDataTemplate(this.state.content);
     let allData = [];
     const dayOfWeek = (days[0].getDay() + 6) % 7;
     // we parse for all the day in the month
@@ -223,8 +221,6 @@ class Planning extends Component {
           specificContent : response.data.specific_content,
           idTemplateGet : response.data.id_template,
           is_get : true,
-          specificColumn : this.getHeader(),
-          specificData : this.getRowsData(),
         });
       }
     })
@@ -241,7 +237,8 @@ class Planning extends Component {
   }
   
   savePlanning(){
-    this.setDatas();
+    const datasToSet = setDatas(this.state.specificContent);
+    this.setState({specificContent: datasToSet})
     let id = this.state.nameIdPlanning[this.state.datePlanningGet];
     var planningSaveData = new FormData();
     let dataPlanning = JSON.stringify(this.state.specificContent);
@@ -268,28 +265,6 @@ class Planning extends Component {
         });
       }
     });
-  }
-
-  setDatas = function(){
-    let datas = this.state.specificContent;
-    let datasToSave = getDatas();
-    datas.map((row, index)=>{
-      Object.entries(row).map(([key1,value1])=>{
-        if(typeof value1 === 'object'){
-          Object.entries(value1).map(([key2,value2])=>{
-            if(key2 in datasToSave[index]){
-              datas[index][key1][key2] = datasToSave[index][key2]
-            }
-          })
-        }
-        else{
-          if(key1 in datasToSave[index]){
-            datas[index][key1] = datasToSave[index][key1]
-          }
-        }
-      });
-    });
-    // no need to setState because datas is a copy of state.content
   }
 
   // get all templates names and plannings names 
@@ -336,79 +311,6 @@ class Planning extends Component {
     });
   };
 
-  getRowsDataTemplate = function(){
-    var items = this.state.content;
-    return items.map((row, index)=>{
-      return row
-    })
-  }
-
-  // this functions get the datas from the database and parse them for the react table
-  getHeader = function(){
-    var keys = this.getKeys();
-    var nestedKeys = this.getNestedKeys();
-    return keys.map((key, index)=>{
-      let isNested = false;
-      let nesting = [];
-      for(var obj in nestedKeys){
-        if (nestedKeys[obj].key == key){
-          isNested = true;
-          nesting.push({'Header' : nestedKeys[obj].value  ,  'accessor' : nestedKeys[obj].value },);
-        }
-      }
-      if(isNested){
-        return{
-          Header: key,
-          columns:nesting,
-        }
-      }
-      else{
-        return {
-          Header: key,
-          accessor: key
-        };
-      }
-    })
-  }
-
-  getNestedKeys = function(){
-    let nestedKeys = [];
-    for (var keyCont in this.state.specificContent[0]){
-      for (var value in this.state.specificContent[0][keyCont]){
-        if(this.state.specificContent[0][keyCont] instanceof Object){
-          nestedKeys.push({
-            key : keyCont,
-            value : value
-          })
-        }
-      } 
-    }
-    return nestedKeys;
-  }
-  getKeys = function(){
-    return Object.keys(this.state.specificContent[0]);
-  }
-
-  getRowsData = function(){
-    var items = this.state.specificContent;
-    var datas = [];
-    items.map((row, index)=>{
-      var rowData = {}
-      Object.entries(row).map(([key1,value1])=>{
-        if(typeof value1 === 'object'){
-          Object.entries(value1).map(([key2,value2])=>{
-            rowData[key2] = value2;
-          })
-        }
-        else{
-          rowData[key1] = value1;
-        }
-      });
-      datas.push(rowData)
-    });
-    return datas;
-  }
-
   render(){
     // data to parse in table
     let table = <div></div>;
@@ -420,7 +322,7 @@ class Planning extends Component {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     if(this.state.is_get){
-      table = <ShowTable columns={this.state.specificColumn} dataSend={this.state.specificData}/>
+      table = <ShowTable columns={getHeader(this.state.specificContent)} dataSend={getRowsData(this.state.specificContent)}/>
       button = <Button variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
     }
     return (

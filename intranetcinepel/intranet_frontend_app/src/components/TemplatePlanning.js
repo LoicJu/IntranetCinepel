@@ -5,7 +5,8 @@ import Error from './Error';
 import axios from 'axios';
 import Select from 'react-select';
 import { Button} from 'react-materialize';
-import {ShowTable, getDatas} from './Table';
+import {setDatas, getHeader, getRowsData} from './Utils';
+import {ShowTable} from './Table';
 
 class TemplatePlanning extends Component {
   static contextType = AuthContext
@@ -156,7 +157,8 @@ class TemplatePlanning extends Component {
   
 
   saveTemplate(){
-    this.setDatas();
+    const datasToSet = setDatas(this.state.content);
+    this.setState({content: datasToSet})
     let id = this.state.nameIdTemplate[this.state.nameTemplate];
     var templateSaveData = new FormData();
     let dataTemplate = JSON.stringify(this.state.content);
@@ -208,92 +210,6 @@ class TemplatePlanning extends Component {
       }
     });
   };
-  
-  setDatas = function(){
-    let datasContent = this.state.content;
-    let datasToSave = getDatas();
-    datasContent.map((row, index)=>{
-      Object.entries(row).map(([key1,value1])=>{
-        if(typeof value1 === 'object'){
-          Object.entries(value1).map(([key2,value2])=>{
-            if(key2 in datasToSave[index]){
-              datasContent[index][key1][key2] = datasToSave[index][key2]
-            }
-          })
-        }
-        else{
-          if(key1 in datasToSave[index]){
-            datasContent[index][key1] = datasToSave[index][key1]
-          }
-        }
-      });
-    });
-    // no need to setState because datas is a copy of state.content
-  }
-
-  getHeader = function(){
-    var keys = this.getKeys();
-    var nestedKeys = this.getNestedKeys();
-    return keys.map((key, index)=>{
-      let isNested = false;
-      let nesting = [];
-      for(var obj in nestedKeys){
-        if (nestedKeys[obj].key == key){
-          isNested = true;
-          nesting.push({'Header' : nestedKeys[obj].value  ,  'accessor' : nestedKeys[obj].value },);
-        }
-      }
-      if(isNested){
-        return{
-          Header: key,
-          columns:nesting,
-        }
-      }
-      else{
-        return {
-          Header: key,
-          accessor: key
-        };
-      }
-    })
-  }
-  getNestedKeys = function(){
-    let nestedKeys = [];
-    for (var keyCont in this.state.content[0]){
-      for (var value in this.state.content[0][keyCont]){
-        if(this.state.content[0][keyCont] instanceof Object){
-          nestedKeys.push({
-            key : keyCont,
-            value : value
-          })
-        }
-      } 
-    }
-    return nestedKeys;
-  }
-  getKeys = function(){
-    return Object.keys(this.state.content[0]);
-  }
-
-  getRowsData = function(){
-    var items = this.state.content;
-    var datas = [];
-    items.map((row, index)=>{
-      var rowData = {}
-      Object.entries(row).map(([key1,value1])=>{
-        if(typeof value1 === 'object'){
-          Object.entries(value1).map(([key2,value2])=>{
-            rowData[key2] = value2;
-          })
-        }
-        else{
-          rowData[key1] = value1;
-        }
-      });
-      datas.push(rowData)
-    });
-    return datas;
-  }
 
   render(){
     let table = <div></div>;
@@ -305,7 +221,7 @@ class TemplatePlanning extends Component {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     if(this.state.is_get){
-      table = <ShowTable columns={this.getHeader()} dataSend={this.getRowsData()}/>
+      table = <ShowTable columns={getHeader(this.state.content)} dataSend={getRowsData(this.state.content)}/>
       button = <Button variant="info" onClick={this.saveTemplate}>Sauvegarder</Button>
     }
     return (

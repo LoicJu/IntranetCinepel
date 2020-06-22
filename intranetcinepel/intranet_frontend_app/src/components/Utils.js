@@ -1,3 +1,4 @@
+import {getDatas} from './Table';
 
 // get the name of the month to parse in the planning
 export function getMonthName(date){
@@ -24,3 +25,97 @@ export function getDaysInMonth(month, year){
     return days;
 }
 
+export function getRowsDataTemplate(state){
+    var items = state;
+    return items.map((row, index)=>{
+      return row
+    })
+  }
+
+export function setDatas(state){
+    let datas = state;
+    let datasToSave = getDatas();
+    datas.map((row, index)=>{
+        Object.entries(row).map(([key1,value1])=>{
+        if(typeof value1 === 'object'){
+            Object.entries(value1).map(([key2,value2])=>{
+            if(key2 in datasToSave[index]){
+                datas[index][key1][key2] = datasToSave[index][key2]
+            }
+            })
+        }
+        else{
+            if(key1 in datasToSave[index]){
+            datas[index][key1] = datasToSave[index][key1]
+            }
+        }
+        });
+    });
+    return datas;
+}
+
+export function getHeader(state){
+    var keys = getKeys(state);
+    var nestedKeys = getNestedKeys(state);
+    return keys.map((key, index)=>{
+      let isNested = false;
+      let nesting = [];
+      for(var obj in nestedKeys){
+        if (nestedKeys[obj].key == key){
+          isNested = true;
+          nesting.push({'Header' : nestedKeys[obj].value  ,  'accessor' : nestedKeys[obj].value },);
+        }
+      }
+      if(isNested){
+        return{
+          Header: key,
+          columns:nesting,
+        }
+      }
+      else{
+        return {
+          Header: key,
+          accessor: key
+        };
+      }
+    })
+  }
+
+const getNestedKeys = (state) =>{
+    let nestedKeys = [];
+    for (var keyCont in state[0]){
+        for (var value in state[0][keyCont]){
+        if(state[0][keyCont] instanceof Object){
+            nestedKeys.push({
+            key : keyCont,
+            value : value
+            })
+        }
+        } 
+    }
+    return nestedKeys;
+}
+
+const getKeys = (state) =>{
+    return Object.keys(state[0]);
+}
+
+export function getRowsData(state){
+    var items = state;
+    var datas = [];
+    items.map((row, index)=>{
+        var rowData = {}
+        Object.entries(row).map(([key1,value1])=>{
+        if(typeof value1 === 'object'){
+            Object.entries(value1).map(([key2,value2])=>{
+            rowData[key2] = value2;
+            })
+        }
+        else{
+            rowData[key1] = value1;
+        }
+        });
+        datas.push(rowData)
+    });
+    return datas;
+}
