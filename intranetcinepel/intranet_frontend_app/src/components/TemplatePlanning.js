@@ -217,6 +217,9 @@ class TemplatePlanning extends Component {
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
+    if(!this.context.getIsManager()){
+      return (<Redirect to ="/login"/>);
+    }
     if (this.state.error) {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }

@@ -2,6 +2,20 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthProvider';
 import { Redirect } from 'react-router';
+import { Button, Collection , CollectionItem} from 'react-materialize';
+import Modal from 'react-modal';
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
 class userHandler extends Component {
   static contextType = AuthContext
 
@@ -9,13 +23,158 @@ class userHandler extends Component {
     super(props);
     this.state = {
       users: [],
-      error: null,
+      username:'',
+      email:'',
+      errors: {
+        username:'',
+        email: '',
+      },
+      showModal : false,
+      // to know if created, delete, etc
+      is_delete : false,
     };
+
+    this.handleShowModal = this.handleShowModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.submitForm = this.submitForm.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.hasErrors = this.hasErrors.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
   }
-  // TODO edit and delete
-  // TODO state loader and placeholder for loading ?
+  
+  handleChangeState(){
+    axios({
+      method: 'get',
+      url: 'api/users/all',
+    })
+    .then((response) => {
+      if (response.status === 200) { 
+        let allData = [];
+        response.data.map(user => allData.push(user));
+        this.setState({
+          users: allData,
+        });
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
+  };
+
+  handleShowModal(){
+    this.setState({showModal : true})
+  }
+  handleCloseModal(){
+    this.setState({showModal : false})
+  }
+
+  handleChange(event) {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    var errors = {...this.state.errors}
+
+    switch(name) {
+      case 'username':
+      if(value.length < 4) {
+        errors.username = 'The username is too small !';
+      } else {
+        errors.username = '';
+      }
+      break;
+
+      case 'email':
+      errors.email = '';
+      break;
+
+      default: break;
+    }
+
+    this.setState({
+      [name]: value,
+      errors,
+    });
+  };
+
+  hasErrors() {
+    let has_error = false;
+    let errors = this.state.errors;
+    for (var error in this.state.errors) {
+      if(errors[error].length > 0) {
+        has_error = true;
+      }
+    }
+
+    return has_error;
+  }
+  
+  submitForm(event) {
+    event.preventDefault();
+
+    var userFormData = new FormData();
+    userFormData.append('username', this.state.username);
+    userFormData.append('email', this.state.email);
+    axios.defaults.xsrfCookieName = 'csrftoken';
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+    axios({
+      method: 'post',
+      url: 'api/auth/register',
+      data: userFormData,
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        this.setState({ is_created: true });
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        var errors = {...this.state.errors}
+
+        if('email' in error.response.data) {
+          errors.email = 'A user with this email already exists !';
+          this.setState({errors});
+        }
+      }
+    });
+  }
+
+  deleteUser(event){
+    axios({
+      method: 'delete',
+      url: 'api/users/' + event,
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        this.handleChangeState()
+        this.setState({
+          is_delete: true,
+        });
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
+  }
   //fetch all users in users
   componentDidMount(){
+    //to define the element modal
+    Modal.setAppElement('body');
+    // fetch all users
     axios({
       method: 'get',
       url: 'api/users/all',
@@ -45,36 +204,76 @@ class userHandler extends Component {
     let usersList = [];
     this.state.users.map(User =>{
       usersList.push(
-        <li className="collection-item" key={User.id}> {User.username}</li>
+        <CollectionItem key={User.id}>
+          <h4>{User.username}</h4>
+          <Button>Editer</Button><Button onClick={this.deleteUser.bind(this, User.id)}>Supprimer</Button>
+        </CollectionItem>
       )
     });
-
     if (!this.context.getIsAuthenticated()) {
+      return (<Redirect to ="/login"/>);
+    }
+    if(!this.context.getIsManager()){
       return (<Redirect to ="/login"/>);
     }
     if (this.state.error) {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     return (
-      <div className="result-container" id="result-container">
-      {this.state.users.length > 0
-        ? <div className="intranet_classic">
-          <ul className="collection with-header">
-            <li className="collection-header"><h4>Employés</h4></li>
-            {usersList}
-          </ul>    
-        </div> 
-        : <h3 className="text-dark text-center">{this.state.loaded == true && 'No users found...'}</h3>
-      }
-      {this.state.loaded == false &&
-        <div className="text-center">
-          <div className="loadingio-spinner-rolling-oq809e0ojtq">
-            <div className="ldio-5u0wj89ps2u">
-              <div></div>
+      <div className="intranet_classic">
+        <Button variant="info" onClick={this.handleShowModal}>Créer un utilisateur</Button>
+        <Modal
+          isOpen={this.state.showModal}
+          onRequestClose={this.handleCloseModal}
+          style={customStyles}
+          contentLabel="Créer un utilisateur"
+        >
+ 
+          <h2>Créer un utilisateur</h2>
+          <form onSubmit={this.submitForm}>
+            <div className="form-group">
+              <label htmlFor="username">Nom d'utilisateur</label>
+              <input
+                type="text"
+                className="form-control"
+                name="username"
+                placeholder="Entrer le nom d'utilisateur"
+                onChange={this.handleChange}
+                required
+                />
+              {this.state.errors.username.length > 0 &&
+                <span className="error">{this.state.errors.username}</span>
+              }
             </div>
-          </div>
-        </div>
-      }
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                name="email"
+                placeholder="Entrer l'email"
+                onChange={this.handleChange}
+                required
+                />
+              {this.state.errors.email.length > 0 &&
+                <span className="error">{this.state.errors.email}</span>
+              }
+            </div>
+            <div className="form-group">
+              {this.hasErrors()
+                ? <button type="submit" className="btn btn-danger" disabled>Submit</button>
+                : <button type="submit" className="btn btn-danger">Submit</button>}
+            </div>
+          </form>
+          <button onClick={this.handleCloseModal}>close</button>
+        </Modal>
+        {this.state.users.length > 0 &&
+           <div className="intranet_classic">
+             <Collection header="Employés">
+              {usersList}
+            </Collection>
+          </div> 
+        }
       </div>
       );
   }

@@ -85,6 +85,7 @@ class AuthProvider extends Component {
           }),
           getUser: () => this.state.user,
           getEmail: () => this.state.user.email,
+          getIsManager: () => this.state.user.is_manager,
           getUsername: () => sessionStorage.getItem('username') ? sessionStorage.getItem('username') : this.state.user.username,
           getIsAuthenticated: () => this.state.is_authenticated,
           getToken: () => this.state.token,

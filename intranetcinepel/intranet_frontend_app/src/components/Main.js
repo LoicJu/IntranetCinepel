@@ -45,9 +45,15 @@ class Main extends Component {
                   <li>
                     <AuthContext.Consumer>
                     {(context) =>
-                      (context.getIsAuthenticated() ?
+                      (context.getIsAuthenticated() && context.getIsManager() &&
                           <NavLink exact to="/templatePlanning">TemplatePlanning</NavLink>
-                          :<NavLink to="/login">Login</NavLink>
+                      )
+                    }
+                    </AuthContext.Consumer>
+                    <AuthContext.Consumer>
+                    {(context) =>
+                      (!context.getIsAuthenticated() &&
+                          <NavLink to="/login">Login</NavLink>
                       )
                     }
                     </AuthContext.Consumer>
@@ -84,7 +90,7 @@ class Main extends Component {
                   <li>
                     <AuthContext.Consumer>
                     {(context) =>
-                      (context.getIsAuthenticated() &&
+                      (context.getIsAuthenticated() && context.getIsManager() &&
                           <NavLink exact to="/userHandler">UserHandler</NavLink>
                       )
                     }
