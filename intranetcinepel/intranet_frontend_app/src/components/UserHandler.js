@@ -23,8 +23,11 @@ class userHandler extends Component {
     super(props);
     this.state = {
       users: [],
+      cities : ["Neuchatel", "Delemont", "Bienne", "Chaux-de-fonds", "Berne"],
       username:'',
       email:'',
+      manager : false,
+      city : '',
       errors: {
         username:'',
         email: '',
@@ -33,7 +36,6 @@ class userHandler extends Component {
       // to know if created, delete, etc
       is_delete : false,
     };
-
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -75,6 +77,7 @@ class userHandler extends Component {
     this.setState({showModal : false})
   }
 
+  // no possible errors in the select sections
   handleChange(event) {
     const name = event.target.name;
     const value = event.target.value;
@@ -93,7 +96,7 @@ class userHandler extends Component {
       case 'email':
       errors.email = '';
       break;
-
+      
       default: break;
     }
 
@@ -121,6 +124,8 @@ class userHandler extends Component {
     var userFormData = new FormData();
     userFormData.append('username', this.state.username);
     userFormData.append('email', this.state.email);
+    userFormData.append('is_manager', this.state.manager)
+    userFormData.append('city', this.state.city)
     axios.defaults.xsrfCookieName = 'csrftoken';
     axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
@@ -137,7 +142,6 @@ class userHandler extends Component {
     .catch((error) => {
       if (error.response) {
         var errors = {...this.state.errors}
-
         if('email' in error.response.data) {
           errors.email = 'A user with this email already exists !';
           this.setState({errors});
@@ -210,10 +214,13 @@ class userHandler extends Component {
         </CollectionItem>
       )
     });
-    if (!this.context.getIsAuthenticated()) {
-      return (<Redirect to ="/login"/>);
-    }
-    if(!this.context.getIsManager()){
+    let cityList = [];
+    this.state.cities.map(city=>{
+      cityList.push(
+        <option key={city} value={city}>{city}</option>
+      )
+    })
+    if (!this.context.getIsAuthenticated() || !this.context.getIsManager()) {
       return (<Redirect to ="/login"/>);
     }
     if (this.state.error) {
@@ -258,6 +265,27 @@ class userHandler extends Component {
               {this.state.errors.email.length > 0 &&
                 <span className="error">{this.state.errors.email}</span>
               }
+            </div>
+            <div className="form-group">
+              <label htmlFor="manager">Manager</label>
+              <select
+                className="form-control"
+                name="manager"
+                onChange={this.handleChange}
+                >
+                <option value="false">non</option>
+                <option value="true">oui</option>
+                </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="city">City</label>
+              <select
+                className="form-control"
+                name="city"
+                onChange={this.handleChange}
+                >
+                {cityList}
+                </select>
             </div>
             <div className="form-group">
               {this.hasErrors()
