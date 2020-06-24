@@ -24,24 +24,37 @@ class userHandler extends Component {
     this.state = {
       users: [],
       cities : ["Neuchatel", "Delemont", "Bienne", "Chaux-de-fonds", "Berne"],
-      username:'',
-      email:'',
-      manager : false,
-      city : '',
+      usernameCreate:'',
+      emailCreate:'',
+      managerCreate : false,
+      cityCreate : 'Neuchatel',
+      idEdit : '',
+      usernameEdit:'',
+      emailEdit:'',
+      managerEdit : false,
+      cityEdit : '',
       errors: {
         username:'',
         email: '',
       },
-      showModal : false,
+      showModalCreate : false,
+      showModalEdit : false,
       // to know if created, delete, etc
       is_delete : false,
+      is_created : false,
+      is_updated : false,
     };
-    this.handleShowModal = this.handleShowModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleShowModalCreate = this.handleShowModalCreate.bind(this);
+    this.handleCloseModalCreate = this.handleCloseModalCreate.bind(this);
+    this.handleShowModalEdit = this.handleShowModalEdit.bind(this);
+    this.handleCloseModalEdit = this.handleCloseModalEdit.bind(this);
+
     this.submitForm = this.submitForm.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
+    this.updateUser = this.updateUser.bind(this);
+
     this.handleChange = this.handleChange.bind(this);
     this.hasErrors = this.hasErrors.bind(this);
-    this.deleteUser = this.deleteUser.bind(this);
   }
   
   handleChangeState(){
@@ -70,32 +83,57 @@ class userHandler extends Component {
     });
   };
 
-  handleShowModal(){
-    this.setState({showModal : true})
+  handleShowModalCreate(){
+    this.setState({showModalCreate : true})
   }
-  handleCloseModal(){
-    this.setState({showModal : false})
+  handleCloseModalCreate(){
+    this.setState({showModalCreate : false})
   }
 
+  handleShowModalEdit(User){
+    this.setState({
+      idEdit : User.id,
+      usernameEdit : User.username,
+      emailEdit : User.email,
+      managerEdit : User.is_manager,
+      cityEdit : User.city,
+      showModalEdit : true,
+    })
+  }
+
+  handleCloseModalEdit(){
+    this.setState({showModalEdit : false})
+  }
   // no possible errors in the select sections
   handleChange(event) {
     const name = event.target.name;
     const value = event.target.value;
-
     var errors = {...this.state.errors}
 
     switch(name) {
-      case 'username':
-      if(value.length < 4) {
-        errors.username = 'The username is too small !';
-      } else {
-        errors.username = '';
-      }
-      break;
+      case 'usernameCreate':
+        if(value.length < 4) {
+          errors.username = 'The username is too small !';
+        } else {
+          errors.username = '';
+        }
+        break;
 
-      case 'email':
-      errors.email = '';
-      break;
+      case 'usernameEdit':
+        if(value.length < 4) {
+          errors.username = 'The username is too small !';
+        } else {
+          errors.username = '';
+        }
+        break;
+      
+      case 'emailCreate':
+        errors.email = '';
+        break;
+
+      case 'emailEdit':
+        errors.email = '';
+        break;
       
       default: break;
     }
@@ -118,18 +156,18 @@ class userHandler extends Component {
     return has_error;
   }
   
-  submitForm(event) {
+  async submitForm(event) {
     event.preventDefault();
+    this.handleCloseModalCreate();
 
     var userFormData = new FormData();
-    userFormData.append('username', this.state.username);
-    userFormData.append('email', this.state.email);
-    userFormData.append('is_manager', this.state.manager)
-    userFormData.append('city', this.state.city)
+    userFormData.append('username', this.state.usernameCreate);
+    userFormData.append('email', this.state.emailCreate);
+    userFormData.append('is_manager', this.state.managerCreate)
+    userFormData.append('city', this.state.cityCreate)
     axios.defaults.xsrfCookieName = 'csrftoken';
     axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-
-    axios({
+    await axios({
       method: 'post',
       url: 'api/auth/register',
       data: userFormData,
@@ -148,7 +186,39 @@ class userHandler extends Component {
         }
       }
     });
+    this.handleChangeState();
   }
+
+  async updateUser(event){
+    event.preventDefault();
+    this.handleCloseModalEdit();
+    
+    var userEditData = new FormData();
+    userEditData.append('username', this.state.usernameEdit);
+    userEditData.append('email', this.state.emailEdit);
+    userEditData.append('is_manager', this.state.managerEdit)
+    userEditData.append('city', this.state.cityEdit)
+    await axios({
+      method: 'patch',
+      url: 'api/users/' + this.state.idEdit,
+      data: userEditData,
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        this.setState({ is_updated: true });
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        var errors = {...this.state.errors}
+        if('email' in error.response.data) {
+          errors.email = 'A user with this email already exists !';
+          this.setState({errors});
+        }
+      }
+    });
+    this.handleChangeState();
+  };
 
   deleteUser(event){
     axios({
@@ -184,7 +254,7 @@ class userHandler extends Component {
       url: 'api/users/all',
     })
     .then((response) => {
-      if (response.status === 200) { //add test if connected and manager
+      if (response.status === 200) {
         let allData = this.state.users;
         response.data.map(user => allData.push(user));
         this.setState({
@@ -210,7 +280,7 @@ class userHandler extends Component {
       usersList.push(
         <CollectionItem key={User.id}>
           <h4>{User.username}</h4>
-          <Button>Editer</Button><Button onClick={this.deleteUser.bind(this, User.id)}>Supprimer</Button>
+          <Button onClick={this.handleShowModalEdit.bind(this, User)}>Editer</Button><Button onClick={this.deleteUser.bind(this, User.id)}>Supprimer</Button>
         </CollectionItem>
       )
     });
@@ -228,10 +298,10 @@ class userHandler extends Component {
     }
     return (
       <div className="intranet_classic">
-        <Button variant="info" onClick={this.handleShowModal}>Créer un utilisateur</Button>
+        <Button variant="info" onClick={this.handleShowModalCreate}>Créer un utilisateur</Button>
         <Modal
-          isOpen={this.state.showModal}
-          onRequestClose={this.handleCloseModal}
+          isOpen={this.state.showModalCreate}
+          onRequestClose={this.handleCloseModalCreate}
           style={customStyles}
           contentLabel="Créer un utilisateur"
         >
@@ -239,11 +309,11 @@ class userHandler extends Component {
           <h2>Créer un utilisateur</h2>
           <form onSubmit={this.submitForm}>
             <div className="form-group">
-              <label htmlFor="username">Nom d'utilisateur</label>
+              <label htmlFor="usernameCreate">Nom d'utilisateur</label>
               <input
                 type="text"
                 className="form-control"
-                name="username"
+                name="usernameCreate"
                 placeholder="Entrer le nom d'utilisateur"
                 onChange={this.handleChange}
                 required
@@ -253,11 +323,11 @@ class userHandler extends Component {
               }
             </div>
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="emailCreate">Email</label>
               <input
                 type="email"
                 className="form-control"
-                name="email"
+                name="emailCreate"
                 placeholder="Entrer l'email"
                 onChange={this.handleChange}
                 required
@@ -267,10 +337,10 @@ class userHandler extends Component {
               }
             </div>
             <div className="form-group">
-              <label htmlFor="manager">Manager</label>
+              <label htmlFor="managerCreate">Manager</label>
               <select
                 className="form-control"
-                name="manager"
+                name="managerCreate"
                 onChange={this.handleChange}
                 >
                 <option value="false">non</option>
@@ -278,10 +348,10 @@ class userHandler extends Component {
                 </select>
             </div>
             <div className="form-group">
-              <label htmlFor="city">City</label>
+              <label htmlFor="cityCreate">Ville</label>
               <select
                 className="form-control"
-                name="city"
+                name="cityCreate"
                 onChange={this.handleChange}
                 >
                 {cityList}
@@ -293,7 +363,7 @@ class userHandler extends Component {
                 : <button type="submit" className="btn btn-danger">Submit</button>}
             </div>
           </form>
-          <button onClick={this.handleCloseModal}>close</button>
+          <button onClick={this.handleCloseModalCreate}>close</button>
         </Modal>
         {this.state.users.length > 0 &&
            <div className="intranet_classic">
@@ -302,6 +372,71 @@ class userHandler extends Component {
             </Collection>
           </div> 
         }
+        <Modal
+          isOpen={this.state.showModalEdit}
+          onRequestClose={this.handleCloseModalEdit}
+          style={customStyles}
+          contentLabel="Editer un utilisateur"
+        >
+          <h2>{this.state.usernameEdit}</h2>
+          <form onSubmit={this.updateUser}>
+            <div className="form-group">
+              <label htmlFor="usernameEdit">Nom d'utilisateur</label>
+              <input
+                type="text"
+                className="form-control"
+                name="usernameEdit"
+                value={this.state.usernameEdit}
+                onChange={this.handleChange}
+                required
+                />
+              {this.state.errors.username.length > 0 &&
+                <span className="error">{this.state.errors.username}</span>
+              }
+            </div>
+            <div className="form-group">
+              <label htmlFor="emailEdit">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                name="emailEdit"
+                value={this.state.emailEdit}
+                onChange={this.handleChange}
+                required
+                />
+              {this.state.errors.email.length > 0 &&
+                <span className="error">{this.state.errors.email}</span>
+              }
+            </div>
+            <div className="form-group">
+              <label htmlFor="managerEdit">Manager</label>
+              <select
+                className="form-control"
+                name="managerEdit"
+                onChange={this.handleChange}
+                >
+                <option value="false">non</option>
+                <option value="true">oui</option>
+                </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="cityEdit">Ville</label>
+              <select
+                className="form-control"
+                name="cityEdit"
+                onChange={this.handleChange}
+                >
+                {cityList}
+                </select>
+            </div>
+            <div className="form-group">
+              {this.hasErrors()
+                ? <button type="submit" className="btn btn-danger" disabled>Submit</button>
+                : <button type="submit" className="btn btn-danger">Submit</button>}
+            </div>
+          </form>
+          <button onClick={this.handleCloseModalEdit}>close</button>
+        </Modal>
       </div>
       );
   }

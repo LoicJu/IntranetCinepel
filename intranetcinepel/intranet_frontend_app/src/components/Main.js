@@ -13,7 +13,6 @@ import {
 
 import Login from './Login';
 import ResetPassword from './ResetPassword';
-import Signup from './Signup';
 import Logout from './Logout';
 
 import AuthProvider from './AuthProvider';
@@ -71,9 +70,8 @@ class Main extends Component {
                   <li>
                     <AuthContext.Consumer>
                     {(context) =>
-                      (context.getIsAuthenticated() ?
+                      (context.getIsAuthenticated() &&
                           <NavLink exact to="/schedule">Schedule</NavLink>
-                          :<NavLink exact to="/signUp">signUp</NavLink>
                       )
                     }
                     </AuthContext.Consumer>
@@ -131,7 +129,6 @@ class Main extends Component {
 
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/resetPassword" component={ResetPassword}/>
-                <Route exact path="/signup" component={Signup}/>
 
                 <Route exact render={(props) => <Error {...props} status={'404 Not Found'} detail={'Requested page not found.'}/> }/>
               </Switch>
