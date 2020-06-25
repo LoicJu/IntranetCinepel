@@ -9,8 +9,20 @@ import {ShowTable} from './Table';
 import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
+import Modal from 'react-modal';
 require('react-month-picker-input/dist/react-month-picker-input.css');
 
+// some custom style for the modals
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
 
 class Planning extends Component {
   static contextType = AuthContext
@@ -37,6 +49,9 @@ class Planning extends Component {
       specificContentToSubmit : [{}],
       // the date of the planning we'll create 
       datePlanningSubmit : new Date(2020, 5, 1, 0, 0, 0, 0),
+      // to show or not modals
+      showModalCreate : false,
+      showModalDelete : false,
       // to show created, delete, error
       is_created : false,
       is_delete : false,
@@ -55,8 +70,28 @@ class Planning extends Component {
     this.handleChangeDel = this.handleChangeDel.bind(this);
     this.deletePlanning = this.deletePlanning.bind(this);
     this.savePlanning = this.savePlanning.bind(this);
+
+    // handle modals
+    this.handleShowModalCreate = this.handleShowModalCreate.bind(this);
+    this.handleCloseModalCreate = this.handleCloseModalCreate.bind(this);
+    this.handleShowModalDelete = this.handleShowModalDelete.bind(this);
+    this.handleCloseModalDelete = this.handleCloseModalDelete.bind(this);
   };
   
+
+  handleShowModalCreate(){
+    this.setState({showModalCreate : true})
+  }
+  handleCloseModalCreate(){
+    this.setState({showModalCreate : false})
+  }
+  handleShowModalDelete(){
+    this.setState({showModalDelete : true})
+  }
+  handleCloseModalDelete(){
+    this.setState({showModalDelete : false})
+  }
+
   handleChangeState(){
     axios({
       method: 'get',
@@ -68,7 +103,10 @@ class Planning extends Component {
           nameAllPlanning: [],
           nameIdPlanning : {},
         });
-        Object.keys(response.data).forEach(key => this.state.nameAllPlanning.push({"value" : response.data[key].date, "label" : response.data[key].date}));
+        Object.keys(response.data).forEach
+          (key => this.state.nameAllPlanning.push
+              ({"value" : new Date(response.data[key].date), 
+                "label" :  getMonthName(new Date(response.data[key].date)) + ' ' + (new Date(response.data[key].date)).getFullYear()}));
         Object.keys(response.data).forEach(key => this.state.nameIdPlanning[response.data[key].date] = response.data[key].id);
       }
     })
@@ -98,7 +136,8 @@ class Planning extends Component {
   // store a new calendar TODO test if calendar for this month already exist
   async submitPlanning() {
     let authed_user = sessionStorage.getItem('authed_user');
-
+    // close modal
+    this.handleCloseModalCreate();
     // to get all the content from the template
     await axios({
       method: 'get',
@@ -183,6 +222,8 @@ class Planning extends Component {
 
   // delete a planning
   deletePlanning(){
+    // close modal
+    this.handleCloseModalDelete();
     axios({
       method: 'delete',
       url: 'api/calendar/' + this.state.idPlanningDel,
@@ -269,6 +310,9 @@ class Planning extends Component {
 
   // get all templates names and plannings names 
   componentDidMount(){
+    //to define the element modal
+    Modal.setAppElement('body');
+    // get all templates
     axios({
       method: 'get',
       url: 'api/template/',
@@ -295,7 +339,10 @@ class Planning extends Component {
     })
     .then((response) => {
       if (response.status === 200) {
-        Object.keys(response.data).forEach(key => this.state.nameAllPlanning.push({"value" : response.data[key].date, "label" : response.data[key].date}));
+        Object.keys(response.data).forEach
+        (key => this.state.nameAllPlanning.push
+            ({"value" : new Date(response.data[key].date), 
+              "label" :  getMonthName(new Date(response.data[key].date)) + ' ' + (new Date(response.data[key].date)).getFullYear()}));
         Object.keys(response.data).forEach(key => this.state.nameIdPlanning[response.data[key].date] = response.data[key].id);
       }
     })
@@ -318,17 +365,23 @@ class Planning extends Component {
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
-    if (this.state.error) {
-      return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
-    }
     if(this.state.is_get){
-      table = <ShowTable columns={getHeader(this.state.specificContent)} dataSend={getRowsData(this.state.specificContent)}/>
+      table = <ShowTable columns={getHeader(this.state.specificContent)} dataSend={getRowsData(this.state.specificContent)} isManager={this.context.getIsManager()}/>
       button = <Button variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
     }
-    return (
+    if(this.context.getIsManager()){
+      return (
       <div className="intranet_classic">
         <div className="container">
           <h1>Calendar</h1>
+          <Button variant="info" onClick={this.handleShowModalCreate}>Créer un planning</Button>
+          <Button variant="info" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
+          <Modal
+            isOpen={this.state.showModalCreate}
+            onRequestClose={this.handleCloseModalCreate}
+            style={customStyles}
+            contentLabel="Créer un planning"
+          >
           <form onSubmit={this.submitPlanning}>
             <div className="form-group">
               <label>Template de base</label>
@@ -352,23 +405,49 @@ class Planning extends Component {
               </Button>
             </div>
           </form>
+          </Modal>
+          <Modal
+            isOpen={this.state.showModalDelete}
+            onRequestClose={this.handleCloseModalDelete}
+            style={customStyles}
+            contentLabel="Créer un template"
+          >
+          <h4>Choisissez le planning à supprimer</h4>
           <Select 
-            placeholder="Choisissez le planning à supprimer"
             onChange={this.handleChangeDel}
             options={this.state.nameAllPlanning}
           />
           <Button onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
+          </Modal>
           <Select 
             placeholder="Choisissez le planning"
             onChange={this.handleGetPlanning}
             options={this.state.nameAllPlanning}
           />
-        </div>
+          </div>
           <div>
-            <h2></h2>
             {table}
           </div>
           {button}
+      </div>
+      );
+    }
+    if (this.state.error) {
+      return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
+    }
+    return (
+      <div className="intranet_classic">
+        <div className="container">
+          <h1>Calendar</h1>
+        </div>
+        <Select 
+            placeholder="Choisissez le planning"
+            onChange={this.handleGetPlanning}
+            options={this.state.nameAllPlanning}
+          />
+        <div>
+          {table}
+        </div>
        </div>
     );
   }

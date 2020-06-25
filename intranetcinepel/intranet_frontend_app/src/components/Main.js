@@ -24,7 +24,6 @@ import TemplatePlanning from './TemplatePlanning';
 import Schedule from './Schedule';
 import Informations from './Informations';
 import UserHandler from './UserHandler';
-import Profile from './Profile';
 
 import Error from './Error';
 
@@ -103,15 +102,6 @@ class Main extends Component {
                     }
                     </AuthContext.Consumer>
                   </li>
-                  <li>
-                    <AuthContext.Consumer>
-                    {(context) =>
-                      (context.getIsAuthenticated() &&
-                          <NavLink exact to="/profile"> Profile</NavLink>
-                      )
-                    }
-                    </AuthContext.Consumer>
-                  </li>
                   </ul>
                 </div>
               </nav>
@@ -125,7 +115,6 @@ class Main extends Component {
                 <Route exact path="/informations" component={Informations}/>
                 <Route exact path="/userHandler" component={UserHandler}/>
                 <Route exact path="/logout" component={Logout}/>
-                <Route exact path="/profile" component={Profile}/>
 
                 <Route exact path="/login" component={Login}/>
                 <Route exact path="/resetPassword" component={ResetPassword}/>

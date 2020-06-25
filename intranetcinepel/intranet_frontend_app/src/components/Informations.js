@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import { AuthContext } from './AuthProvider';
+import { Redirect } from 'react-router';
 
 class Informations extends Component {
-  
-render() {
-  return (
-    <AuthContext.Consumer>
-    {(context) =>
-      (context.getIsAuthenticated()
-        ? <p>Bonjour page info</p>
-        : <p>help get back to login</p>
-      )
+  static contextType = AuthContext
+  render() {
+    if (!this.context.getIsAuthenticated()) {
+      return (<Redirect to ="/login"/>);
     }
-    </AuthContext.Consumer>
-    );
+    return (
+      <div className="intranet_classic">
+        <div className="container">
+          Bonjour, bienvenue sur le site intranet cinepel
+        </div>
+      </div>
+      );
   }
 }
 

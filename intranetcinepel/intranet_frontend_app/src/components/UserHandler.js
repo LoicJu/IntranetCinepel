@@ -274,7 +274,9 @@ class userHandler extends Component {
     });
   }
 
+  // render the page
   render(){
+    // get all the users
     let usersList = [];
     this.state.users.map(User =>{
       usersList.push(
@@ -284,18 +286,22 @@ class userHandler extends Component {
         </CollectionItem>
       )
     });
+    // get all the cities
     let cityList = [];
     this.state.cities.map(city=>{
       cityList.push(
         <option key={city} value={city}>{city}</option>
       )
     })
+    // if not authentificated or manager, go to login
     if (!this.context.getIsAuthenticated() || !this.context.getIsManager()) {
       return (<Redirect to ="/login"/>);
     }
+    // if error, show error
     if (this.state.error) {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
+    // return the page
     return (
       <div className="intranet_classic">
         <Button variant="info" onClick={this.handleShowModalCreate}>Créer un utilisateur</Button>
@@ -414,6 +420,7 @@ class userHandler extends Component {
                 className="form-control"
                 name="managerEdit"
                 onChange={this.handleChange}
+                value={this.state.managerEdit}
                 >
                 <option value="false">non</option>
                 <option value="true">oui</option>
@@ -425,6 +432,7 @@ class userHandler extends Component {
                 className="form-control"
                 name="cityEdit"
                 onChange={this.handleChange}
+                value={this.state.cityEdit}
                 >
                 {cityList}
                 </select>

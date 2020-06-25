@@ -35,7 +35,7 @@ const defaultColumn = {
 }
 
 // Be sure to pass our updateMyData
-function Table({ columns, data, updateMyData }) {
+function Table({ columns, data, updateMyData, isManager }) {
   // Otherwise, nothing is different here.
   const {
     getTableProps,
@@ -54,8 +54,8 @@ function Table({ columns, data, updateMyData }) {
       // That way we can call this function from our
       // cell renderer!
       updateMyData,
+      isManager,
     },
-    usePagination
   )
   // Render the UI for your table
   return (
@@ -90,6 +90,7 @@ function Table({ columns, data, updateMyData }) {
 export function ShowTable(datas) {
   const columns = datas.columns;
   const [data, setData] = React.useState(datas.dataSend);
+  const isManager = datas.isManager;
   // useEffect to set when we change the planning / template
   React.useEffect(() => {
     setData(datas.dataSend)
@@ -114,14 +115,15 @@ export function ShowTable(datas) {
       })
     )
   }
-
   return (
-      <Table
-        columns={columns}
-        data={data}
-        updateMyData={updateMyData}
-      />
+    <Table
+      columns={columns}
+      data={data}
+      updateMyData={updateMyData}
+      isManager = {isManager}
+    />
   )
+  
 }
 
 export function getDatas(){

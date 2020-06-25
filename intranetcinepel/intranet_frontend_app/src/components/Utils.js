@@ -2,8 +2,8 @@ import {getDatas} from './Table';
 
 // get the name of the month to parse in the planning
 export function getMonthName(date){
-    let monthNumber = (date.getMonth()+1);
-    let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let monthNumber = (date.getMonth());
+    let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"];
     return(monthNames[monthNumber])
 }
 
