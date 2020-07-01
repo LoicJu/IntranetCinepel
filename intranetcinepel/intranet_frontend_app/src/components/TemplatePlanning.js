@@ -322,7 +322,7 @@ class TemplatePlanning extends Component {
               options={this.state.nameAllTemplate}
             />
           </div>
-          <div>
+          <div className="table-container">
             <h2>{this.state.nameTemplate}</h2>
             {table}
           </div>

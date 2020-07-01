@@ -17,8 +17,8 @@ const NonEditableCell = ({
   React.useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
-
-  return <label value={value}>{value}</label>
+  
+  return <label className="input-values" value={value}>{value}</label>
 }
 // Create an editable cell renderer
 const EditableCell = ({
@@ -44,7 +44,7 @@ const EditableCell = ({
     setValue(initialValue)
   }, [initialValue])
 
-  return <input value={value} onChange={onChange} onBlur={onBlur} />
+  return <input className="input-values" value={value} onChange={onChange} onBlur={onBlur} />
 }
 
 // Set our editable cell renderer as the default Cell renderer
@@ -91,7 +91,7 @@ function Table({ columns, data, updateMyData, isManager }) {
   // Render the UI for your table
   return (
     <>
-      <table className="table" {...getTableProps()}>
+      <table id="mytable"{...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>

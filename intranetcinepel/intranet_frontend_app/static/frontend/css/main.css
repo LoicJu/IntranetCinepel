@@ -9,11 +9,6 @@ body {
     padding: 0px;
 }
 
-.table {
-    background-color: #eee;
-    height: 100%;
-}
-
 .buttonUser {
     margin: 0 1em 0 0;
 }
@@ -24,4 +19,47 @@ body {
 
 .selectMonth{
     margin: 0 0 2em 0;
+}
+
+.table-container{
+    margin: 0 1em;
+}
+
+table{
+    height: 70vh;
+    width: 100%;
+    display: table;
+    line-height: 0.8rem;
+    border: 1px solid grey;
+}
+thead, tbody, th, td{
+    padding: 0;
+    border: 0;
+    border: 1px solid grey;
+}
+th {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    text-align: left;
+    background-color: #444663;
+    color: white;
+}
+
+tr:hover{
+    background-color: #ddd;
+}
+
+tr:nth-child{
+    background-color: #f2f2f2;
+}
+
+td{
+    border: 1px solid #ddd;
+}
+.input-values{
+    height : 0.8rem !important;
+    font-size: 12px !important;
+    margin: 0 0 0 0 !important;
+    border-bottom: none !important;
+    color: black !important;
 }

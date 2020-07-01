@@ -57,6 +57,7 @@ class Planning extends Component {
       // to show all the planning, the "name" of the planning is the date
       nameIdPlanning : {},
       nameAllPlanning : [],
+      namePlanning : '',
       // to get the current planning
       idPlanningDel : null,
       // data to submit
@@ -274,9 +275,9 @@ class Planning extends Component {
   }
   
   // get the chosen calendar
-  handleGetPlanning(event){
+  async handleGetPlanning(event){
     let id = this.state.nameIdPlanning[event.value]
-    axios({
+    await axios({
       method: 'get',
       url: 'api/calendar/' + id,
     })
@@ -287,6 +288,7 @@ class Planning extends Component {
           specificContent : response.data.specific_content,
           idTemplateGet : response.data.id_template,
           is_get : true,
+          namePlanning : getMonthName(new Date(response.data.date)) + ' ' + (new Date(response.data.date)).getFullYear(),
         });
       }
     })
@@ -300,6 +302,17 @@ class Planning extends Component {
         });
       }
     });
+    var table = document.getElementById("mytable");
+    var targetTDs = table.querySelectorAll('tr > td:first-child');
+    for (var i = 0; i < targetTDs.length; i++) {
+      var td = targetTDs[i];
+      if(td.innerHTML.indexOf("Samedi")||td.innerHTML.indexOf("Dimanche"))
+      {
+        td.innerHTML += "style=background : black;"
+      }
+      console.log(td.innerHTML.indexOf("Samedi"));
+      
+    }
   }
   
   savePlanning(){
@@ -369,6 +382,7 @@ class Planning extends Component {
             ({"value" : new Date(response.data[key].date), 
               "label" :  getMonthName(new Date(response.data[key].date)) + ' ' + (new Date(response.data[key].date)).getFullYear()}));
         Object.keys(response.data).forEach(key => this.state.nameIdPlanning[response.data[key].date] = response.data[key].id);
+        this.state.nameAllPlanning.sort((a,b) => a.value - b.value);
       }
     })
     .catch((error) => {
@@ -446,12 +460,14 @@ class Planning extends Component {
           <Button className="buttonCreate" onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
           </Modal>
           <Select 
+            className="selectMonth"
             placeholder="Choisissez le planning"
             onChange={this.handleGetPlanning}
             options={this.state.nameAllPlanning}
           />
           </div>
-          <div className="responsive-table">
+          <div className="table-container">
+            <h2>{this.state.namePlanning}</h2>
             {table}
           </div>
           {button}
@@ -472,6 +488,7 @@ class Planning extends Component {
             />
         </div>
         <div className="table-container">
+          <h2>{this.state.namePlanning}</h2>
           {table}
         </div>
        </div>
