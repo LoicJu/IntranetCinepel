@@ -12,10 +12,9 @@ class UserCreationForm(forms.ModelForm):
     fields, plus a repeated password."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
-
     class Meta:
         model = Intranet_User
-        fields = ('email', 'username')
+        fields = ('email', 'username', 'is_manager', 'city')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -32,7 +31,6 @@ class UserCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
-
 
 class UserChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on

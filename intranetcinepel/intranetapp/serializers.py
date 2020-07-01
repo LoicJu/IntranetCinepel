@@ -8,16 +8,18 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'is_active', 'is_admin', 'permission', 'is_manager', 'city', 'infos', 'holidays')
 
 class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(required=False)
     class Meta:
         model = Intranet_User
-        fields = ('id', 'email', 'username', 'password')
+        fields = ('id', 'email', 'username', 'password', 'is_manager', 'city')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = Intranet_User.objects.create_user(
             validated_data['email'],
             validated_data['username'],
-            validated_data['password'],
+            validated_data['is_manager'],
+            validated_data['city'],
         )
         return user
 
@@ -33,15 +35,14 @@ class LoginSerializer(serializers.Serializer):
 
 
 class TemplateSerializer(serializers.ModelSerializer):
-    columns = serializers.JSONField(required=False)
-    content = serializers.JSONField(required=False)
+    template_content = serializers.JSONField(required=False)
     class Meta:
         model = Template
-        fields = ('id', 'id_create', 'name', 'columns', 'content')
+        fields = ('id', 'id_create', 'name', 'template_content')
 
 
 class CalendarSerializer(serializers.ModelSerializer):
-    specific_content = serializers.JSONField(required=False)
+    specific_content = serializers.JSONField()
     class Meta:
         model = Calendar
-        fields = ('id', 'id_template','date', 'specific_content')
+        fields = ('id', 'id_template', 'id_creator', 'date', 'specific_content')

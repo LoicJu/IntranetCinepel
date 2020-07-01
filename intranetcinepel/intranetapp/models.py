@@ -11,18 +11,47 @@ from jsonfield import JSONField
 
 # Substituting a custom User model, adding necessary fields
 class Intranet_UserManager(BaseUserManager):
-    def create_user(self, email, username, password=None, steamid=None):
-        """Creates and saves a User with the given email, password and steamid"""
+    def create_user(self, email, username, is_manager, city, password=None):
+        """Creates and saves a User with the given email, password"""
         if not email:
             raise ValueError('Users must have an email address')
-
         user = self.model(
             email=self.normalize_email(email),
             username=username,
+            is_manager=is_manager,
+            city=city
         )
-        user.set_password(password)
+        if is_manager == "true" or is_manager == True:
+            user.is_manager = True
+        else:
+            user.is_manager = False
+        user.set_password("password")
         user.save(using=self._db)
         return user
+    
+    def patch_user(self, user_id, request):
+        """Patches the user with the given id"""
+        user = None
+        user = Intranet_User.objects.get(id__exact=user_id)
+        username = request.data['username']
+        user.username = username
+
+        email = request.data['email']
+        user.email = email
+
+        city = request.data['city']
+        user.city = city
+
+        is_manager = request.data['is_manager']
+        if is_manager == "true":
+            user.is_manager = True
+        else:
+            user.is_manager = False
+        
+        user.save()
+
+        return user
+
 
 class Intranet_User(AbstractBaseUser):
     email = models.EmailField(
@@ -49,21 +78,14 @@ class Template(models.Model):
         data_file = open(file_path , 'r')       
         return data_file.read()
 
-    def gettemplatedate():
-        file_path = os.path.join(settings.MEDIA_ROOT, 'defaultTemplate/templateDate.json')
-        data_file = open(file_path , 'r')       
-        return data_file.read()
-    
     templateCity = gettemplatecity()
-    templateDate = gettemplatedate()
-
     id_create = models.ForeignKey(Intranet_User, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=50, default='template')
-    columns = JSONField(default=templateCity)
-    content = JSONField(default=templateDate)
+    template_content = JSONField(default=templateCity)
 
 # model calendar
 class Calendar(models.Model):
     id_template = models.ForeignKey(Template, on_delete=models.SET_NULL, blank=True, null=True)
-    date = models.DateTimeField(auto_now=True)
-    specific_content = JSONField(null=True)
+    id_creator = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
+    date = models.TextField(null=True)
+    specific_content = JSONField()

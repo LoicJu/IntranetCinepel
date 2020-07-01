@@ -77,10 +77,9 @@ class UserView(generics.GenericAPIView):
 
     def patch(self, request, *args, **kwargs):
         user_id = None
-
+        
         if 'pk' in kwargs:
             user_id = kwargs['pk']
-
             try:
                 user = Intranet_User.objects.patch_user(user_id, request)
             except Exception as e:
