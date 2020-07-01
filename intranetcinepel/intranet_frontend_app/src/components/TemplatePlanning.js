@@ -273,53 +273,55 @@ class TemplatePlanning extends Component {
     }
     return (
       <div className="intranet_classic">
-        <h1>Template</h1>
-          <Button variant="info" onClick={this.handleShowModalCreate}>Créer un template</Button>
-          <Button variant="info" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
-          <Modal
-            isOpen={this.state.showModalCreate}
-            onRequestClose={this.handleCloseModalCreate}
-            style={customStyles}
-            contentLabel="Créer un template"
-          >
-            <form onSubmit={this.submitTemplate}>
-              <div className="form-group">
-                <label>name</label>
-                <input
-                  name="name"
-                  type="text"
-                  className="form-control"
-                  value={this.state.name}
-                  onChange={this.handleChangePost}
-                  />
-              </div>
-              <div className="form-group">
-                <Button type="submit" variant="info">
-                Créer
-                </Button>
-              </div>
-            </form>
-          </Modal>
-          <Modal
-            isOpen={this.state.showModalDelete}
-            onRequestClose={this.handleCloseModalDelete}
-            style={customStyles}
-            contentLabel="Créer un template"
-          >
-            <h4>Choisissez le template à supprimer</h4>
+        <div className="container">
+          <h1>Template</h1>
+            <Button variant="info" onClick={this.handleShowModalCreate}>Créer un template</Button>
+            <Button variant="info" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
+            <Modal
+              isOpen={this.state.showModalCreate}
+              onRequestClose={this.handleCloseModalCreate}
+              style={customStyles}
+              contentLabel="Créer un template"
+            >
+              <form onSubmit={this.submitTemplate}>
+                <div className="form-group">
+                  <label>name</label>
+                  <input
+                    name="name"
+                    type="text"
+                    className="form-control"
+                    value={this.state.name}
+                    onChange={this.handleChangePost}
+                    />
+                </div>
+                <div className="form-group">
+                  <Button type="submit" variant="info">
+                  Créer
+                  </Button>
+                </div>
+              </form>
+            </Modal>
+            <Modal
+              isOpen={this.state.showModalDelete}
+              onRequestClose={this.handleCloseModalDelete}
+              style={customStyles}
+              contentLabel="Créer un template"
+            >
+              <h4>Choisissez le template à supprimer</h4>
+              <Select 
+                onChange={this.handleChangeDel}
+                options={this.state.nameAllTemplate}
+              />
+              <br>
+              </br>
+              <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
+            </Modal>
             <Select 
-              onChange={this.handleChangeDel}
+              placeholder="Choisissez le template"
+              onChange={this.handleChangeGet}
               options={this.state.nameAllTemplate}
             />
-            <br>
-            </br>
-            <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
-          </Modal>
-          <Select 
-            placeholder="Choisissez le template"
-            onChange={this.handleChangeGet}
-            options={this.state.nameAllTemplate}
-          />
+          </div>
           <div>
             <h2>{this.state.nameTemplate}</h2>
             {table}

@@ -365,11 +365,11 @@ class userHandler extends Component {
             </div>
             <div className="form-group">
               {this.hasErrors()
-                ? <button type="submit" className="btn btn-danger" disabled>Submit</button>
-                : <button type="submit" className="btn btn-danger">Submit</button>}
+                ? <button type="submit" className="btn btn-danger" disabled>Créer</button>
+                : <button type="submit" className="btn btn-danger">Créer</button>}
             </div>
           </form>
-          <button onClick={this.handleCloseModalCreate}>close</button>
+          <button className="btn btn-light" onClick={this.handleCloseModalCreate}>Annuler</button>
         </Modal>
         {this.state.users.length > 0 &&
            <div className="intranet_classic">
@@ -439,11 +439,11 @@ class userHandler extends Component {
             </div>
             <div className="form-group">
               {this.hasErrors()
-                ? <button type="submit" className="btn btn-danger" disabled>Submit</button>
-                : <button type="submit" className="btn btn-danger">Submit</button>}
+                ? <button type="submit" className="btn btn-danger" disabled>Créer</button>
+                : <button type="submit" className="btn btn-danger">Créer</button>}
             </div>
           </form>
-          <button onClick={this.handleCloseModalEdit}>close</button>
+          <button className="btn btn-light" onClick={this.handleCloseModalEdit}>Annuler</button>
         </Modal>
       </div>
       );

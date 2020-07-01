@@ -35,23 +35,26 @@ class Main extends Component {
         <AuthProvider>
           <MessageProvider>
             <header>
-            <div className="App">
-              <nav>
+              <nav className="black">
                 <div className="container">
+                  <div className="brand-logo">
+                    <NavLink exact to="/">
+                      <img className="logo-img" src="/static/frontend/logo/cinepel_logo.png" alt="cinepel_logo"/>
+                    </NavLink>
+                  </div>
                 <ul id="nav-mobile" className="right hide-on-med-and-down">
-                  <li><NavLink exact to="/">Intranet Cinepel</NavLink></li>
                   <li>
                     <AuthContext.Consumer>
                     {(context) =>
                       (context.getIsAuthenticated() && context.getIsManager() &&
-                          <NavLink exact to="/templatePlanning">TemplatePlanning</NavLink>
+                          <NavLink exact to="/templatePlanning">Template Planning</NavLink>
                       )
                     }
                     </AuthContext.Consumer>
                     <AuthContext.Consumer>
                     {(context) =>
                       (!context.getIsAuthenticated() &&
-                          <NavLink to="/login">Login</NavLink>
+                          <NavLink to="/login">Se connecter</NavLink>
                       )
                     }
                     </AuthContext.Consumer>
@@ -61,7 +64,7 @@ class Main extends Component {
                     {(context) =>
                       (context.getIsAuthenticated() ?
                           <NavLink exact to="/">Planning</NavLink>
-                          : <NavLink exact to="/resetPassword">resetPassword</NavLink>
+                          : <NavLink exact to="/resetPassword">Oublié son mot de passe ?</NavLink>
                       )
                     }
                     </AuthContext.Consumer>
@@ -70,7 +73,7 @@ class Main extends Component {
                     <AuthContext.Consumer>
                     {(context) =>
                       (context.getIsAuthenticated() &&
-                          <NavLink exact to="/schedule">Schedule</NavLink>
+                          <NavLink exact to="/schedule">Horaire</NavLink>
                       )
                     }
                     </AuthContext.Consumer>
@@ -88,7 +91,7 @@ class Main extends Component {
                     <AuthContext.Consumer>
                     {(context) =>
                       (context.getIsAuthenticated() && context.getIsManager() &&
-                          <NavLink exact to="/userHandler">UserHandler</NavLink>
+                          <NavLink exact to="/userHandler">Gérer les utilisateurs</NavLink>
                       )
                     }
                     </AuthContext.Consumer>
@@ -97,7 +100,7 @@ class Main extends Component {
                     <AuthContext.Consumer>
                     {(context) =>
                       (context.getIsAuthenticated() &&
-                          <NavLink exact to="/logout">Logout</NavLink>
+                          <NavLink exact to="/logout">Se déconnecter</NavLink>
                       )
                     }
                     </AuthContext.Consumer>
@@ -105,7 +108,6 @@ class Main extends Component {
                   </ul>
                 </div>
               </nav>
-          </div>
             </header>
             <div className="content text-light mt-5">
               <Switch>

@@ -6,11 +6,12 @@ import axios from 'axios';
 import Select from 'react-select';
 import { Button} from 'react-materialize';
 import {ShowTable} from './Table';
-import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData} from './Utils';
+import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData, sameDay} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
 import Modal from 'react-modal';
 require('react-month-picker-input/dist/react-month-picker-input.css');
+
 
 // some custom style for the modals
 const customStyles = {
@@ -133,7 +134,7 @@ class Planning extends Component {
     // year, month, day, hours, minutes, seconds, milliseconds
     this.setState({datePlanningSubmit : new Date(dateEvent[1], dateEvent[0]-1, 1, 0, 0, 0, 0)});
   }
-  // store a new calendar TODO test if calendar for this month already exist
+  // store a new calendar test if calendar for this month already exist
   async submitPlanning() {
     let authed_user = sessionStorage.getItem('authed_user');
     // close modal
@@ -162,33 +163,44 @@ class Planning extends Component {
     });
     // parsing the content of the template in the content of the planning
     this.parseTemplateToPlanning()
-    // we create the formData to post
-    var planningFormData = new FormData();
-    planningFormData.append('id_template', this.state.idTemplate);
-    planningFormData.append('id_creator', authed_user);
-    planningFormData.append('date', this.state.datePlanningSubmit);
-    planningFormData.append('specific_content', JSON.stringify(this.state.specificContentToSubmit));
-    axios({
-      method: 'post',
-      url: 'api/calendar/',
-      data: planningFormData,
-    })
-    .then((response) => {
-      if (response.status === 201) {
-        this.handleChangeState();
-        this.setState({ is_created: true });
+    // test if the planning for this month already exist.
+    var alreadyExist = false
+    this.state.nameAllPlanning.map(date=>{
+      if(sameDay(date.value,this.state.datePlanningSubmit))
+      {
+        alreadyExist = true
       }
     })
-    .catch((error) => {
-      if(error.response) {
-        this.setState({
-          error: {
-            status: error.response.status + ' ' + error.response.statusText,
-            detail: error.response.data.detail,
-          }
-        });
-      }
-    });
+    if(!alreadyExist)
+    {
+      // we create the formData to post
+      var planningFormData = new FormData();
+      planningFormData.append('id_template', this.state.idTemplate);
+      planningFormData.append('id_creator', authed_user);
+      planningFormData.append('date', this.state.datePlanningSubmit);
+      planningFormData.append('specific_content', JSON.stringify(this.state.specificContentToSubmit));
+      axios({
+        method: 'post',
+        url: 'api/calendar/',
+        data: planningFormData,
+      })
+      .then((response) => {
+        if (response.status === 201) {
+          this.handleChangeState();
+          this.setState({ is_created: true });
+        }
+      })
+      .catch((error) => {
+        if(error.response) {
+          this.setState({
+            error: {
+              status: error.response.status + ' ' + error.response.statusText,
+              detail: error.response.data.detail,
+            }
+          });
+        }
+      });
+    }
   };
 
   parseTemplateToPlanning(){
@@ -373,7 +385,7 @@ class Planning extends Component {
       return (
       <div className="intranet_classic">
         <div className="container">
-          <h1>Calendar</h1>
+          <h1>Planning</h1>
           <Button variant="info" onClick={this.handleShowModalCreate}>Créer un planning</Button>
           <Button variant="info" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
           <Modal
@@ -425,7 +437,7 @@ class Planning extends Component {
             options={this.state.nameAllPlanning}
           />
           </div>
-          <div>
+          <div className="responsive-table">
             {table}
           </div>
           {button}
@@ -438,14 +450,14 @@ class Planning extends Component {
     return (
       <div className="intranet_classic">
         <div className="container">
-          <h1>Calendar</h1>
+          <h1>Planning</h1>
+          <Select 
+              placeholder="Choisissez le planning"
+              onChange={this.handleGetPlanning}
+              options={this.state.nameAllPlanning}
+            />
         </div>
-        <Select 
-            placeholder="Choisissez le planning"
-            onChange={this.handleGetPlanning}
-            options={this.state.nameAllPlanning}
-          />
-        <div>
+        <div className="table-responsive">
           {table}
         </div>
        </div>

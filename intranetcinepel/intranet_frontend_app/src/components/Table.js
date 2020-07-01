@@ -1,7 +1,21 @@
 import React from 'react';
-import { useTable, usePagination } from 'react-table';
+import { useTable } from 'react-table';
 
 let datasOfTable = [];
+
+const NonEditableCell = ({
+  value: initialValue,
+  row: { index },
+  column: { id },
+}) =>{
+  const [value, setValue] = React.useState(initialValue)
+
+  React.useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  return <label value={value}>{value}</label>
+}
 // Create an editable cell renderer
 const EditableCell = ({
   value: initialValue,
@@ -30,13 +44,25 @@ const EditableCell = ({
 }
 
 // Set our editable cell renderer as the default Cell renderer
-const defaultColumn = {
+var defaultColumn = {
   Cell: EditableCell,
 }
 
 // Be sure to pass our updateMyData
 function Table({ columns, data, updateMyData, isManager }) {
   // Otherwise, nothing is different here.
+  if(isManager){
+    defaultColumn = {
+      Cell: EditableCell,
+    }
+  }
+  else
+  {
+    defaultColumn = {
+      Cell: NonEditableCell,
+    }
+  }
+  
   const {
     getTableProps,
     getTableBodyProps,
@@ -57,10 +83,11 @@ function Table({ columns, data, updateMyData, isManager }) {
       isManager,
     },
   )
+  
   // Render the UI for your table
   return (
     <>
-      <table {...getTableProps()}>
+      <table className="table" {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
