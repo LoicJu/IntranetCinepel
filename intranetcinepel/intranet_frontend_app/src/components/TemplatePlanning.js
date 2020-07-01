@@ -269,14 +269,14 @@ class TemplatePlanning extends Component {
     }
     if(this.state.is_get){
       table = <ShowTable columns={getHeader(this.state.content)} dataSend={getRowsData(this.state.content)} isManager={this.context.getIsManager()}/>
-      button = <Button variant="info" onClick={this.saveTemplate}>Sauvegarder</Button>
+      button = <Button className="buttonCreate" variant="info" onClick={this.saveTemplate}>Sauvegarder</Button>
     }
     return (
       <div className="intranet_classic">
         <div className="container">
           <h1>Template</h1>
-            <Button variant="info" onClick={this.handleShowModalCreate}>Créer un template</Button>
-            <Button variant="info" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
+            <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un template</Button>
+            <Button className="buttonCreate" variant="info" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
             <Modal
               isOpen={this.state.showModalCreate}
               onRequestClose={this.handleCloseModalCreate}

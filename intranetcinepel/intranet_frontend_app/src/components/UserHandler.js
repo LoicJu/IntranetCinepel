@@ -282,7 +282,7 @@ class userHandler extends Component {
       usersList.push(
         <CollectionItem key={User.id}>
           <h4>{User.username}</h4>
-          <Button onClick={this.handleShowModalEdit.bind(this, User)}>Editer</Button><Button onClick={this.deleteUser.bind(this, User.id)}>Supprimer</Button>
+          <Button className="buttonUser" onClick={this.handleShowModalEdit.bind(this, User)}>Editer</Button><Button onClick={this.deleteUser.bind(this, User.id)}>Supprimer</Button>
         </CollectionItem>
       )
     });
@@ -304,7 +304,8 @@ class userHandler extends Component {
     // return the page
     return (
       <div className="intranet_classic">
-        <Button variant="info" onClick={this.handleShowModalCreate}>Créer un utilisateur</Button>
+        <div className="container">
+        <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un utilisateur</Button>
         <Modal
           isOpen={this.state.showModalCreate}
           onRequestClose={this.handleCloseModalCreate}
@@ -445,6 +446,7 @@ class userHandler extends Component {
           </form>
           <button className="btn btn-light" onClick={this.handleCloseModalEdit}>Annuler</button>
         </Modal>
+        </div>
       </div>
       );
   }

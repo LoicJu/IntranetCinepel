@@ -21,7 +21,20 @@ const customStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
+    transform             : 'translate(-50%, -50%)',
+    overflow: 'visible'
+  }
+};
+
+const customStylesCreate ={
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    overflow: 'visible'
   }
 };
 
@@ -379,19 +392,19 @@ class Planning extends Component {
     }
     if(this.state.is_get){
       table = <ShowTable columns={getHeader(this.state.specificContent)} dataSend={getRowsData(this.state.specificContent)} isManager={this.context.getIsManager()}/>
-      button = <Button variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
+      button = <Button className="buttonCreate" variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
     }
     if(this.context.getIsManager()){
       return (
       <div className="intranet_classic">
         <div className="container">
           <h1>Planning</h1>
-          <Button variant="info" onClick={this.handleShowModalCreate}>Créer un planning</Button>
-          <Button variant="info" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
+          <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un planning</Button>
+          <Button className="buttonCreate" variant="info" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
           <Modal
             isOpen={this.state.showModalCreate}
             onRequestClose={this.handleCloseModalCreate}
-            style={customStyles}
+            style={customStylesCreate}
             contentLabel="Créer un planning"
           >
           <form onSubmit={this.submitPlanning}>
@@ -406,6 +419,7 @@ class Planning extends Component {
             <div className="form-group">
               <label>Date</label>
               <MonthPickerInput
+                className="selectMonth"
                 year={2020}
                 month={5}
                 onChange={this.handleChangeSubmitMonth}
@@ -429,7 +443,7 @@ class Planning extends Component {
             onChange={this.handleChangeDel}
             options={this.state.nameAllPlanning}
           />
-          <Button onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
+          <Button className="buttonCreate" onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
           </Modal>
           <Select 
             placeholder="Choisissez le planning"
@@ -457,7 +471,7 @@ class Planning extends Component {
               options={this.state.nameAllPlanning}
             />
         </div>
-        <div className="table-responsive">
+        <div className="table-container">
           {table}
         </div>
        </div>

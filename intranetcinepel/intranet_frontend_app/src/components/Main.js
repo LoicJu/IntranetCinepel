@@ -35,7 +35,7 @@ class Main extends Component {
         <AuthProvider>
           <MessageProvider>
             <header>
-              <nav className="black">
+              <nav className="grey">
                 <div className="container">
                   <div className="brand-logo">
                     <NavLink exact to="/">

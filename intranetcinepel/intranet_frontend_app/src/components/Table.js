@@ -1,6 +1,10 @@
 import React from 'react';
 import { useTable } from 'react-table';
 
+// some custom style for the table
+const styleTable = {
+};
+
 let datasOfTable = [];
 
 const NonEditableCell = ({
@@ -147,6 +151,7 @@ export function ShowTable(datas) {
       columns={columns}
       data={data}
       updateMyData={updateMyData}
+      style={styleTable}
       isManager = {isManager}
     />
   )

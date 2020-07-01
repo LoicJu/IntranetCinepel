@@ -12,9 +12,16 @@ body {
 .table {
     background-color: #eee;
     height: 100%;
-    margin-bottom: 0;
 }
 
-.table-responsive {
-    height: 100%;
+.buttonUser {
+    margin: 0 1em 0 0;
+}
+
+.buttonCreate {
+    margin: 0.5em 0.5em 0.5em 0.5em;
+}
+
+.selectMonth{
+    margin: 0 0 2em 0;
 }
