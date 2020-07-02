@@ -46,7 +46,7 @@ th {
 }
 
 tr:hover{
-    background-color: #ddd;
+    background-color: rgb(254, 255, 169) !important;
 }
 
 tr:nth-child{

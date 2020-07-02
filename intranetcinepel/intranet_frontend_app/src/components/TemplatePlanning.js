@@ -163,6 +163,17 @@ class TemplatePlanning extends Component {
         });
       }
     });
+    // this set the weekend in light grey for more lisibility
+    var table = document.getElementById("mytable");
+    var targetTDs = table.querySelectorAll('tr > td:first-child');
+    for (var i = 0; i < targetTDs.length; i++) {
+      var td = targetTDs[i];
+      if(((td.innerHTML.indexOf("Samedi"))>0)||((td.innerHTML.indexOf("Dimanche"))>0))
+      {
+        var parent = td.parentNode
+        parent.style.backgroundColor = "lightgrey";
+      }      
+    }
   };
   
   handleChangeDel(event){

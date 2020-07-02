@@ -10,6 +10,7 @@ import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas,
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
 import Modal from 'react-modal';
+import $ from 'jquery';
 require('react-month-picker-input/dist/react-month-picker-input.css');
 
 
@@ -91,9 +92,9 @@ class Planning extends Component {
     this.handleCloseModalCreate = this.handleCloseModalCreate.bind(this);
     this.handleShowModalDelete = this.handleShowModalDelete.bind(this);
     this.handleCloseModalDelete = this.handleCloseModalDelete.bind(this);
+
   };
   
-
   handleShowModalCreate(){
     this.setState({showModalCreate : true})
   }
@@ -302,19 +303,8 @@ class Planning extends Component {
         });
       }
     });
-    var table = document.getElementById("mytable");
-    var targetTDs = table.querySelectorAll('tr > td:first-child');
-    for (var i = 0; i < targetTDs.length; i++) {
-      var td = targetTDs[i];
-      if(td.innerHTML.indexOf("Samedi")||td.innerHTML.indexOf("Dimanche"))
-      {
-        td.innerHTML += "style=background : black;"
-      }
-      console.log(td.innerHTML.indexOf("Samedi"));
-      
-    }
   }
-  
+
   savePlanning(){
     const datasToSet = setDatas(this.state.specificContent);
     this.setState({specificContent: datasToSet})
@@ -396,6 +386,43 @@ class Planning extends Component {
       }
     });
   };
+
+  componentDidUpdate(){
+    setTimeout(function () {
+      // this set the weekend in light grey for more lisibility
+      var table = document.getElementById("mytable");
+      if(table){
+        var targetTRs = table.querySelectorAll('tr');
+        // set back all row to white
+        for (var i = 0; i < targetTRs.length; i++) {
+            targetTRs[i].style.backgroundColor = "white"
+        }
+        var targetTDs = table.querySelectorAll('tr > td:first-child');
+        // set the weekends to lightgrey
+        for (var i = 0; i < targetTDs.length; i++) {
+          var td = targetTDs[i];
+          if(((td.innerHTML.indexOf("Samedi"))>0)||((td.innerHTML.indexOf("Dimanche"))>0))
+          {
+            var parent = td.parentNode
+            parent.style.backgroundColor = "lightgrey";
+          }      
+        }
+        var targetTDsAll = table.querySelectorAll('tr > td');
+        // set all white
+        for (var i = 0; i < targetTDsAll.length; i++) {
+          targetTDsAll[i].style.backgroundColor = "white"
+        }
+        // set the case where the username is
+        for (var i = 0; i < targetTDsAll.length; i++) {
+          var td = targetTDsAll[i];
+          if(td.innerHTML.indexOf(sessionStorage.getItem('username'))>0)
+          {
+            td.style.backgroundColor = "rgb(255, 204, 102)";
+          }
+        }
+      }
+    }, 50);
+  }
 
   render(){
     // data to parse in table
