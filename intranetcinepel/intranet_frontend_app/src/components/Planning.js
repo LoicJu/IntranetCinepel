@@ -397,25 +397,27 @@ class Planning extends Component {
         for (var i = 0; i < targetTRs.length; i++) {
             targetTRs[i].style.backgroundColor = "white"
         }
+        var targetTDsAll = table.querySelectorAll('tr > td');
+        // set all white
+        for (var i = 0; i < targetTDsAll.length; i++) {
+          targetTDsAll[i].style.backgroundColor = "transparent"
+        }
         var targetTDs = table.querySelectorAll('tr > td:first-child');
         // set the weekends to lightgrey
         for (var i = 0; i < targetTDs.length; i++) {
           var td = targetTDs[i];
           if(((td.innerHTML.indexOf("Samedi"))>0)||((td.innerHTML.indexOf("Dimanche"))>0))
           {
+            console.log(td)
             var parent = td.parentNode
             parent.style.backgroundColor = "lightgrey";
           }      
         }
-        var targetTDsAll = table.querySelectorAll('tr > td');
-        // set all white
-        for (var i = 0; i < targetTDsAll.length; i++) {
-          targetTDsAll[i].style.backgroundColor = "white"
-        }
         // set the case where the username is
         for (var i = 0; i < targetTDsAll.length; i++) {
           var td = targetTDsAll[i];
-          if(td.innerHTML.indexOf(sessionStorage.getItem('username'))>0)
+          var testTd = td.innerHTML.toUpperCase()
+          if(testTd.indexOf((sessionStorage.getItem('username')).toUpperCase())>0)
           {
             td.style.backgroundColor = "rgb(255, 204, 102)";
           }

@@ -35,76 +35,76 @@ class Main extends Component {
         <AuthProvider>
           <MessageProvider>
             <header>
-              <nav className="grey">
+              <nav>
+                <div className="brand-logo">
+                  <NavLink exact to="/">
+                    <img className="logo-img" src="/static/frontend/logo/cinepel_logo.png" alt="cinepel_logo"/>
+                  </NavLink>
+                </div>
                 <div className="container">
-                  <div className="brand-logo">
-                    <NavLink exact to="/">
-                      <img className="logo-img" src="/static/frontend/logo/cinepel_logo.png" alt="cinepel_logo"/>
-                    </NavLink>
-                  </div>
-                <ul id="nav-mobile" className="right hide-on-med-and-down">
-                  <li>
-                    <AuthContext.Consumer>
-                    {(context) =>
-                      (context.getIsAuthenticated() && context.getIsManager() &&
-                          <NavLink exact to="/templatePlanning">Template Planning</NavLink>
-                      )
-                    }
-                    </AuthContext.Consumer>
-                    <AuthContext.Consumer>
-                    {(context) =>
-                      (!context.getIsAuthenticated() &&
-                          <NavLink to="/login">Se connecter</NavLink>
-                      )
-                    }
-                    </AuthContext.Consumer>
-                  </li>
-                  <li>
-                    <AuthContext.Consumer>
-                    {(context) =>
-                      (context.getIsAuthenticated() ?
-                          <NavLink exact to="/">Planning</NavLink>
-                          : <NavLink exact to="/resetPassword">Oublié son mot de passe ?</NavLink>
-                      )
-                    }
-                    </AuthContext.Consumer>
-                  </li>
-                  <li>
-                    <AuthContext.Consumer>
-                    {(context) =>
-                      (context.getIsAuthenticated() &&
-                          <NavLink exact to="/schedule">Horaire</NavLink>
-                      )
-                    }
-                    </AuthContext.Consumer>
-                  </li>
-                  <li>
-                    <AuthContext.Consumer>
-                    {(context) =>
-                      (context.getIsAuthenticated() &&
-                          <NavLink exact to="/informations">Informations</NavLink>
-                      )
-                    }
-                    </AuthContext.Consumer>
-                  </li>
-                  <li>
-                    <AuthContext.Consumer>
-                    {(context) =>
-                      (context.getIsAuthenticated() && context.getIsManager() &&
-                          <NavLink exact to="/userHandler">Gérer les utilisateurs</NavLink>
-                      )
-                    }
-                    </AuthContext.Consumer>
-                  </li>
-                  <li>
-                    <AuthContext.Consumer>
-                    {(context) =>
-                      (context.getIsAuthenticated() &&
-                          <NavLink exact to="/logout">Se déconnecter</NavLink>
-                      )
-                    }
-                    </AuthContext.Consumer>
-                  </li>
+                  <ul id="nav-mobile" className="right hide-on-med-and-down">
+                    <li>
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (context.getIsAuthenticated() && context.getIsManager() &&
+                            <NavLink exact to="/templatePlanning">Template Planning</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (!context.getIsAuthenticated() &&
+                            <NavLink to="/login">Se connecter</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
+                    <li>
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (context.getIsAuthenticated() ?
+                            <NavLink exact to="/">Planning</NavLink>
+                            : <NavLink exact to="/resetPassword">Oublié son mot de passe ?</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
+                    <li>
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (context.getIsAuthenticated() &&
+                            <NavLink exact to="/schedule">Horaire</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
+                    <li>
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (context.getIsAuthenticated() &&
+                            <NavLink exact to="/informations">Informations</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
+                    <li>
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (context.getIsAuthenticated() && context.getIsManager() &&
+                            <NavLink exact to="/userHandler">Gérer les utilisateurs</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
+                    <li>
+                      <AuthContext.Consumer>
+                      {(context) =>
+                        (context.getIsAuthenticated() &&
+                            <NavLink exact to="/logout">Se déconnecter</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
                   </ul>
                 </div>
               </nav>

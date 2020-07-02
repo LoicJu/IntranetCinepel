@@ -38,8 +38,7 @@ thead, tbody, th, td{
     border: 1px solid grey;
 }
 th {
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 1px 1px;
     text-align: left;
     background-color: #444663;
     color: white;
@@ -62,4 +61,15 @@ td{
     margin: 0 0 0 0 !important;
     border-bottom: none !important;
     color: black !important;
+}
+
+nav ul a:hover {
+    color:#ffffff;
+}
+
+nav ul a{
+    color:#333333;
+}
+nav {
+    background-color: #d9d9d9;
 }

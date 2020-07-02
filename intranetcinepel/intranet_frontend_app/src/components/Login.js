@@ -73,6 +73,7 @@ render() {
   }
   return (
     <div className="container pt-4">
+      <div className="intranet_classic">
         <form onSubmit={this.submit_form}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -87,7 +88,7 @@ render() {
               />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Mot de passe</label>
             <input
               type="password"
               className="form-control"
@@ -97,22 +98,18 @@ render() {
               onChange={this.handle_change}
               />
             {this.state.has_error &&
-              <span className='error'>The credentials are false</span>}
+              <span className='error'>Le mail ou le mot de passe est/sont faux</span>}
               </div>
               <div className="form-group">
-                <button type="submit" className="btn btn-danger">Login</button>
-              </div>
-              <div className="form-group">
-                <small id="emailHelp" className="form-text text-muted">
-                  Don't have an account? Sign up <NavLink className="text-danger" to="/signup">here</NavLink>
-                </small>
+                <button type="submit" className="btn btn-danger">Se Connecter</button>
               </div>
               <div className="form-group">
                 <small id="resetHelp" className="form-text text-muted">
-                  You forgot your password? You can reset it <NavLink className="text-danger" to="/resetPassword">here</NavLink>
+                  Vous avez oublié votre mot de passe ? Cliquez <NavLink className="text-danger" to="/resetPassword">ici</NavLink>
                 </small>
               </div>
           </form>
+        </div>
       </div>
     );
   }
