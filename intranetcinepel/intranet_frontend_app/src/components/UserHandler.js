@@ -24,14 +24,18 @@ class userHandler extends Component {
     this.state = {
       users: [],
       cities : ["Neuchatel", "Delemont", "Bienne", "Chaux-de-fonds", "Berne"],
+      // states for create
       usernameCreate:'',
       emailCreate:'',
       managerCreate : false,
       cityCreate : 'Neuchatel',
+      // states for edit
       idEdit : '',
       usernameEdit:'',
       emailEdit:'',
       managerEdit : false,
+      holidaysEdit : '',
+      infosEdit : '',
       cityEdit : '',
       errors: {
         username:'',
@@ -97,6 +101,8 @@ class userHandler extends Component {
       emailEdit : User.email,
       managerEdit : User.is_manager,
       cityEdit : User.city,
+      infosEdit : User.infos,
+      holidaysEdit : User.holidays,
       showModalEdit : true,
     })
   }
@@ -181,7 +187,7 @@ class userHandler extends Component {
       if (error.response) {
         var errors = {...this.state.errors}
         if('email' in error.response.data) {
-          errors.email = 'A user with this email already exists !';
+          errors.email = 'Un employé avec cet email existe déjà';
           this.setState({errors});
         }
       }
@@ -196,8 +202,10 @@ class userHandler extends Component {
     var userEditData = new FormData();
     userEditData.append('username', this.state.usernameEdit);
     userEditData.append('email', this.state.emailEdit);
-    userEditData.append('is_manager', this.state.managerEdit)
-    userEditData.append('city', this.state.cityEdit)
+    userEditData.append('is_manager', this.state.managerEdit);
+    userEditData.append('city', this.state.cityEdit);
+    userEditData.append('infos', this.state.infosEdit);
+    userEditData.append('holidays', this.state.holidaysEdit);
     await axios({
       method: 'patch',
       url: 'api/users/' + this.state.idEdit,
@@ -211,10 +219,7 @@ class userHandler extends Component {
     .catch((error) => {
       if (error.response) {
         var errors = {...this.state.errors}
-        if('email' in error.response.data) {
-          errors.email = 'A user with this email already exists !';
-          this.setState({errors});
-        }
+        this.setState({errors});
       }
     });
     this.handleChangeState();
@@ -366,8 +371,8 @@ class userHandler extends Component {
             </div>
             <div className="form-group">
               {this.hasErrors()
-                ? <button type="submit" className="btn btn-danger" disabled>Créer</button>
-                : <button type="submit" className="btn btn-danger">Créer</button>}
+                ? <button type="submit" className="btn btn-info" disabled>Créer</button>
+                : <button type="submit" className="btn btn-info">Créer</button>}
             </div>
           </form>
           <button className="btn btn-light" onClick={this.handleCloseModalCreate}>Annuler</button>
@@ -439,9 +444,31 @@ class userHandler extends Component {
                 </select>
             </div>
             <div className="form-group">
+              <label>Informations</label>
+              <textarea
+                rows="4"
+                cols="50"
+                className="form-control"
+                name="infosEdit"
+                value={this.state.infosEdit}
+                onChange={this.handleChange}
+                />
+            </div>
+            <div className="form-group">
+              <label>Vacances</label>
+              <textarea
+                rows="4"
+                cols="50"
+                className="form-control"
+                name="holidaysEdit"
+                value={this.state.holidaysEdit}
+                onChange={this.handleChange}
+                />
+            </div>
+            <div className="form-group">
               {this.hasErrors()
-                ? <button type="submit" className="btn btn-danger" disabled>Créer</button>
-                : <button type="submit" className="btn btn-danger">Créer</button>}
+                ? <button type="submit" className="btn btn-info" disabled>Editer</button>
+                : <button type="submit" className="btn btn-info">Editer</button>}
             </div>
           </form>
           <button className="btn btn-light" onClick={this.handleCloseModalEdit}>Annuler</button>

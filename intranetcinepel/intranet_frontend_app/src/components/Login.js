@@ -101,7 +101,7 @@ render() {
               <span className='error'>Le mail ou le mot de passe est/sont faux</span>}
               </div>
               <div className="form-group">
-                <button type="submit" className="btn btn-danger">Se Connecter</button>
+                <button type="submit" className="btn btn-info">Se Connecter</button>
               </div>
               <div className="form-group">
                 <small id="resetHelp" className="form-text text-muted">
