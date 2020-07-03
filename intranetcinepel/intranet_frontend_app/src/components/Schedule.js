@@ -9,6 +9,7 @@ import { Button} from 'react-materialize';
 axios.defaults.withCredentials = true;
 
 class Schedule extends Component {
+  _isMounted = false;
   static contextType = AuthContext
   constructor(props) {
     super(props);
@@ -41,6 +42,7 @@ class Schedule extends Component {
   }
 
   componentDidMount(){
+    this._isMounted = true;
     // get the schedule
     axios({
       method: 'get',
@@ -50,10 +52,12 @@ class Schedule extends Component {
     .then((response) => {
       console.log(response)
       if (response.status === 200) {
-        console.log(response)
-        setState({
-          datasSchedule : response.data
-        })
+        if (this._isMounted){
+          console.log(response)
+          setState({
+            datasSchedule : response.data
+          })
+        }
       }
     })
     .catch((error) => {
@@ -69,6 +73,10 @@ class Schedule extends Component {
     });
   };
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+  
   render() {
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);

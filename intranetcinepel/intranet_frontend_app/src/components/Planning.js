@@ -4,13 +4,12 @@ import { Redirect } from 'react-router';
 import Error from './Error';
 import axios from 'axios';
 import Select from 'react-select';
-import { Button} from 'react-materialize';
+import { Button, Collection , CollectionItem} from 'react-materialize';
 import {ShowTable} from './Table';
 import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData, sameDay} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
 import Modal from 'react-modal';
-import $ from 'jquery';
 require('react-month-picker-input/dist/react-month-picker-input.css');
 
 
@@ -40,10 +39,13 @@ const customStylesCreate ={
 };
 
 class Planning extends Component {
+  _isMounted = false;
   static contextType = AuthContext
   constructor(props) {
     super(props);
     this.state={
+      //all users
+      users: [],
       // to choose from the different templates
       idTemplateGet : null,
       idTemplate : null,
@@ -261,6 +263,8 @@ class Planning extends Component {
         this.setState({
           is_delete: true,
         });
+        var toastHTML = '<span className="toast">Planning supprimé</span>';
+        M.toast({html: toastHTML});
       }
     })
     .catch((error) => {
@@ -322,6 +326,8 @@ class Planning extends Component {
         this.setState({
           is_save: true,
         });
+        var toastHTML = '<span className="toast">Planning créé</span>';
+        M.toast({html: toastHTML});
       }
     })
     .catch((error) => {
@@ -338,6 +344,7 @@ class Planning extends Component {
 
   // get all templates names and plannings names 
   componentDidMount(){
+    this._isMounted = true; 
     //to define the element modal
     Modal.setAppElement('body');
     // get all templates
@@ -347,8 +354,10 @@ class Planning extends Component {
     })
     .then((response) => {
       if (response.status === 200) {
-        Object.keys(response.data).forEach(key => this.state.nameAllTemplate.push({"value" : response.data[key].name, "label" : response.data[key].name}));
-        Object.keys(response.data).forEach(key => this.state.nameIdTemplate[response.data[key].name] = response.data[key].id);
+        if (this._isMounted){
+          Object.keys(response.data).forEach(key => this.state.nameAllTemplate.push({"value" : response.data[key].name, "label" : response.data[key].name}));
+          Object.keys(response.data).forEach(key => this.state.nameIdTemplate[response.data[key].name] = response.data[key].id);
+        }
       }
     })
     .catch((error) => {
@@ -367,12 +376,40 @@ class Planning extends Component {
     })
     .then((response) => {
       if (response.status === 200) {
-        Object.keys(response.data).forEach
-        (key => this.state.nameAllPlanning.push
-            ({"value" : new Date(response.data[key].date), 
-              "label" :  getMonthName(new Date(response.data[key].date)) + ' ' + (new Date(response.data[key].date)).getFullYear()}));
-        Object.keys(response.data).forEach(key => this.state.nameIdPlanning[response.data[key].date] = response.data[key].id);
-        this.state.nameAllPlanning.sort((a,b) => a.value - b.value);
+        if (this._isMounted){
+          Object.keys(response.data).forEach
+          (key => this.state.nameAllPlanning.push
+              ({"value" : new Date(response.data[key].date), 
+                "label" :  getMonthName(new Date(response.data[key].date)) + ' ' + (new Date(response.data[key].date)).getFullYear()}));
+          Object.keys(response.data).forEach(key => this.state.nameIdPlanning[response.data[key].date] = response.data[key].id);
+          this.state.nameAllPlanning.sort((a,b) => a.value - b.value);
+        }
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
+    // fetch all users
+    axios({
+      method: 'get',
+      url: 'api/users/all',
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        if (this._isMounted){
+          let allData = this.state.users;
+          response.data.map(user => allData.push(user));
+          this.setState({
+            users: allData,
+          });
+        }
       }
     })
     .catch((error) => {
@@ -398,7 +435,7 @@ class Planning extends Component {
             targetTRs[i].style.backgroundColor = "white"
         }
         var targetTDsAll = table.querySelectorAll('tr > td');
-        // set all white
+        // set all transparent
         for (var i = 0; i < targetTDsAll.length; i++) {
           targetTDsAll[i].style.backgroundColor = "transparent"
         }
@@ -408,7 +445,6 @@ class Planning extends Component {
           var td = targetTDs[i];
           if(((td.innerHTML.indexOf("Samedi"))>0)||((td.innerHTML.indexOf("Dimanche"))>0))
           {
-            console.log(td)
             var parent = td.parentNode
             parent.style.backgroundColor = "lightgrey";
           }      
@@ -426,7 +462,21 @@ class Planning extends Component {
     }, 50);
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   render(){
+    // get all the users
+    let usersList = [];
+    this.state.users.map(User =>{
+      usersList.push(
+        <CollectionItem key={User.id}>
+          <h5>{User.username}</h5>
+          <label>Informations : </label>{User.infos}<br></br>
+          <label>Vacances : </label>{User.holidays}
+        </CollectionItem>
+      )
+    });
     // data to parse in table
     let table = <div></div>;
     let button = <div></div>;
@@ -441,9 +491,28 @@ class Planning extends Component {
       return (
       <div className="intranet_classic">
         <div className="container">
-          <h1>Planning</h1>
-          <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un planning</Button>
-          <Button className="buttonCreate" variant="info" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
+          <div className="row">
+            <div className="col-lg-6">
+              <div className="center">
+                <h1>Planning</h1>
+                <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un planning</Button>
+                <Button className="buttonCreate" variant="info" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
+                <Select 
+                  className="selectMonth"
+                  placeholder="Choisissez le planning"
+                  onChange={this.handleGetPlanning}
+                  options={this.state.nameAllPlanning}
+                />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              {this.state.users.length > 0 &&
+                <Collection className="template_planning_users">
+                  {usersList}
+                </Collection>
+              }
+            </div>
+          </div>
           <Modal
             isOpen={this.state.showModalCreate}
             onRequestClose={this.handleCloseModalCreate}
@@ -488,18 +557,12 @@ class Planning extends Component {
           />
           <Button className="buttonCreate" onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
           </Modal>
-          <Select 
-            className="selectMonth"
-            placeholder="Choisissez le planning"
-            onChange={this.handleGetPlanning}
-            options={this.state.nameAllPlanning}
-          />
-          </div>
-          <div className="table-container">
-            <h2>{this.state.namePlanning}</h2>
+        </div>
+        <div className="table-container">
+          <h2>{this.state.namePlanning}</h2>
             {table}
-          </div>
-          {button}
+        </div>
+        {button}
       </div>
       );
     }

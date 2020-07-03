@@ -41,7 +41,7 @@ class Main extends Component {
                     <img className="logo-img" src="/static/frontend/logo/cinepel_logo.png" alt="cinepel_logo"/>
                   </NavLink>
                 </div>
-                <div className="container">
+                <div className="right">
                   <ul id="nav-mobile" className="right hide-on-med-and-down">
                     <li>
                       <AuthContext.Consumer>

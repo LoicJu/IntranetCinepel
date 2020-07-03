@@ -5,9 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { Redirect } from 'react-router';
 
 class Login extends Component {
-
   static contextType = AuthContext
-
   constructor(props) {
     super(props);
     this.state={

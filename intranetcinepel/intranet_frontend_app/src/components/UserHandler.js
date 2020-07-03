@@ -17,8 +17,8 @@ const customStyles = {
 };
 
 class userHandler extends Component {
+  _isMounted = false;
   static contextType = AuthContext
-
   constructor(props){
     super(props);
     this.state = {
@@ -182,6 +182,8 @@ class userHandler extends Component {
       if (response.status === 200) {
         this.setState({ is_created: true });
       }
+      var toastHTML = '<span className="toast">Employé créé</span>';
+      M.toast({html: toastHTML});
     })
     .catch((error) => {
       if (error.response) {
@@ -214,6 +216,8 @@ class userHandler extends Component {
     .then((response) => {
       if (response.status === 200) {
         this.setState({ is_updated: true });
+        var toastHTML = '<span className="toast">Employé édité</span>';
+        M.toast({html: toastHTML});
       }
     })
     .catch((error) => {
@@ -236,6 +240,8 @@ class userHandler extends Component {
         this.setState({
           is_delete: true,
         });
+        var toastHTML = '<span className="toast">Employé supprimé</span>';
+        M.toast({html: toastHTML});
       }
     })
     .catch((error) => {
@@ -251,6 +257,7 @@ class userHandler extends Component {
   }
   //fetch all users in users
   componentDidMount(){
+    this._isMounted = true;
     //to define the element modal
     Modal.setAppElement('body');
     // fetch all users
@@ -260,11 +267,13 @@ class userHandler extends Component {
     })
     .then((response) => {
       if (response.status === 200) {
-        let allData = this.state.users;
-        response.data.map(user => allData.push(user));
-        this.setState({
-          users: allData,
-        });
+        if (this._isMounted){
+          let allData = this.state.users;
+          response.data.map(user => allData.push(user));
+          this.setState({
+            users: allData,
+          });
+        }
       }
     })
     .catch((error) => {
@@ -279,6 +288,10 @@ class userHandler extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   // render the page
   render(){
     // get all the users
@@ -287,7 +300,11 @@ class userHandler extends Component {
       usersList.push(
         <CollectionItem key={User.id}>
           <h4>{User.username}</h4>
-          <Button className="buttonUser" onClick={this.handleShowModalEdit.bind(this, User)}>Editer</Button><Button onClick={this.deleteUser.bind(this, User.id)}>Supprimer</Button>
+          <Button className="buttonUser" onClick={this.handleShowModalEdit.bind(this, User)}>Editer</Button>
+          <Button onClick={e =>
+            window.confirm("Etes-vous sûr de vouloir supprimer cet employé ?") &&
+            this.deleteUser(User.id)
+          }>Supprimer</Button>
         </CollectionItem>
       )
     });
@@ -311,13 +328,19 @@ class userHandler extends Component {
       <div className="intranet_classic">
         <div className="container">
         <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un utilisateur</Button>
+        {this.state.users.length > 0 &&
+           <div className="intranet_classic">
+             <Collection header="Employés">
+              {usersList}
+            </Collection>
+          </div> 
+        }
         <Modal
           isOpen={this.state.showModalCreate}
           onRequestClose={this.handleCloseModalCreate}
           style={customStyles}
           contentLabel="Créer un utilisateur"
         >
- 
           <h2>Créer un utilisateur</h2>
           <form onSubmit={this.submitForm}>
             <div className="form-group">
@@ -377,13 +400,6 @@ class userHandler extends Component {
           </form>
           <button className="btn btn-light" onClick={this.handleCloseModalCreate}>Annuler</button>
         </Modal>
-        {this.state.users.length > 0 &&
-           <div className="intranet_classic">
-             <Collection header="Employés">
-              {usersList}
-            </Collection>
-          </div> 
-        }
         <Modal
           isOpen={this.state.showModalEdit}
           onRequestClose={this.handleCloseModalEdit}

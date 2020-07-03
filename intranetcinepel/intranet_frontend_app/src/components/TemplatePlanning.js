@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import Error from './Error';
 import axios from 'axios';
 import Select from 'react-select';
-import { Button} from 'react-materialize';
+import { Button, Collection , CollectionItem} from 'react-materialize';
 import {setDatas, getHeader, getRowsData} from './Utils';
 import {ShowTable} from './Table';
 import Modal from 'react-modal';
@@ -22,10 +22,12 @@ const customStyles = {
 };
 
 class TemplatePlanning extends Component {
+  _isMounted = false;
   static contextType = AuthContext
   constructor(props) {
     super(props);
     this.state={
+      users: [],
       namePost : '',
       nameDel : '',
       nameTemplate : '',
@@ -123,6 +125,8 @@ class TemplatePlanning extends Component {
       if (response.status === 201) {
         this.handleChangeState();
         this.setState({ is_created: true });
+        var toastHTML = '<span className="toast">Template créé</span>';
+        M.toast({html: toastHTML});
       }
     })
     .catch((error) => {
@@ -185,6 +189,8 @@ class TemplatePlanning extends Component {
         this.setState({
           is_delete: true,
         });
+        var toastHTML = '<span className="toast">Template supprimé</span>';
+        M.toast({html: toastHTML});
       }
     })
     .catch((error) => {
@@ -233,6 +239,7 @@ class TemplatePlanning extends Component {
 
   
   componentDidMount(){
+    this._isMounted = true;
     //to define the element modal
     Modal.setAppElement('body');
     // get all templates
@@ -242,8 +249,36 @@ class TemplatePlanning extends Component {
     })
     .then((response) => {
       if (response.status === 200) {
-        Object.keys(response.data).forEach(key => this.state.nameAllTemplate.push({"value" : response.data[key].name, "label" : response.data[key].name}));
-        Object.keys(response.data).forEach(key => this.state.nameIdTemplate[response.data[key].name] = response.data[key].id);
+        if (this._isMounted){
+          Object.keys(response.data).forEach(key => this.state.nameAllTemplate.push({"value" : response.data[key].name, "label" : response.data[key].name}));
+          Object.keys(response.data).forEach(key => this.state.nameIdTemplate[response.data[key].name] = response.data[key].id);
+        }
+      }
+    })
+    .catch((error) => {
+      if(error.response) {
+        this.setState({
+          error: {
+            status: error.response.status + ' ' + error.response.statusText,
+            detail: error.response.data.detail,
+          }
+        });
+      }
+    });
+    // fetch all users
+    axios({
+      method: 'get',
+      url: 'api/users/all',
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        if (this._isMounted){
+          let allData = this.state.users;
+          response.data.map(user => allData.push(user));
+          this.setState({
+            users: allData,
+          });
+        }
       }
     })
     .catch((error) => {
@@ -258,26 +293,60 @@ class TemplatePlanning extends Component {
     });
   };
 
-  /*
+  
   componentDidUpdate(){
     setTimeout(function () {
       // this set the weekend in light grey for more lisibility
       var table = document.getElementById("mytable");
       if(table){
+        var targetTRs = table.querySelectorAll('tr');
+        // set back all row to white
+        for (var i = 0; i < targetTRs.length; i++) {
+            targetTRs[i].style.backgroundColor = "white"
+        }
+        var targetTDsAll = table.querySelectorAll('tr > td');
+        // set all transparent
+        for (var i = 0; i < targetTDsAll.length; i++) {
+          targetTDsAll[i].style.backgroundColor = "transparent"
+        }
         var targetTDs = table.querySelectorAll('tr > td:first-child');
+        // set the weekends to lightgrey
         for (var i = 0; i < targetTDs.length; i++) {
           var td = targetTDs[i];
           if(((td.innerHTML.indexOf("Samedi"))>0)||((td.innerHTML.indexOf("Dimanche"))>0))
           {
             var parent = td.parentNode
-            parent.style.backgroundColor = "lightgrey !important";
+            parent.style.backgroundColor = "lightgrey";
           }      
+        }
+        // set the case where the username is
+        for (var i = 0; i < targetTDsAll.length; i++) {
+          var td = targetTDsAll[i];
+          var testTd = td.innerHTML.toUpperCase()
+          if(testTd.indexOf((sessionStorage.getItem('username')).toUpperCase())>0)
+          {
+            td.style.backgroundColor = "rgb(255, 204, 102)";
+          }
         }
       }
     }, 50);
-  }*/
+  }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   render(){
+    // get all the users
+    let usersList = [];
+    this.state.users.map(User =>{
+      usersList.push(
+        <CollectionItem key={User.id}>
+          <h5>{User.username}</h5>
+          <label>Informations : </label>{User.infos}<br></br>
+          <label>Vacances : </label>{User.holidays}
+        </CollectionItem>
+      )
+    });
     let table = <div></div>;
     let button = <div></div>;
     if (!this.context.getIsAuthenticated() || !this.context.getIsManager()) {
@@ -293,9 +362,27 @@ class TemplatePlanning extends Component {
     return (
       <div className="intranet_classic">
         <div className="container">
-          <h1>Template</h1>
-            <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un template</Button>
-            <Button className="buttonCreate" variant="info" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
+          <div className="row">
+            <div className="col-lg-6">
+              <div className="center">
+                <h1>Template</h1>
+                <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un template</Button>
+                <Button className="buttonCreate" variant="info" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
+                <Select 
+                  placeholder="Choisissez le template"
+                  onChange={this.handleChangeGet}
+                  options={this.state.nameAllTemplate}
+                />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              {this.state.users.length > 0 &&
+                <Collection className="template_planning_users">
+                  {usersList}
+                </Collection>
+              }
+            </div>
+          </div>
             <Modal
               isOpen={this.state.showModalCreate}
               onRequestClose={this.handleCloseModalCreate}
@@ -335,18 +422,13 @@ class TemplatePlanning extends Component {
               </br>
               <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
             </Modal>
-            <Select 
-              placeholder="Choisissez le template"
-              onChange={this.handleChangeGet}
-              options={this.state.nameAllTemplate}
-            />
-          </div>
-          <div className="table-container">
-            <h2>{this.state.nameTemplate}</h2>
-            {table}
-          </div>
-          {button}
-       </div>
+        </div>
+        <div className="table-container">
+          <h2>{this.state.nameTemplate}</h2>
+          {table}
+        </div>
+        {button}
+      </div>
     );
   }
 }

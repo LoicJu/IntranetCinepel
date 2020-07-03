@@ -26,12 +26,19 @@ body {
 }
 
 table{
-    height: 70vh;
     width: 100%;
     display: table;
     line-height: 0.8rem;
     border: 1px solid grey;
 }
+
+.tableManager{
+    height: 47vh;
+}
+.tableUser{
+    height: 70vh;
+}
+
 thead, tbody, th, td{
     padding: 0;
     border: 0;
@@ -69,7 +76,30 @@ nav ul a:hover {
 
 nav ul a{
     color:#333333;
+    font-size: large;
 }
 nav {
     background-color: #d9d9d9;
+}
+
+.left-container{
+    float:left;
+}
+
+.right_container{
+    overflow: hidden;
+}
+
+.template_planning_users {
+    max-height: 250px;
+    overflow: scroll;
+    list-style-type: none;
+}
+
+.collection .collection-item {
+    line-height: 1rem;
+}
+
+.toast{
+    color:black;
 }

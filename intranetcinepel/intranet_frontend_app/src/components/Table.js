@@ -50,18 +50,21 @@ var defaultColumn = {
 }
 
 // Be sure to pass our updateMyData
-function Table({ columns, data, updateMyData, isManager }) {
+function Table({ columns, data, updateMyData, isManager}) {
   // Otherwise, nothing is different here.
+  let classTable = '';
   if(isManager){
     defaultColumn = {
       Cell: EditableCell,
     }
+    classTable = "tableManager"
   }
   else
   {
     defaultColumn = {
       Cell: NonEditableCell,
     }
+    classTable = "tableUser"
   }
   
   const {
@@ -88,7 +91,7 @@ function Table({ columns, data, updateMyData, isManager }) {
   // Render the UI for your table
   return (
     <>
-      <table id="mytable"{...getTableProps()}>
+      <table className={classTable} id="mytable"{...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
