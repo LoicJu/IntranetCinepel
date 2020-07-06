@@ -118,6 +118,43 @@ function Table({ columns, data, updateMyData, isManager}) {
   )
 }
 
+// to put the weekends in lightgrey
+export function updateTableWeekends(){
+  // this set the weekend in light grey for more lisibility
+  var table = document.getElementById("mytable");
+  if(table){
+    var targetTRs = table.querySelectorAll('tr');
+    // set back all row to white
+    for (var i = 0; i < targetTRs.length; i++) {
+        targetTRs[i].style.backgroundColor = "white"
+    }
+    var targetTDsAll = table.querySelectorAll('tr > td');
+    // set all transparent
+    for (var i = 0; i < targetTDsAll.length; i++) {
+      targetTDsAll[i].style.backgroundColor = "transparent"
+    }
+    var targetTDs = table.querySelectorAll('tr > td:first-child');
+    // set the weekends to lightgrey
+    for (var i = 0; i < targetTDs.length; i++) {
+      var td = targetTDs[i];
+      if(((td.innerHTML.indexOf("Samedi"))>0)||((td.innerHTML.indexOf("Dimanche"))>0))
+      {
+        var parent = td.parentNode
+        parent.style.backgroundColor = "lightgrey";
+      }      
+    }
+    // set the case where the username is
+    for (var i = 0; i < targetTDsAll.length; i++) {
+      var td = targetTDsAll[i];
+      var testTd = td.innerHTML.toUpperCase()
+      if(testTd.indexOf((sessionStorage.getItem('username')).toUpperCase())>0)
+      {
+        td.style.backgroundColor = "rgb(255, 204, 102)";
+      }
+    }
+  }
+}
+
 export function ShowTable(datas) {
   const columns = datas.columns;
   const [data, setData] = React.useState(datas.dataSend);

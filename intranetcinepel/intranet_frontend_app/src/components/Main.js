@@ -24,6 +24,7 @@ import TemplatePlanning from './TemplatePlanning';
 import Schedule from './Schedule';
 import Informations from './Informations';
 import UserHandler from './UserHandler';
+import Profile from './Profile';
 
 import Error from './Error';
 
@@ -42,7 +43,7 @@ class Main extends Component {
                   </NavLink>
                 </div>
                 <div className="right">
-                  <ul id="nav-mobile" className="right hide-on-med-and-down">
+                  <ul id="nav-mobile" className="right">
                     <li>
                       <AuthContext.Consumer>
                       {(context) =>
@@ -90,6 +91,15 @@ class Main extends Component {
                     <li>
                       <AuthContext.Consumer>
                       {(context) =>
+                        (context.getIsAuthenticated() &&
+                            <NavLink exact to="/profile">Profil</NavLink>
+                        )
+                      }
+                      </AuthContext.Consumer>
+                    </li>
+                    <li>
+                      <AuthContext.Consumer>
+                      {(context) =>
                         (context.getIsAuthenticated() && context.getIsManager() &&
                             <NavLink exact to="/userHandler">Gérer les utilisateurs</NavLink>
                         )
@@ -116,6 +126,7 @@ class Main extends Component {
                 <Route exact path="/schedule" component={Schedule}/>
                 <Route exact path="/informations" component={Informations}/>
                 <Route exact path="/userHandler" component={UserHandler}/>
+                <Route exact path="/profile" component={Profile}/>
                 <Route exact path="/logout" component={Logout}/>
 
                 <Route exact path="/login" component={Login}/>

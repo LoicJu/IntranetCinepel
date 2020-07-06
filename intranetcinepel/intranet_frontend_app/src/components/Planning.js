@@ -5,7 +5,7 @@ import Error from './Error';
 import axios from 'axios';
 import Select from 'react-select';
 import { Button, Collection , CollectionItem} from 'react-materialize';
-import {ShowTable} from './Table';
+import {ShowTable, updateTableWeekends} from './Table';
 import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData, sameDay} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
@@ -307,6 +307,7 @@ class Planning extends Component {
         });
       }
     });
+    updateTableWeekends();
   }
 
   savePlanning(){
@@ -423,44 +424,6 @@ class Planning extends Component {
       }
     });
   };
-
-  componentDidUpdate(){
-    setTimeout(function () {
-      // this set the weekend in light grey for more lisibility
-      var table = document.getElementById("mytable");
-      if(table){
-        var targetTRs = table.querySelectorAll('tr');
-        // set back all row to white
-        for (var i = 0; i < targetTRs.length; i++) {
-            targetTRs[i].style.backgroundColor = "white"
-        }
-        var targetTDsAll = table.querySelectorAll('tr > td');
-        // set all transparent
-        for (var i = 0; i < targetTDsAll.length; i++) {
-          targetTDsAll[i].style.backgroundColor = "transparent"
-        }
-        var targetTDs = table.querySelectorAll('tr > td:first-child');
-        // set the weekends to lightgrey
-        for (var i = 0; i < targetTDs.length; i++) {
-          var td = targetTDs[i];
-          if(((td.innerHTML.indexOf("Samedi"))>0)||((td.innerHTML.indexOf("Dimanche"))>0))
-          {
-            var parent = td.parentNode
-            parent.style.backgroundColor = "lightgrey";
-          }      
-        }
-        // set the case where the username is
-        for (var i = 0; i < targetTDsAll.length; i++) {
-          var td = targetTDsAll[i];
-          var testTd = td.innerHTML.toUpperCase()
-          if(testTd.indexOf((sessionStorage.getItem('username')).toUpperCase())>0)
-          {
-            td.style.backgroundColor = "rgb(255, 204, 102)";
-          }
-        }
-      }
-    }, 50);
-  }
 
   componentWillUnmount() {
     this._isMounted = false;

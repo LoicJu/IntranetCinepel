@@ -66,15 +66,16 @@ render() {
   }
   return (
     <div className="container py-4">
+      <div className="intranet_classic">
       {this.state.is_reset &&
         <div>
-          <h1>Password is reset</h1>
-          <p>If the email you provided is linked to an account, you will soon recieve an email containing your new password.</p>
-          <p>Once you recieve the email and <Link to="/login">log in</Link>, don't forget to change your password (by updating profile inforamtions).</p>
+          <h1>Mise à jour de mot de passe</h1>
+          <p>Si l'email que vous avez fourni est lié à un compte, vous reveret bientôt un email contenant un nouveau mot de passe</p>
+          <p>Une fois que vous avez recu l'email, vous pouvez vous <Link to="/login">connecter</Link>, n'oublier pas de redéfinir votre mot de passe dans votre page de profil.</p>
         </div>}
       {!this.state.is_reset && !this.state.has_error &&
       <div>
-      <p>To reset your password, enter the email address linked to your account in the field below.</p>
+      <p>Pour mettre à jour votre mot de passe, entrez l'adresse email qui est lité à votre compte</p>
         <form onSubmit={this.submit_form}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -89,10 +90,11 @@ render() {
               />
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-danger">Reset password</button>
+            <button type="submit" className="btn btn-danger">réinitialiser le mot de passe</button>
           </div>
         </form>
         </div>}
+      </div>
     </div>
     );
   }

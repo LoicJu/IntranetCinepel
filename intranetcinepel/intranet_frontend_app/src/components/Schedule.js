@@ -6,8 +6,6 @@ import Error from './Error';
 import axios from 'axios';
 import { Button} from 'react-materialize';
 
-axios.defaults.withCredentials = true;
-
 class Schedule extends Component {
   _isMounted = false;
   static contextType = AuthContext
@@ -29,9 +27,10 @@ class Schedule extends Component {
     })
     .then(response => this.setState({ datasSchedule: response.data }))
     .catch(err => console.log('err', err));*/
+
+
     await axios.get('http://ticketapi.cinepel.ch:11709/2.0/tms?apikey=C1n3pelX4TMSNE5Qx4', {
-      headers: {'Access-Control-Allow-Origin': true},
-        mode: 'cors',
+      crossdomain: true,
     }).then(response => {
       /* eslint-disable */
       console.log('SUCCESS');
@@ -44,6 +43,7 @@ class Schedule extends Component {
   componentDidMount(){
     this._isMounted = true;
     // get the schedule
+    /*
     axios({
       method: 'get',
       headers: '"Access-Control-Allow-Origin":"*"',
@@ -71,6 +71,7 @@ class Schedule extends Component {
         });
       }
     });
+    */
   };
 
   componentWillUnmount() {
