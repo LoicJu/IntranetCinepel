@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .serializers import UserSerializer, TemplateSerializer, CalendarSerializer, RegisterSerializer, LoginSerializer
-from .models import Intranet_User, Template, Calendar
+from .serializers import UserSerializer, TemplateSerializer, CalendarSerializer, RegisterSerializer, LoginSerializer, ScheduleCinemaSerializer
+from .models import Intranet_User, Template, Calendar, ScheduleCinema
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -10,6 +10,8 @@ from rest_framework import status
 from knox.models import AuthToken
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
+
+import requests
 
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -111,26 +113,26 @@ class UserView(generics.GenericAPIView):
 
 class ResetPassord(generics.GenericAPIView):
     serializer_class = UserSerializer
-    subject = 'Intranet Cinepel Requested password reset'
-    sender = 'noreply@intranet.ch' # need to put in place
+    subject = 'Intranet Cinepel Reset de mot de passe'
+    sender = 'technique.projection@gmail.com'
     html_message ='''
-    <h2>Hello {0},</h2>
-    <p>You have requested to change your password for our website.</p>
-    <p>Your new password is: <b style="font-size:1.5em">{1}</b></p>
-    <p>You can change this password by updating your profile.</p>
-    <p>Have a nice day</p>
+    <h2>Bonjour {0},</h2>
+    <p>Vous avez demandé à changer votre mot de passe pour notre website.</p>
+    <p>Votre nouveau mot de passe est: <b style="font-size:1.5em">{1}</b></p>
+    <p>Vous pouvez toujours changer votre mot de passe sur votre page de profil.</p>
+    <p>Meilleures salutations</p>
     '''
     message ='''
-    Hello {0},
-    You have requested to change your password for our website.
-    Your new password is: {1}
-    You can change this password by updating your profile.
-    Have a nice day
+    Bonjour {0},
+    Vous avez demandé à changer votre mot de passe pour notre website.
+    Votre nouveau mot de passe est: {1}
+    Vous pouvez toujours changer votre mot de passe sur votre page de profil.
+    Meilleures salutations
     '''
 
     def patch(self, request, *args, **kwargs):
-        email = request.data['email']
-        if email:
+        if "email" in request.data.keys():
+            email = request.data['email']
             dest=[]
             try:
                 user = Intranet_User.objects.get(email__exact=email)
@@ -159,7 +161,6 @@ class ResetPassord(generics.GenericAPIView):
 
         return Response(response_body)
 
-# TODO permissions
 
 # create retrieve update or delete template
 class TemplateView(viewsets.ModelViewSet):
@@ -170,3 +171,7 @@ class TemplateView(viewsets.ModelViewSet):
 class CalendarView(viewsets.ModelViewSet):
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
+
+class ScheduleCinemaView(viewsets.ModelViewSet):
+    queryset = ScheduleCinema.objects.all()
+    serializer_class = ScheduleCinemaSerializer

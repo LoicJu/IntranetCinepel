@@ -9,6 +9,7 @@ from django.conf import settings
 import os
 from jsonfield import JSONField
 
+
 # Substituting a custom User model, adding necessary fields
 class Intranet_UserManager(BaseUserManager):
     def create_user(self, email, username, is_manager, city, password=None):
@@ -33,20 +34,36 @@ class Intranet_UserManager(BaseUserManager):
         """Patches the user with the given id"""
         user = None
         user = Intranet_User.objects.get(id__exact=user_id)
+
         username = request.data['username']
         user.username = username
 
-        email = request.data['email']
-        user.email = email
+        if "email" in request.data.keys():
+            email = request.data['email']
+            user.email = email
+        
+        if "city" in request.data.keys():
+            city = request.data['city']
+            user.city = city
 
-        city = request.data['city']
-        user.city = city
+        if "is_manager" in request.data.keys():
+            is_manager = request.data['is_manager']
+            if is_manager == "true":
+                user.is_manager = True
+            else:
+                user.is_manager = False
+        
+        if "infos" in request.data.keys():
+            infos = request.data['infos']
+            user.infos = infos
 
-        is_manager = request.data['is_manager']
-        if is_manager == "true":
-            user.is_manager = True
-        else:
-            user.is_manager = False
+        if "holidays" in request.data.keys():
+            holidays = request.data['holidays']
+            user.holidays = holidays
+
+        if "password" in request.data.keys():
+            password = request.data['password']
+            user.set_password(password)
         
         user.save()
 
@@ -79,7 +96,7 @@ class Template(models.Model):
         return data_file.read()
 
     templateCity = gettemplatecity()
-    id_create = models.ForeignKey(Intranet_User, on_delete=models.CASCADE, null=True)
+    id_create = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=50, default='template')
     template_content = JSONField(default=templateCity)
 
@@ -89,3 +106,6 @@ class Calendar(models.Model):
     id_creator = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
     date = models.TextField(null=True)
     specific_content = JSONField()
+
+class ScheduleCinema(models.Model):
+    content = models.TextField(null=True)

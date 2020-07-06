@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'template', views.TemplateView)
 router.register(r'calendar', views.CalendarView)
+router.register(r'schedule', views.ScheduleCinemaView)
 
 urlpatterns = [
     path('users/<int:pk>', views.UserView.as_view()),

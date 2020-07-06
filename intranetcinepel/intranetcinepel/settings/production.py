@@ -17,7 +17,6 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# todo when i have one, change it
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

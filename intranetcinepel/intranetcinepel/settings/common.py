@@ -22,6 +22,8 @@ AUTH_USER_MODEL = 'intranetapp.Intranet_User'
 
 # added 'intranetapp' and 'rest_framework'
 INSTALLED_APPS = [
+    'django_crontab', # to get the schedule 
+    'corsheaders', # to get from the api
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,12 +43,22 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CRONJOBS = [
+    ('* * * * *', 'intranetapp.cron.my_cron_job')
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://ticketapi.cinepel.ch",
+]
+
 
 ROOT_URLCONF = 'intranetcinepel.urls'
 
@@ -98,6 +110,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email server
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'technique.projection@gmail.com'
+EMAIL_HOST_PASSWORD = 'c1n3vital'
+EMAIL_USE_TLS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
