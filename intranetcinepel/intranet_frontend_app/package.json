@@ -51,6 +51,7 @@
     "react-super-responsive-table": "^5.1.1",
     "react-table": "^7.1.0",
     "react-window": "^1.8.5",
+    "react-xml-parser": "^1.1.6",
     "regenerator-runtime": "^0.13.5",
     "save": "^2.4.0",
     "style-loader": "^1.2.1",

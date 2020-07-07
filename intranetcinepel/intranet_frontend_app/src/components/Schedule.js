@@ -4,7 +4,9 @@ import { AuthContext } from './AuthProvider';
 import { Redirect } from 'react-router';
 import Error from './Error';
 import axios from 'axios';
+import regeneratorRuntime from "regenerator-runtime";
 import { Button} from 'react-materialize';
+
 
 class Schedule extends Component {
   _isMounted = false;
@@ -15,53 +17,51 @@ class Schedule extends Component {
       datasSchedule : null,
       error: null
     };
-    this.showSchedule = this.showSchedule.bind(this);
+    this.deleteSC = this.deleteSC.bind(this)
   };
 
-  async showSchedule(){
-    /*axios
-    .get('http://ticketapi.cinepel.ch:11709/2.0/tms?apikey=C1n3pelX4TMSNE5Qx4', {
-        method: 'GET',
-        mode: 'cors',
-        headers: { 'Access-Control-Allow-Origin': true },
-    })
-    .then(response => this.setState({ datasSchedule: response.data }))
-    .catch(err => console.log('err', err));*/
-
-
-    await axios.get('http://ticketapi.cinepel.ch:11709/2.0/tms?apikey=C1n3pelX4TMSNE5Qx4', {
-      crossdomain: true,
-    }).then(response => {
-      /* eslint-disable */
-      console.log('SUCCESS');
-      console.log(response.data);
-    }).catch((e) => {
-      console.log(e);
-    })
-  }
-
-  componentDidMount(){
-    this._isMounted = true;
-    // get the schedule
-    /*
-    axios({
-      method: 'get',
-      headers: '"Access-Control-Allow-Origin":"*"',
-      url: 'http://ticketapi.cinepel.ch:11709/2.0/tms?apikey=C1n3pelX4TMSNE5Qx4',
+  deleteSC(){
+    /*axios({
+      method: 'delete',
+      url: 'api/schedule/1',
     })
     .then((response) => {
-      console.log(response)
-      if (response.status === 200) {
-        if (this._isMounted){
-          console.log(response)
-          setState({
-            datasSchedule : response.data
-          })
-        }
+      if (response.status === 204) {
       }
     })
     .catch((error) => {
-      console.log(error)  
+      if(error.response) {
+      }
+    });*/
+    const parser = new DOMParser();
+    console.log(this.state.datasSchedule)
+    const xml = parser.parseFromString(this.state.datasSchedule, 'text/xml');
+    console.log(xml.querySelector('Screen').firstChild.textContent);
+  }
+
+  async componentDidMount(){
+    this._isMounted = true;
+    // get the schedule we'll always get the first one that'll be updated
+    
+    await axios({
+      method: 'get',
+      url: 'api/schedule/1',
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        if (this._isMounted){
+          var xmlParse = (response.data.content).slice(2,-1)
+          xmlParse = xmlParse.replaceAll("\\r","")
+          xmlParse = xmlParse.replaceAll("\\t","")
+          xmlParse = xmlParse.replaceAll("\\n","")
+          this.setState({
+            datasSchedule : xmlParse
+          })
+          console.log("test")
+        }
+      }
+    })
+    .catch((error) => { 
       if(error.response) {
         this.setState({
           error: {
@@ -71,7 +71,7 @@ class Schedule extends Component {
         });
       }
     });
-    */
+    console.log("re")
   };
 
   componentWillUnmount() {
@@ -86,7 +86,9 @@ class Schedule extends Component {
       <div className="intranet_classic">
         <div className="container">
           Bonjour, voici les horaires
-          <Button className="buttonCreate" variant="info" onClick={this.showSchedule}>Sauvegarder</Button>
+          <div>
+          <Button className="buttonCreate" variant="info" onClick={this.deleteSC}>Sauvegarder</Button>
+          </div>
         </div>
       </div>
       );

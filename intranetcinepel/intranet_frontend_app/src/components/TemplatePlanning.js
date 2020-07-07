@@ -225,6 +225,8 @@ class TemplatePlanning extends Component {
         this.setState({
           is_save: true,
         });
+        var toastHTML = '<span className="toast">Template mis à jour</span>';
+        M.toast({html: toastHTML});
       }
     })
     .catch((error) => {
