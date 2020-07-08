@@ -25,6 +25,10 @@ body {
     margin: 0 1em;
 }
 
+.table-container-schedule{
+    margin: 1em 1em;
+}
+
 table{
     width: 100%;
     display: table;

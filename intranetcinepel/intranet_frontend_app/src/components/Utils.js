@@ -20,6 +20,11 @@ export function getDayName(date){
     return (dayNames[dateNumber]);
 }
 
+export function getDayNameDate(date){
+  let dateNumber = date.getDay();
+  let dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+  return (dayNames[dateNumber] + ' ' + date.getDate() + ' ' + getMonthName(date));
+}
 // this function take the numbers of the month and year and return the days in this month
 export function getDaysInMonth(month, year){
     var date = new Date(year, month, 1);
@@ -29,6 +34,29 @@ export function getDaysInMonth(month, year){
         date.setDate(date.getDate() + 1);
     }
     return days;
+}
+
+export function getDayDate(dateToDay){
+  var date = new Date(dateToDay);
+  return date;
+}
+
+export function getHour(dateToHour){
+  var date = new Date(dateToHour);
+  return date.getHours() + ':' +  (date.getMinutes()<10?'0':'') + date.getMinutes()
+}
+
+export function onlyUniqueDate(needle, haystack) {
+  for (var i = 0; i < haystack.length; i++) {
+    if (needle.getDay() === haystack[i].getDay()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function onlyUnique(value, index, self) { 
+  return self.indexOf(value) === index;
 }
 
 export function getRowsDataTemplate(state){
