@@ -162,7 +162,6 @@ class ResetPassord(generics.GenericAPIView):
         return Response(response_body)
 
 
-# create retrieve update or delete template
 class TemplateView(viewsets.ModelViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
