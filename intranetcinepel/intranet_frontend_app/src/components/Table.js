@@ -120,6 +120,7 @@ function Table({ columns, data, updateMyData, isManager}) {
 
 // to put the weekends in lightgrey
 export function updateTableWeekends(){
+  setTimeout(function(){
   // this set the weekend in light grey for more lisibility
   var table = document.getElementById("mytable");
   if(table){
@@ -153,6 +154,7 @@ export function updateTableWeekends(){
       }
     }
   }
+  }, 50);
 }
 
 export function ShowTable(datas) {
