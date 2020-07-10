@@ -1,5 +1,9 @@
 import {getDatas} from './Table';
 
+/* -------------------
+functions for the dates
+------------------- */
+
 // get the name of the month to parse in the planning
 export function getMonthName(date){
     let monthNumber = (date.getMonth());
@@ -7,6 +11,7 @@ export function getMonthName(date){
     return(monthNames[monthNumber])
 }
 
+// compare if 2 days are the same
 export function sameDay(d1, d2) {
   return d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
@@ -20,6 +25,7 @@ export function getDayName(date){
     return (dayNames[dateNumber]);
 }
 
+// get the name in french of the day
 export function getDayNameDate(date){
   let dateNumber = date.getDay();
   let dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -36,36 +42,55 @@ export function getDaysInMonth(month, year){
     return days;
 }
 
+// get the date of a day
 export function getDayDate(dateToDay){
   var date = new Date(dateToDay);
   return date;
 }
 
+// only get the hour and minute
 export function getHour(dateToHour){
   var date = new Date(dateToHour);
   return date.getHours() + ':' +  (date.getMinutes()<10?'0':'') + date.getMinutes()
 }
 
-export function onlyUniqueDate(needle, haystack) {
-  for (var i = 0; i < haystack.length; i++) {
-    if (needle.getDay() === haystack[i].getDay()) {
+// return only different dates
+export function onlyUniqueDate(dayToFind, allDays) {
+  for (var i = 0; i < allDays.length; i++) {
+    if (dayToFind.getDay() === allDays[i].getDay()) {
       return true;
     }
   }
   return false;
 }
 
+/* -------------------
+general functions
+------------------- */
+
+// return only unique 
 export function onlyUnique(value, index, self) { 
   return self.indexOf(value) === index;
 }
 
-export function getRowsDataTemplate(state){
-    var items = state;
-    return items.map((row, index)=>{
-      return row
-    })
-  }
+// replace in str
+export function replaceAllStr(string, search, replace) {
+  return string.split(search).join(replace);
+}
 
+/* -------------------
+functions for the tables
+------------------- */
+
+// get rows for template
+export function getRowsDataTemplate(state){
+  var items = state;
+  return items.map((row, index)=>{
+    return row
+  })
+}
+
+// set Datas
 export function setDatas(state){
     let datas = state;
     let datasToSave = getDatas();
@@ -88,52 +113,56 @@ export function setDatas(state){
     return datas;
 }
 
+// get Header in a good way to react-table
 export function getHeader(state){
-    var keys = getKeys(state);
-    var nestedKeys = getNestedKeys(state);
-    return keys.map((key, index)=>{
-      let isNested = false;
-      let nesting = [];
-      for(var obj in nestedKeys){
-        if (nestedKeys[obj].key == key){
-          isNested = true;
-          nesting.push({'Header' : nestedKeys[obj].value  ,  'accessor' : nestedKeys[obj].value },);
-        }
+  var keys = getKeys(state);
+  var nestedKeys = getNestedKeys(state);
+  return keys.map((key, index)=>{
+    let isNested = false;
+    let nesting = [];
+    for(var obj in nestedKeys){
+      if (nestedKeys[obj].key == key){
+        isNested = true;
+        nesting.push({'Header' : nestedKeys[obj].value  ,  'accessor' : nestedKeys[obj].value },);
       }
-      if(isNested){
-        return{
-          Header: key,
-          columns:nesting,
-        }
-      }
-      else{
-        return {
-          Header: key,
-          accessor: key
-        };
-      }
-    })
-  }
-
-const getNestedKeys = (state) =>{
-    let nestedKeys = [];
-    for (var keyCont in state[0]){
-        for (var value in state[0][keyCont]){
-        if(state[0][keyCont] instanceof Object){
-            nestedKeys.push({
-            key : keyCont,
-            value : value
-            })
-        }
-        } 
     }
-    return nestedKeys;
+    if(isNested){
+      return{
+        Header: key,
+        columns:nesting,
+      }
+    }
+    else{
+      return {
+        Header: key,
+        accessor: key
+      };
+    }
+  })
 }
 
+// get the nested key (headers) if multiple ones
+const getNestedKeys = (state) =>{
+  let nestedKeys = [];
+  for (var keyCont in state[0]){
+      for (var value in state[0][keyCont]){
+      if(state[0][keyCont] instanceof Object){
+          nestedKeys.push({
+          key : keyCont,
+          value : value
+          })
+      }
+      } 
+  }
+  return nestedKeys;
+}
+
+// get keys
 const getKeys = (state) =>{
     return Object.keys(state[0]);
 }
 
+// get rows
 export function getRowsData(state){
     var items = state;
     var datas = [];

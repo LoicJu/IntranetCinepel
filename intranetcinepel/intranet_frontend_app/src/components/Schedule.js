@@ -5,9 +5,8 @@ import { Redirect } from 'react-router';
 import Error from './Error';
 import axios from 'axios';
 import regeneratorRuntime from "regenerator-runtime";
-import { Button} from 'react-materialize';
 import Select from 'react-select';
-import {onlyUnique, getHour, getDayDate, onlyUniqueDate, getDayNameDate} from './Utils'
+import {onlyUnique, getHour, getDayDate, onlyUniqueDate, getDayNameDate, replaceAllStr} from './Utils'
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
@@ -71,7 +70,6 @@ class Schedule extends Component {
       datasToRow.push(eachData)
       }
     );
-
     // get only unique dates
     var uniqueDates = [];
     for (var i = 0; i < datasDate.length; i++) {
@@ -79,6 +77,7 @@ class Schedule extends Component {
         uniqueDates.push(datasDate[i]);
       }
     }
+    
     // set all the date in dateData
     Object.keys(uniqueDates).forEach
       (key => this.state.dateData.push
@@ -94,30 +93,34 @@ class Schedule extends Component {
   }
 
   handleChangeGet(event){
+    var rowDatasToState = []
     for (const [key, value] of Object.entries(this.state.rowData)) {
       var dateRow = new Date(key)
       if(dateRow.getDate()==event.value.getDate()){
-        this.state.rowDataSpecific.push(value)
+        rowDatasToState.push(value)
       }
     }
-    this.setState({is_get : true})
+    this.setState({
+      is_get : true,
+      rowDataSpecific : rowDatasToState,
+    })
   }
 
   async componentDidMount(){
     this._isMounted = true;
     // get the schedule we'll always get the first one that'll be updated
-    
-    await axios({
-      method: 'get',
-      url: 'api/schedule/1',
+    await axios.get('api/schedule/1',{
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
-      if (response.status === 200) {
-        if (this._isMounted){
+      if (this._isMounted){
+        if (response.status === 200) {
           var xmlParse = (response.data.content).slice(2,-1)
-          xmlParse = xmlParse.replaceAll("\\r","")
-          xmlParse = xmlParse.replaceAll("\\t","")
-          xmlParse = xmlParse.replaceAll("\\n","")
+          xmlParse = replaceAllStr(xmlParse,"\\r","")
+          xmlParse = replaceAllStr(xmlParse,"\\t","")
+          xmlParse = replaceAllStr(xmlParse,"\\n","")
           this.setState({
             datasSchedule : xmlParse
           })
@@ -167,7 +170,7 @@ class Schedule extends Component {
     return (
       <div className="intranet_classic">
         <div className="container">
-          <h2>Horaires</h2>
+          <h1>Horaires</h1>
           <div>
           <Select 
             placeholder="Choisissez la date"

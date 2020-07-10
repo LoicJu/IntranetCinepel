@@ -73,9 +73,10 @@ class TemplatePlanning extends Component {
   }
 
   handleChangeState(){
-    axios({
-      method: 'get',
-      url: 'api/template/',
+    axios.get('api/template/', {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -116,10 +117,10 @@ class TemplatePlanning extends Component {
     var templateFormData = new FormData();
     templateFormData.append('name', this.state.namePost);
     templateFormData.append('id_create', authed_user);
-    axios({
-      method: 'post',
-      url: 'api/template/',
-      data: templateFormData,
+    axios.post('api/template/', templateFormData ,{
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 201) {
@@ -144,9 +145,10 @@ class TemplatePlanning extends Component {
   // handle change and get 
   handleChangeGet(event){
     let id = this.state.nameIdTemplate[event.value]
-    axios({
-      method: 'get',
-      url: 'api/template/' + id,
+    axios.get('api/template/' + id, {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then(response => {
       if (response.status === 200) {
@@ -181,9 +183,10 @@ class TemplatePlanning extends Component {
     this.handleCloseModalDelete();
     // get id of template
     let id = this.state.nameIdTemplate[this.state.nameDel]
-    axios({
-      method: 'delete',
-      url: 'api/template/' + id,
+    axios.delete('api/template/' + id, {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 204) {
@@ -215,10 +218,10 @@ class TemplatePlanning extends Component {
     var templateSaveData = new FormData();
     let dataTemplate = JSON.stringify(this.state.content);
     templateSaveData.append('template_content', dataTemplate);
-    axios({
-      method: 'put',
-      url: 'api/template/' + id + '/',
-      data: templateSaveData,
+    axios.put('api/template/' + id + '/', templateSaveData,{
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 204) {
@@ -247,9 +250,10 @@ class TemplatePlanning extends Component {
     //to define the element modal
     Modal.setAppElement('body');
     // get all templates
-    axios({
-      method: 'get',
-      url: 'api/template/',
+    axios.get('api/template/',{
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -270,9 +274,10 @@ class TemplatePlanning extends Component {
       }
     });
     // fetch all users
-    axios({
-      method: 'get',
-      url: 'api/users/all',
+    axios.get('api/users/all',{
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {

@@ -94,7 +94,6 @@ class Planning extends Component {
     this.handleCloseModalCreate = this.handleCloseModalCreate.bind(this);
     this.handleShowModalDelete = this.handleShowModalDelete.bind(this);
     this.handleCloseModalDelete = this.handleCloseModalDelete.bind(this);
-
   };
   
   handleShowModalCreate(){
@@ -111,9 +110,10 @@ class Planning extends Component {
   }
 
   handleChangeState(){
-    axios({
-      method: 'get',
-      url: 'api/calendar/',
+    axios.get('api/calendar/', {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -157,9 +157,10 @@ class Planning extends Component {
     // close modal
     this.handleCloseModalCreate();
     // to get all the content from the template
-    await axios({
-      method: 'get',
-      url: 'api/template/' + this.state.idTemplate,
+    await axios.get('api/template/' + this.state.idTemplate, {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then(response => {
       if (response.status === 200) {
@@ -196,10 +197,10 @@ class Planning extends Component {
       planningFormData.append('id_creator', authed_user);
       planningFormData.append('date', this.state.datePlanningSubmit);
       planningFormData.append('specific_content', JSON.stringify(this.state.specificContentToSubmit));
-      axios({
-        method: 'post',
-        url: 'api/calendar/',
-        data: planningFormData,
+      axios.post('api/calendar/',  planningFormData, {
+        headers: {
+          'Authorization': "Token " + this.context.getToken()
+        }
       })
       .then((response) => {
         if (response.status === 201) {
@@ -253,9 +254,10 @@ class Planning extends Component {
   deletePlanning(){
     // close modal
     this.handleCloseModalDelete();
-    axios({
-      method: 'delete',
-      url: 'api/calendar/' + this.state.idPlanningDel,
+    axios.delete('api/calendar/' + this.state.idPlanningDel, {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 204) {
@@ -282,9 +284,10 @@ class Planning extends Component {
   // get the chosen calendar
   async handleGetPlanning(event){
     let id = this.state.nameIdPlanning[event.value]
-    await axios({
-      method: 'get',
-      url: 'api/calendar/' + id,
+    await axios.get('api/calendar/' + id, {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -317,10 +320,10 @@ class Planning extends Component {
     var planningSaveData = new FormData();
     let dataPlanning = JSON.stringify(this.state.specificContent);
     planningSaveData.append('specific_content', dataPlanning);
-    axios({
-      method: 'put',
-      url: 'api/calendar/' + id + '/',
-      data: planningSaveData,
+    axios.put('api/calendar/' + id + '/', planningSaveData,{
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 204) {
@@ -349,9 +352,10 @@ class Planning extends Component {
     //to define the element modal
     Modal.setAppElement('body');
     // get all templates
-    axios({
-      method: 'get',
-      url: 'api/template/',
+    axios.get('api/template/', {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -371,9 +375,10 @@ class Planning extends Component {
         });
       }
     });
-    axios({
-      method: 'get',
-      url: 'api/calendar/',
+    axios.get('api/calendar/', {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -398,9 +403,10 @@ class Planning extends Component {
       }
     });
     // fetch all users
-    axios({
-      method: 'get',
-      url: 'api/users/all',
+    axios.get('api/users/all', {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {

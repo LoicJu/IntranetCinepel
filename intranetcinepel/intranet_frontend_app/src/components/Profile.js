@@ -148,6 +148,9 @@ class Profile extends Component {
       <div className="intranet_classic">
         <div className="container">
           <h2>{this.state.username}</h2>
+          <p>
+            Vous pouvez changer votre mot de passe en en mettant un nouveau :
+          </p>
           <form onSubmit={this.submit_form}>
             <div className="form-group">
               <label htmlFor="password">Mot de passe</label>

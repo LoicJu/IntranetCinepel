@@ -41,6 +41,7 @@ class userHandler extends Component {
         username:'',
         email: '',
       },
+      error : null,
       showModalCreate : false,
       showModalEdit : false,
       // to know if created, delete, etc
@@ -62,9 +63,10 @@ class userHandler extends Component {
   }
   
   handleChangeState(){
-    axios({
-      method: 'get',
-      url: 'api/users/all',
+    axios.get('api/users/all', {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) { 
@@ -173,10 +175,10 @@ class userHandler extends Component {
     userFormData.append('city', this.state.cityCreate)
     axios.defaults.xsrfCookieName = 'csrftoken';
     axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-    await axios({
-      method: 'post',
-      url: 'api/auth/register',
-      data: userFormData,
+    await axios.post('api/auth/register', userFormData, {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -186,6 +188,7 @@ class userHandler extends Component {
       M.toast({html: toastHTML});
     })
     .catch((error) => {
+      console.log(error.response)
       if (error.response) {
         var errors = {...this.state.errors}
         if('email' in error.response.data) {
@@ -208,10 +211,10 @@ class userHandler extends Component {
     userEditData.append('city', this.state.cityEdit);
     userEditData.append('infos', this.state.infosEdit);
     userEditData.append('holidays', this.state.holidaysEdit);
-    await axios({
-      method: 'patch',
-      url: 'api/users/' + this.state.idEdit,
-      data: userEditData,
+    await axios.patch('api/users/' + this.state.idEdit, userEditData, {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -230,9 +233,10 @@ class userHandler extends Component {
   };
 
   deleteUser(event){
-    axios({
-      method: 'delete',
-      url: 'api/users/' + event,
+    axios.delete('api/users/' + event, {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
@@ -261,9 +265,10 @@ class userHandler extends Component {
     //to define the element modal
     Modal.setAppElement('body');
     // fetch all users
-    axios({
-      method: 'get',
-      url: 'api/users/all',
+    axios.get('api/users/all', {
+      headers: {
+        'Authorization': "Token " + this.context.getToken()
+      }
     })
     .then((response) => {
       if (response.status === 200) {
