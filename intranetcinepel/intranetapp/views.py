@@ -11,11 +11,13 @@ from knox.models import AuthToken
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 
+from rest_framework.permissions import IsAuthenticated
+
 import requests
 
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
-
+    permission_classes = [IsAuthenticated,]
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -42,23 +44,24 @@ class LoginAPI(generics.GenericAPIView):
 class AuthAPI(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
-    permission_classes = [
-        permissions.IsAuthenticated,
-    ]
+    permission_classes = [permissions.IsAuthenticated,]
 
     def get_object(self):
         return self.request.user
 
+# get all users, only by manager
 class UserList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated,]
     serializer_class = UserSerializer
     queryset = Intranet_User.objects.all()
-    #permission_classes = [permissions.IsAuthenticated] # TODO change to only admin or only manager
+
 
 class UserView(generics.GenericAPIView):
     serializer_class = UserSerializer
     user_not_found = Response(data={'detail': 'User not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request, *args, **kwargs):
+        permission_classes = [IsAuthenticated,]
         user_id = None
 
         if 'pk' in kwargs:
@@ -78,37 +81,41 @@ class UserView(generics.GenericAPIView):
         return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, *args, **kwargs):
-        user_id = None
-        
-        if 'pk' in kwargs:
-            user_id = kwargs['pk']
-            try:
-                user = Intranet_User.objects.patch_user(user_id, request)
-            except Exception as e:
-                return self.user_not_found
+        if request.user.is_manager:
+            permission_classes = [IsAuthenticated,] 
+            user_id = None
+            
+            if 'pk' in kwargs:
+                user_id = kwargs['pk']
+                try:
+                    user = Intranet_User.objects.patch_user(user_id, request)
+                except Exception as e:
+                    return self.user_not_found
 
-            response_body = {
-                'user': UserSerializer(user).data,
-            }
+                response_body = {
+                    'user': UserSerializer(user).data,
+                }
 
-            return Response(response_body)
+                return Response(response_body)
         return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+    
     def delete(self, request, *args, **kwargs):
-        user_id = None
+        if request.user.is_manager:
+            permission_classes = [IsAuthenticated,]
+            user_id = None
 
-        if 'pk' in kwargs:
-            user_id = kwargs['pk']
-            user = None
+            if 'pk' in kwargs:
+                user_id = kwargs['pk']
+                user = None
 
-            try:
-                user = Intranet_User.objects.get(id__exact=user_id)
-            except Exception as e:
-                return self.user_not_found
+                try:
+                    user = Intranet_User.objects.get(id__exact=user_id)
+                except Exception as e:
+                    return self.user_not_found
 
-            user.delete()
+                user.delete()
 
-            return Response(data={'detail': 'User was deleted successfully'})
+                return Response(data={'detail': 'User was deleted successfully'})
         return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ResetPassord(generics.GenericAPIView):
@@ -163,14 +170,17 @@ class ResetPassord(generics.GenericAPIView):
 
 
 class TemplateView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated,]
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
 
 
 class CalendarView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated,]
     queryset = Calendar.objects.all()
     serializer_class = CalendarSerializer
 
 class ScheduleCinemaView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated,]
     queryset = ScheduleCinema.objects.all()
     serializer_class = ScheduleCinemaSerializer

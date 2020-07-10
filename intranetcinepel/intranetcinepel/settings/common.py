@@ -36,8 +36,11 @@ INSTALLED_APPS = [
     'intranet_frontend_app', # enable the frontend app
     ]
 
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
+    ]
 }
 
 MIDDLEWARE = [
