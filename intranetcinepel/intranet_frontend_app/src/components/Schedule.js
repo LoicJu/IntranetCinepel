@@ -30,6 +30,7 @@ class Schedule extends Component {
   };
 
 
+  
   setSchedule(){
     // parse the xml
     const parser = new DOMParser();
@@ -45,7 +46,7 @@ class Schedule extends Component {
     this.state.columns.push({"headerName" : "heure", "field" : "heure"})
     Object.keys(columnUnique).forEach
       (key => this.state.columns.push
-          ({"headerName" : columnUnique[key], "field" : columnUnique[key]})
+          ({"headerName" : columnUnique[key], "field" : columnUnique[key], resizable: true })
       );
     
     // we parse the 4 datas we need
@@ -138,7 +139,18 @@ class Schedule extends Component {
       }
     });
     if(this._isMounted){
+      // set the schedule
       this.setSchedule()
+      // add an eventlistener on the resize of the window
+      window.addEventListener('resize', this.sizeToFit);
+
+    }
+  };
+
+  // will size the column with the window
+  sizeToFit = () => {
+    if(this.state.is_get){
+      this.gridApi.sizeColumnsToFit();
     }
   };
 
@@ -146,6 +158,13 @@ class Schedule extends Component {
     this._isMounted = false;
   }
   
+  // to set the good size
+  onGridReady = params => {
+    this.gridApi = params.api;
+    this.sizeToFit()
+  }
+
+  //render the page
   render() {
     let table = <div></div>;
     if (!this.context.getIsAuthenticated()) {
@@ -156,14 +175,13 @@ class Schedule extends Component {
     }
     if(this.state.is_get){
       table = <div
-      className="ag-theme-alpine tableUser"
-      style={{
-      width: '100%',
-       }}
+      className="ag-theme-alpine tableSchedule"
       >
       <AgGridReact
         columnDefs={this.state.columns}
-        rowData={this.state.rowDataSpecific}>
+        rowData={this.state.rowDataSpecific}
+        onGridReady={this.onGridReady}
+        >
       </AgGridReact>
       </div>
     }

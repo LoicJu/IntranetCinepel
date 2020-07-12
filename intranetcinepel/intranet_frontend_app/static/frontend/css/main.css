@@ -29,18 +29,24 @@ body {
     margin: 1em 1em;
 }
 
+.tableManager{
+    height: 47vh;
+}
+
+.tableUser{
+    height: 70vh;
+}
+
+.tableSchedule{
+    height: 70vh;
+    width:100%;
+}
+
 table{
     width: 100%;
     display: table;
     line-height: 0.8rem;
     border: 1px solid grey;
-}
-
-.tableManager{
-    height: 47vh;
-}
-.tableUser{
-    height: 70vh;
 }
 
 thead, tbody, th, td{

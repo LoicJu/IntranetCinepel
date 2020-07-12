@@ -204,7 +204,7 @@ class userHandler extends Component {
     axios({
       method: 'patch',
       url: 'api/auth/resetPassword',
-      data: userPasswordFormData,
+      data: userPasswordFormData  ,
     })
     .then((response) => {
       this.setState({ is_created: true });
