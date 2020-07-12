@@ -197,6 +197,27 @@ class userHandler extends Component {
         }
       }
     });
+    // immediatly reset password
+    let userPasswordFormData = new FormData();
+    userPasswordFormData.append('email', this.state.emailCreate);
+
+    axios({
+      method: 'patch',
+      url: 'api/auth/resetPassword',
+      data: userPasswordFormData,
+    })
+    .then((response) => {
+      this.setState({ is_created: true });
+    })
+    .catch((error) => {
+      this.setState({
+        error: {
+          status: error.response.status + ' ' + error.response.statusText,
+          detail: error.response.data.detail,
+        }
+      });
+    }
+    );
     this.handleChangeState();
   }
 
