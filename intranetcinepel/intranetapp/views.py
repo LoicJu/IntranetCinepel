@@ -169,6 +169,7 @@ class ResetPassord(generics.GenericAPIView):
 
 
 class TemplateView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated,]
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
 
