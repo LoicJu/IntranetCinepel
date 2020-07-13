@@ -81,22 +81,21 @@ class UserView(generics.GenericAPIView):
         return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def patch(self, request, *args, **kwargs):
-        if request.user.is_manager:
-            permission_classes = [IsAuthenticated,] 
-            user_id = None
-            
-            if 'pk' in kwargs:
-                user_id = kwargs['pk']
-                try:
-                    user = Intranet_User.objects.patch_user(user_id, request)
-                except Exception as e:
-                    return self.user_not_found
+        permission_classes = [IsAuthenticated,] 
+        user_id = None
+        
+        if 'pk' in kwargs:
+            user_id = kwargs['pk']
+            try:
+                user = Intranet_User.objects.patch_user(user_id, request)
+            except Exception as e:
+                return self.user_not_found
 
-                response_body = {
-                    'user': UserSerializer(user).data,
-                }
+            response_body = {
+                'user': UserSerializer(user).data,
+            }
 
-                return Response(response_body)
+            return Response(response_body)
         return Response(data={'detail': 'Unexpected error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def delete(self, request, *args, **kwargs):
@@ -170,7 +169,6 @@ class ResetPassord(generics.GenericAPIView):
 
 
 class TemplateView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
 

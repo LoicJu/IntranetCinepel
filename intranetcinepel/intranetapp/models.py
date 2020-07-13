@@ -8,7 +8,7 @@ from rest_framework import status
 from django.conf import settings
 import os
 from jsonfield import JSONField
-
+import json
 
 # Substituting a custom User model, adding necessary fields
 class Intranet_UserManager(BaseUserManager):
@@ -92,10 +92,14 @@ class Intranet_User(AbstractBaseUser):
 class Template(models.Model):
     def gettemplatecity():
         file_path = os.path.join(settings.MEDIA_ROOT, 'defaultTemplate/templateNE.json')
-        data_file = open(file_path , 'r')       
-        return data_file.read()
+        data_obj = {}
+        with open(file_path, 'r') as f:
+            data_obj = json.load(f)       
+        return data_obj
 
+    templateCity = {}
     templateCity = gettemplatecity()
+    gettemplatecity()
     id_create = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=50, default='template')
     template_content = JSONField(default=templateCity)
