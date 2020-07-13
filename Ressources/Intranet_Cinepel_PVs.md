@@ -57,4 +57,74 @@ Personnes présentes:
 * Loïc Jurasz
 * Nabil Ouerhani
 * Alexandre Soussi
-* Sandrine Liscia
+
+Nous avons discuté de la façon de faire, nous nous sommes mit d'accord sur la base de données.
+
+## PV du 19.05.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+* Alexandre Soussi
+
+le choix de faire un API avec django a été prise et le choix du framework pour le frontend va encore être réfléchi.
+
+Une autre réunion avec Mme Liscia a validé les maquettes
+
+## PV du 27.05.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+
+Présentation du début de l'api
+
+## PV du 03.06.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+
+Présentation de l'avancée du travail et de l'argumentation en faveur de gitlab plutôt que github
+
+## PV du 10.06.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+
+Rendu de l'argumentation pour le choix du framework frontend
+
+## PV du 17.06.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+
+Présentation de l'avancée du travail et du début du frontend
+
+## PV du 24.06.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+
+Demande de l'architexture du rapport
+
+## PV du 01.07.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+
+Présentation de l'avancée du travail, compte-rendu de l'architecture du rapport
+
+## PV du 08.07.2020
+
+Personnes présentes:
+* Loïc Jurasz
+* Nabil Ouerhani
+
+Organisation de la fin du travail ainsi que du rapport
+
+## PV du 15.07.2020
