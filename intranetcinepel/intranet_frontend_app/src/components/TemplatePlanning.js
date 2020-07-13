@@ -7,19 +7,9 @@ import Select from 'react-select';
 import { Button, Collection , CollectionItem} from 'react-materialize';
 import {setDatas, getHeader, getRowsData} from './Utils';
 import {ShowTable, updateTableWeekends} from './Table';
-import Modal from 'react-modal';
+import "react-responsive-modal/styles.css";
+import Modal from 'react-responsive-modal';
 
-// some custom style for the modals
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
 
 class TemplatePlanning extends Component {
   _isMounted = false;
@@ -247,59 +237,60 @@ class TemplatePlanning extends Component {
   
   componentDidMount(){
     this._isMounted = true;
-    //to define the element modal
-    Modal.setAppElement('body');
-    // get all templates
-    axios.get('api/template/',{
-      headers: {
-        'Authorization': "Token " + this.context.getToken()
-      }
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        if (this._isMounted){
-          Object.keys(response.data).forEach(key => this.state.nameAllTemplate.push({"value" : response.data[key].name, "label" : response.data[key].name}));
-          Object.keys(response.data).forEach(key => this.state.nameIdTemplate[response.data[key].name] = response.data[key].id);
+    if(this._isMounted)
+    {
+      // get all templates
+      axios.get('api/template/',{
+        headers: {
+          'Authorization': "Token " + this.context.getToken()
         }
-      }
-    })
-    .catch((error) => {
-      if(error.response) {
-        this.setState({
-          error: {
-            status: error.response.status + ' ' + error.response.statusText,
-            detail: error.response.data.detail,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          if (this._isMounted){
+            Object.keys(response.data).forEach(key => this.state.nameAllTemplate.push({"value" : response.data[key].name, "label" : response.data[key].name}));
+            Object.keys(response.data).forEach(key => this.state.nameIdTemplate[response.data[key].name] = response.data[key].id);
           }
-        });
-      }
-    });
-    // fetch all users
-    axios.get('api/users/all',{
-      headers: {
-        'Authorization': "Token " + this.context.getToken()
-      }
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        if (this._isMounted){
-          let allData = this.state.users;
-          response.data.map(user => allData.push(user));
+        }
+      })
+      .catch((error) => {
+        if(error.response) {
           this.setState({
-            users: allData,
+            error: {
+              status: error.response.status + ' ' + error.response.statusText,
+              detail: error.response.data.detail,
+            }
           });
         }
-      }
-    })
-    .catch((error) => {
-      if(error.response) {
-        this.setState({
-          error: {
-            status: error.response.status + ' ' + error.response.statusText,
-            detail: error.response.data.detail,
+      });
+      // fetch all users
+      axios.get('api/users/all',{
+        headers: {
+          'Authorization': "Token " + this.context.getToken()
+        }
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          if (this._isMounted){
+            let allData = this.state.users;
+            response.data.map(user => allData.push(user));
+            this.setState({
+              users: allData,
+            });
           }
-        });
-      }
-    });
+        }
+      })
+      .catch((error) => {
+        if(error.response) {
+          this.setState({
+            error: {
+              status: error.response.status + ' ' + error.response.statusText,
+              detail: error.response.data.detail,
+            }
+          });
+        }
+      });
+    }
   };
 
   componentWillUnmount() {
@@ -327,7 +318,7 @@ class TemplatePlanning extends Component {
     }
     if(this.state.is_get){
       table = <ShowTable columns={getHeader(this.state.content)} dataSend={getRowsData(this.state.content)} isManager={this.context.getIsManager()}/>
-      button = <Button className="buttonCreate" variant="info" onClick={this.saveTemplate}>Sauvegarder</Button>
+      button = <Button className="buttonCreate" onClick={this.saveTemplate}>Sauvegarder</Button>
     }
     return (
       <div className="intranet_classic">
@@ -336,8 +327,8 @@ class TemplatePlanning extends Component {
             <div className="col-lg-6">
               <div className="center">
                 <h1>Template</h1>
-                <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un template</Button>
-                <Button className="buttonCreate" variant="info" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
+                <Button className="buttonCreate" onClick={this.handleShowModalCreate}>Créer un template</Button>
+                <Button className="buttonDelete" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
                 <Select 
                   placeholder="Choisissez le template"
                   onChange={this.handleChangeGet}
@@ -354,14 +345,13 @@ class TemplatePlanning extends Component {
             </div>
           </div>
             <Modal
-              isOpen={this.state.showModalCreate}
-              onRequestClose={this.handleCloseModalCreate}
-              style={customStyles}
-              contentLabel="Créer un template"
+              open={this.state.showModalCreate}
+              onClose={this.handleCloseModalCreate}
             >
+              <br></br>
               <form onSubmit={this.submitTemplate}>
                 <div className="form-group">
-                  <label>name</label>
+                  <label>nom</label>
                   <input
                     name="name"
                     type="text"
@@ -378,19 +368,20 @@ class TemplatePlanning extends Component {
               </form>
             </Modal>
             <Modal
-              isOpen={this.state.showModalDelete}
-              onRequestClose={this.handleCloseModalDelete}
-              style={customStyles}
-              contentLabel="Créer un template"
+              open={this.state.showModalDelete}
+              onClose={this.handleCloseModalDelete}
             >
+              <br></br>
               <h4>Choisissez le template à supprimer</h4>
-              <Select 
-                onChange={this.handleChangeDel}
-                options={this.state.nameAllTemplate}
-              />
-              <br>
-              </br>
-              <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
+              <p>
+                <Select 
+                  onChange={this.handleChangeDel}
+                  options={this.state.nameAllTemplate}
+                />
+              </p>
+              <p>
+                <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
+              </p>
             </Modal>
         </div>
         <div className="table-container">

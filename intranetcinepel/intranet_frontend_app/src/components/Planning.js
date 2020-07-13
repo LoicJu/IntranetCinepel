@@ -9,34 +9,9 @@ import {ShowTable, updateTableWeekends} from './Table';
 import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData, sameDay} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
-import Modal from 'react-modal';
+import "react-responsive-modal/styles.css";
+import Modal from 'react-responsive-modal';
 require('react-month-picker-input/dist/react-month-picker-input.css');
-
-
-// some custom style for the modals
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    overflow: 'visible'
-  }
-};
-
-const customStylesCreate ={
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    overflow: 'visible'
-  }
-};
 
 class Planning extends Component {
   _isMounted = false;
@@ -349,8 +324,6 @@ class Planning extends Component {
   // get all templates names and plannings names 
   componentDidMount(){
     this._isMounted = true; 
-    //to define the element modal
-    Modal.setAppElement('body');
     // get all templates
     axios.get('api/template/', {
       headers: {
@@ -464,8 +437,8 @@ class Planning extends Component {
             <div className="col-lg-6">
               <div className="center">
                 <h1>Planning</h1>
-                <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un planning</Button>
-                <Button className="buttonCreate" variant="info" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
+                <Button className="buttonCreate" onClick={this.handleShowModalCreate}>Créer un planning</Button>
+                <Button className="buttonDelete" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
                 <Select 
                   className="selectMonth"
                   placeholder="Choisissez le planning"
@@ -483,11 +456,10 @@ class Planning extends Component {
             </div>
           </div>
           <Modal
-            isOpen={this.state.showModalCreate}
-            onRequestClose={this.handleCloseModalCreate}
-            style={customStylesCreate}
-            contentLabel="Créer un planning"
+            open={this.state.showModalCreate}
+            onClose={this.handleCloseModalCreate}
           >
+          <br></br>
           <form onSubmit={this.submitPlanning}>
             <div className="form-group">
               <label>Template de base</label>
@@ -514,17 +486,20 @@ class Planning extends Component {
           </form>
           </Modal>
           <Modal
-            isOpen={this.state.showModalDelete}
-            onRequestClose={this.handleCloseModalDelete}
-            style={customStyles}
-            contentLabel="Créer un template"
+            open={this.state.showModalDelete}
+            onClose={this.handleCloseModalDelete}
           >
+          <br></br>
           <h4>Choisissez le planning à supprimer</h4>
-          <Select 
-            onChange={this.handleChangeDel}
-            options={this.state.nameAllPlanning}
-          />
-          <Button className="buttonCreate" onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
+          <p>
+            <Select 
+              onChange={this.handleChangeDel}
+              options={this.state.nameAllPlanning}
+            />
+          </p>
+          <p>
+            <Button className="buttonCreate" onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
+          </p>
           </Modal>
         </div>
         <div className="table-container">

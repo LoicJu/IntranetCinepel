@@ -3,18 +3,9 @@ import axios from 'axios';
 import { AuthContext } from './AuthProvider';
 import { Redirect } from 'react-router';
 import { Button, Collection , CollectionItem} from 'react-materialize';
-import Modal from 'react-modal';
+import "react-responsive-modal/styles.css";
+import Modal from 'react-responsive-modal';
 
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
 
 class userHandler extends Component {
   _isMounted = false;
@@ -283,35 +274,37 @@ class userHandler extends Component {
   //fetch all users in users
   componentDidMount(){
     this._isMounted = true;
-    //to define the element modal
-    Modal.setAppElement('body');
-    // fetch all users
-    axios.get('api/users/all', {
-      headers: {
-        'Authorization': "Token " + this.context.getToken()
-      }
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        if (this._isMounted){
-          let allData = this.state.users;
-          response.data.map(user => allData.push(user));
+
+    if(this._isMounted)
+    {
+      // fetch all users
+      axios.get('api/users/all', {
+        headers: {
+          'Authorization': "Token " + this.context.getToken()
+        }
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          if (this._isMounted){
+            let allData = this.state.users;
+            response.data.map(user => allData.push(user));
+            this.setState({
+              users: allData,
+            });
+          }
+        }
+      })
+      .catch((error) => {
+        if(error.response) {
           this.setState({
-            users: allData,
+            error: {
+              status: error.response.status + ' ' + error.response.statusText,
+              detail: error.response.data.detail,
+            }
           });
         }
-      }
-    })
-    .catch((error) => {
-      if(error.response) {
-        this.setState({
-          error: {
-            status: error.response.status + ' ' + error.response.statusText,
-            detail: error.response.data.detail,
-          }
-        });
-      }
-    });
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -327,7 +320,7 @@ class userHandler extends Component {
         <CollectionItem key={User.id}>
           <h4>{User.username}</h4>
           <Button className="buttonUser" onClick={this.handleShowModalEdit.bind(this, User)}>Editer</Button>
-          <Button onClick={e =>
+          <Button className="buttonDelete" onClick={e =>
             window.confirm("Etes-vous sûr de vouloir supprimer cet employé ?") &&
             this.deleteUser(User.id)
           }>Supprimer</Button>
@@ -362,10 +355,8 @@ class userHandler extends Component {
           </div> 
         }
         <Modal
-          isOpen={this.state.showModalCreate}
-          onRequestClose={this.handleCloseModalCreate}
-          style={customStyles}
-          contentLabel="Créer un utilisateur"
+          open={this.state.showModalCreate}
+          onClose={this.handleCloseModalCreate}
         >
           <h2>Créer un utilisateur</h2>
           <form onSubmit={this.submitForm}>
@@ -427,10 +418,8 @@ class userHandler extends Component {
           <button className="btn btn-light" onClick={this.handleCloseModalCreate}>Annuler</button>
         </Modal>
         <Modal
-          isOpen={this.state.showModalEdit}
-          onRequestClose={this.handleCloseModalEdit}
-          style={customStyles}
-          contentLabel="Editer un utilisateur"
+          open={this.state.showModalEdit}
+          onClose={this.handleCloseModalEdit}
         >
           <h2>{this.state.usernameEdit}</h2>
           <form onSubmit={this.updateUser}>

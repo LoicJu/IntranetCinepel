@@ -17,6 +17,13 @@ body {
     margin: 0.5em 0.5em 0.5em 0.5em;
 }
 
+.buttonDelete {
+    margin: 0.5em 0.5em 0.5em 0.5em;
+}
+.buttonDelete:hover{
+    background-color: red;
+}
+
 .selectMonth{
     margin: 0 0 2em 0;
 }
@@ -113,3 +120,10 @@ nav {
 .toast{
     color:black;
 }
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    nav ul a{
+        font-size: small;
+    }
+  }

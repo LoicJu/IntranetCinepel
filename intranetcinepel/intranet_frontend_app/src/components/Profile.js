@@ -149,7 +149,8 @@ class Profile extends Component {
         <div className="container">
           <h2>{this.state.username}</h2>
           <p>
-            Vous pouvez changer votre mot de passe en en mettant un nouveau :
+            Vous pouvez changer votre mot de passe en en mettant un nouveau.
+            N'oubliez pas de le faire après votre première connexion.
           </p>
           <form onSubmit={this.submit_form}>
             <div className="form-group">

@@ -37,13 +37,13 @@ class Main extends Component {
           <MessageProvider>
             <header>
               <nav>
-                <div className="brand-logo">
+                <div className="brand-logo left hide-on-med-and-down">
                   <NavLink exact to="/">
                     <img className="logo-img" src="/static/frontend/logo/cinepel_logo.png" alt="cinepel_logo"/>
                   </NavLink>
                 </div>
                 <div className="right">
-                  <ul id="nav-mobile" className="right">
+                  <ul className="right">
                     <li>
                       <AuthContext.Consumer>
                       {(context) =>
