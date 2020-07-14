@@ -419,6 +419,11 @@ class Planning extends Component {
         </CollectionItem>
       )
     });
+    // to select in users when adding in template
+    let usernameList = [];
+    this.state.users.map(User =>{
+      usernameList.push(<option key={User.id} value={User.username}></option>)
+    })
     // data to parse in table
     let table = <div></div>;
     let button = <div></div>;
@@ -432,6 +437,9 @@ class Planning extends Component {
     if(this.context.getIsManager()){
       return (
       <div className="intranet_classic">
+        <datalist id="userlist">
+          {usernameList}
+        </datalist>
         <div className="container">
           <div className="row">
             <div className="col-lg-6">

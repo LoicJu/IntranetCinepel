@@ -27,6 +27,7 @@ const EditableCell = ({
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue)
 
+  
   const onChange = e => {
     setValue(e.target.value)
   }
@@ -41,7 +42,7 @@ const EditableCell = ({
     setValue(initialValue)
   }, [initialValue])
 
-  return <input className="input-values" value={value} onChange={onChange} onBlur={onBlur} />
+  return <input list="userlist" className="input-values" value={value} onChange={onChange} onBlur={onBlur} />
 }
 
 // Set our editable cell renderer as the default Cell renderer
@@ -51,6 +52,7 @@ var defaultColumn = {
 
 // Be sure to pass our updateMyData
 function Table({ columns, data, updateMyData, isManager}) {
+
   // Otherwise, nothing is different here.
   let classTable = '';
   if(isManager){

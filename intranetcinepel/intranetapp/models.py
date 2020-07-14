@@ -99,7 +99,6 @@ class Template(models.Model):
 
     templateCity = {}
     templateCity = gettemplatecity()
-    gettemplatecity()
     id_create = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=50, default='template')
     template_content = JSONField(default=templateCity)

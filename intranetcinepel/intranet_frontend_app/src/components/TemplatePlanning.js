@@ -308,6 +308,11 @@ class TemplatePlanning extends Component {
         </CollectionItem>
       )
     });
+    // to select in users when adding in template
+    let usernameList = [];
+    this.state.users.map(User =>{
+      usernameList.push(<option key={User.id} value={User.username}></option>)
+    })
     let table = <div></div>;
     let button = <div></div>;
     if (!this.context.getIsAuthenticated() || !this.context.getIsManager()) {
@@ -317,11 +322,14 @@ class TemplatePlanning extends Component {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     if(this.state.is_get){
-      table = <ShowTable columns={getHeader(this.state.content)} dataSend={getRowsData(this.state.content)} isManager={this.context.getIsManager()}/>
+      table = <ShowTable columns={getHeader(this.state.content)} dataSend={getRowsData(this.state.content)} isManager={this.context.getIsManager()} usernameList={usernameList}/>
       button = <Button className="buttonCreate" onClick={this.saveTemplate}>Sauvegarder</Button>
     }
     return (
       <div className="intranet_classic">
+        <datalist id="userlist">
+          {usernameList}
+        </datalist>
         <div className="container">
           <div className="row">
             <div className="col-lg-6">
