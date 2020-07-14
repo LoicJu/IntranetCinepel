@@ -251,7 +251,7 @@ class userHandler extends Component {
       }
     })
     .then((response) => {
-      if (response.status === 200) {
+      if (response.status === 204) {
         this.handleChangeState()
         this.setState({
           is_delete: true,

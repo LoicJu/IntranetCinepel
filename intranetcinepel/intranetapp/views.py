@@ -184,6 +184,6 @@ class ScheduleCinemaView(viewsets.ModelViewSet):
     serializer_class = ScheduleCinemaSerializer
 
 class InformationView(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,]
+#    permission_classes = [IsAuthenticated,]
     queryset = Information.objects.all()
     serializer_class = InformationSerializer

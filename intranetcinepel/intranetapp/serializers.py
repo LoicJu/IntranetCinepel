@@ -54,4 +54,4 @@ class ScheduleCinemaSerializer(serializers.ModelSerializer):
 class InformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Information
-        fields = ('id', 'content')
+        fields = ('id', 'title', 'content')

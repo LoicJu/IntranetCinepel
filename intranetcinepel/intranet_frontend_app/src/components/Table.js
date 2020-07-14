@@ -42,6 +42,9 @@ const EditableCell = ({
     setValue(initialValue)
   }, [initialValue])
 
+  if(id=="Date"||id=="Vacance Scolaire"||id=="Evenement"){
+    return <input className="input-values" value={value} onChange={onChange} onBlur={onBlur} />
+  }
   return <input list="userlist" className="input-values" value={value} onChange={onChange} onBlur={onBlur} />
 }
 

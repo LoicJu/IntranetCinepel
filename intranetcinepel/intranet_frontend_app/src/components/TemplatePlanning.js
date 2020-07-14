@@ -30,9 +30,8 @@ class TemplatePlanning extends Component {
       // to show is create or get etc.
       is_get : false,
       is_created : false,
-      is_save : false,
-      error : null,
       is_delete : null,
+      error : null,
     };
     this.handleChangePost = this.handleChangePost.bind(this);
     this.handleChangeGet = this.handleChangeGet.bind(this);
@@ -214,10 +213,7 @@ class TemplatePlanning extends Component {
       }
     })
     .then((response) => {
-      if (response.status === 204) {
-        this.setState({
-          is_save: true,
-        });
+      if (response.status === 200) {
         var toastHTML = '<span className="toast">Template mis à jour</span>';
         M.toast({html: toastHTML});
       }
@@ -301,7 +297,7 @@ class TemplatePlanning extends Component {
     let usersList = [];
     this.state.users.map(User =>{
       usersList.push(
-        <CollectionItem key={User.id}>
+        <CollectionItem className="item-user" key={User.id}>
           <h5>{User.username}</h5>
           <label>Informations : </label>{User.infos}<br></br>
           <label>Vacances : </label>{User.holidays}
@@ -382,15 +378,15 @@ class TemplatePlanning extends Component {
             >
               <br></br>
               <h4>Choisissez le template à supprimer</h4>
-              <p>
+              <div>
                 <Select 
                   onChange={this.handleChangeDel}
                   options={this.state.nameAllTemplate}
                 />
-              </p>
-              <p>
+              </div>
+              <div>
                 <Button onClick={this.deleteTemplate} className="btn btn-danger">supprimer</Button>
-              </p>
+              </div>
             </Modal>
         </div>
         <div className="table-container">

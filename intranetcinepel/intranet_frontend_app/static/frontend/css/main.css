@@ -118,8 +118,8 @@ nav {
     list-style-type: none;
 }
 
-.collection .collection-item {
-    line-height: 0.6rem;
+.item-user{
+    line-height:0.6rem !important;
 }
 
 .toast{

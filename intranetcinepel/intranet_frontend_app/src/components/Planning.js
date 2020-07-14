@@ -55,7 +55,6 @@ class Planning extends Component {
       is_created : false,
       is_delete : false,
       is_get : false,
-      is_save : false,
       error: null,
     };
     this.pickAMonth = React.createRef();
@@ -308,11 +307,8 @@ class Planning extends Component {
       }
     })
     .then((response) => {
-      if (response.status === 204) {
-        this.setState({
-          is_save: true,
-        });
-        var toastHTML = '<span className="toast">Planning créé</span>';
+      if (response.status === 200) {
+        var toastHTML = '<span className="toast">Planning sauvegardé</span>';
         M.toast({html: toastHTML});
       }
     })
@@ -458,20 +454,10 @@ class Planning extends Component {
   render(){
     // get all the users
     let usersList = [];
-    this.state.users.map(User =>{
-      usersList.push(
-        <CollectionItem key={User.id}>
-          <h5>{User.username}</h5>
-          <label>Informations : </label>{User.infos}<br></br>
-          <label>Vacances : </label>{User.holidays}
-        </CollectionItem>
-      )
-    });
-    // to select in users when adding in template
+
+    // to select in users when adding in planning
     let usernameList = [];
-    this.state.users.map(User =>{
-      usernameList.push(<option key={User.id} value={User.username}></option>)
-    })
+
     // data to parse in table
     let table = <div></div>;
     let buttonSave = <div></div>;
@@ -485,6 +471,20 @@ class Planning extends Component {
       buttonExport = <Button className="button-create" variant="info" onClick={this.exportPlanning}>Exporter en pdf</Button>
     }
     if(this.context.getIsManager()){
+      // get all users
+      this.state.users.map(User =>{
+        usersList.push(
+          <CollectionItem className="item-user" key={User.id}>
+            <h5>{User.username}</h5>
+            <label>Informations : </label>{User.infos}<br></br>
+            <label>Vacances : </label>{User.holidays}
+          </CollectionItem>
+        )
+      });
+      // to select in users when adding in planning
+      this.state.users.map(User =>{
+        usernameList.push(<option key={User.id} value={User.username}></option>)
+      })
       return (
       <div className="intranet-classic">
         <datalist id="userlist">
@@ -551,15 +551,15 @@ class Planning extends Component {
           >
           <br></br>
           <h4>Choisissez le planning à supprimer</h4>
-          <p>
+          <div>
             <Select 
               onChange={this.handleChangeDel}
               options={this.state.nameAllPlanning}
             />
-          </p>
-          <p>
+          </div>
+          <div>
             <Button className="button-delete" onClick={this.deletePlanning}>supprimer</Button>
-          </p>
+          </div>
           </Modal>
         </div>
         <div className="table-container">
