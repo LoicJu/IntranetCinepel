@@ -149,7 +149,7 @@ class TemplatePLanningTest(TestCase):
         file_path = os.path.join(settings.MEDIA_ROOT, 'defaultTemplate/templateNE.json')
         data_file = open(file_path , 'r')       
         content =  data_file.read()
-        response = self.client.post('/api/calendar/', { 'id_template': template_id, 'id_creator': user_id , 'date': '01.07.2020', 'specific_content':content}, **headers)
+        response = self.client.post('/api/planning/', { 'id_template': template_id, 'id_creator': user_id , 'date': '01.07.2020', 'specific_content':content}, **headers)
         self.assertEqual(201, response.status_code)
         jsonResponse = json.loads(response.content)
 
@@ -157,6 +157,6 @@ class TemplatePLanningTest(TestCase):
         planning_specific_content = jsonResponse['specific_content']
 
         ## get planning
-        planning_get = Calendar.objects.get(id=planning_id)
+        planning_get = Planning.objects.get(id=planning_id)
         self.assertEqual(planning_get.id, planning_id)
         self.assertEqual(planning_get.specific_content, planning_specific_content)

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { AuthContext } from './AuthProvider';
 import { Redirect } from 'react-router';
 import axios from 'axios';
+import { Button } from 'react-materialize';
 
 class Profile extends Component {
   static contextType = AuthContext
@@ -183,8 +184,8 @@ class Profile extends Component {
             </div>
             <div className="form-group">
             {this.has_errors()
-                ? <button type="submit" className="btn btn-danger" disabled>confirmer</button>
-                : <button type="submit" className="btn btn-danger">confirmer</button>
+                ? <Button type="submit" className="button-create" disabled>confirmer</Button>
+                : <Button type="submit" className="button-create">confirmer</Button>
             }
             </div>
           </form>

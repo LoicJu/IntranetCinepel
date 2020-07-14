@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'template', views.TemplateView)
-router.register(r'calendar', views.CalendarView)
+router.register(r'planning', views.PlanningView)
 router.register(r'schedule', views.ScheduleCinemaView)
 
 urlpatterns = [

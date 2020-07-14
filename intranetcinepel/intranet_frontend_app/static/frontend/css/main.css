@@ -26,9 +26,13 @@ body {
     background-color: red;
 }
 
-/* put a margin on the month selector*/
+/* selector*/
 .select-month{
     margin: 0 0 2em 0;
+}
+
+.select-planning-template{
+    text-align: left;
 }
 
 /* decorate table*/

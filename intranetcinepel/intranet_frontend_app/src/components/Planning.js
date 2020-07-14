@@ -30,7 +30,7 @@ class Planning extends Component {
       content : [{}],
       // the specific content from the planning
       specificContent : [{}],
-      // date of the calendar
+      // date of the planning
       datePlanningGet : '',
       // to show all the planning, the "name" of the planning is the date
       nameIdPlanning : {},
@@ -85,7 +85,7 @@ class Planning extends Component {
   }
 
   handleChangeState(){
-    axios.get('api/calendar/', {
+    axios.get('api/planning/', {
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }
@@ -115,7 +115,7 @@ class Planning extends Component {
     });
   };
 
-  // get the correct id of the template from the calendar we want to submit
+  // get the correct id of the template from the planning we want to submit
   handleChangeSubmit(event){
     let id = this.state.nameIdTemplate[event.value];
     this.setState({idTemplate : id});
@@ -126,7 +126,7 @@ class Planning extends Component {
     // year, month, day, hours, minutes, seconds, milliseconds
     this.setState({datePlanningSubmit : new Date(dateEvent[1], dateEvent[0]-1, 1, 0, 0, 0, 0)});
   }
-  // store a new calendar test if calendar for this month already exist
+  // store a new planning test if planning for this month already exist
   async submitPlanning() {
     let authed_user = sessionStorage.getItem('authed_user');
     // close modal
@@ -172,7 +172,7 @@ class Planning extends Component {
       planningFormData.append('id_creator', authed_user);
       planningFormData.append('date', this.state.datePlanningSubmit);
       planningFormData.append('specific_content', JSON.stringify(this.state.specificContentToSubmit));
-      axios.post('api/calendar/',  planningFormData, {
+      axios.post('api/planning/',  planningFormData, {
         headers: {
           'Authorization': "Token " + this.context.getToken()
         }
@@ -229,7 +229,7 @@ class Planning extends Component {
   deletePlanning(){
     // close modal
     this.handleCloseModalDelete();
-    axios.delete('api/calendar/' + this.state.idPlanningDel, {
+    axios.delete('api/planning/' + this.state.idPlanningDel, {
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }
@@ -256,10 +256,10 @@ class Planning extends Component {
     });
   }
   
-  // get the chosen calendar
+  // get the chosen planning
   async handleGetPlanning(event){
     let id = this.state.nameIdPlanning[event.value]
-    await axios.get('api/calendar/' + id, {
+    await axios.get('api/planning/' + id, {
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }
@@ -295,7 +295,7 @@ class Planning extends Component {
     var planningSaveData = new FormData();
     let dataPlanning = JSON.stringify(this.state.specificContent);
     planningSaveData.append('specific_content', dataPlanning);
-    axios.put('api/calendar/' + id + '/', planningSaveData,{
+    axios.put('api/planning/' + id + '/', planningSaveData,{
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }
@@ -348,7 +348,7 @@ class Planning extends Component {
         });
       }
     });
-    axios.get('api/calendar/', {
+    axios.get('api/planning/', {
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }
@@ -452,6 +452,7 @@ class Planning extends Component {
                   placeholder="Choisissez le planning"
                   onChange={this.handleGetPlanning}
                   options={this.state.nameAllPlanning}
+                  className="select-planning-template"
                 />
               </div>
             </div>
@@ -506,7 +507,7 @@ class Planning extends Component {
             />
           </p>
           <p>
-            <Button className="button-create" onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
+            <Button className="button-delete" onClick={this.deletePlanning}>supprimer</Button>
           </p>
           </Modal>
         </div>
@@ -529,6 +530,7 @@ class Planning extends Component {
               placeholder="Choisissez le planning"
               onChange={this.handleGetPlanning}
               options={this.state.nameAllPlanning}
+              className="select-planning-template"
             />
         </div>
         <div className="table-container">

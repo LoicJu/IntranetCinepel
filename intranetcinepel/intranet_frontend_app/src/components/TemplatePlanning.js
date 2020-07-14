@@ -341,6 +341,7 @@ class TemplatePlanning extends Component {
                   placeholder="Choisissez le template"
                   onChange={this.handleChangeGet}
                   options={this.state.nameAllTemplate}
+                  className="select-planning-template"
                 />
               </div>
             </div>

@@ -103,8 +103,8 @@ class Template(models.Model):
     name = models.CharField(max_length=50, default='template')
     template_content = JSONField(default=templateCity)
 
-# model calendar
-class Calendar(models.Model):
+# model planning
+class Planning(models.Model):
     id_template = models.ForeignKey(Template, on_delete=models.SET_NULL, blank=True, null=True)
     id_creator = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
     date = models.TextField(null=True)

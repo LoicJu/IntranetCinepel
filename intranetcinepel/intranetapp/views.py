@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .serializers import UserSerializer, TemplateSerializer, CalendarSerializer, RegisterSerializer, LoginSerializer, ScheduleCinemaSerializer
-from .models import Intranet_User, Template, Calendar, ScheduleCinema
+from .serializers import UserSerializer, TemplateSerializer, PlanningSerializer, RegisterSerializer, LoginSerializer, ScheduleCinemaSerializer
+from .models import Intranet_User, Template, Planning, ScheduleCinema
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -174,10 +174,10 @@ class TemplateView(viewsets.ModelViewSet):
     serializer_class = TemplateSerializer
 
 
-class CalendarView(viewsets.ModelViewSet):
+class PlanningView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,]
-    queryset = Calendar.objects.all()
-    serializer_class = CalendarSerializer
+    queryset = Planning.objects.all()
+    serializer_class = PlanningSerializer
 
 class ScheduleCinemaView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,]

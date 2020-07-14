@@ -17,7 +17,6 @@ import Logout from './Logout';
 
 import AuthProvider from './AuthProvider';
 import {AuthContext} from './AuthProvider';
-import MessageProvider from './MessageProvider';
 
 import Planning from './Planning';
 import TemplatePlanning from './TemplatePlanning';
@@ -34,7 +33,6 @@ class Main extends Component {
     return (
       <HashRouter>
         <AuthProvider>
-          <MessageProvider>
             <header>
               <nav>
                 <div className="brand-logo left hide-on-med-and-down">
@@ -135,7 +133,6 @@ class Main extends Component {
                 <Route exact render={(props) => <Error {...props} status={'404 Not Found'} detail={'Requested page not found.'}/> }/>
               </Switch>
             </div>
-            </MessageProvider>
         </AuthProvider>
       </HashRouter>
     );

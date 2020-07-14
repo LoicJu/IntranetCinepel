@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Intranet_User, Template, Calendar, ScheduleCinema
+from .models import Intranet_User, Template, Planning, ScheduleCinema
 from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,10 +40,10 @@ class TemplateSerializer(serializers.ModelSerializer):
         fields = ('id', 'id_create', 'name', 'template_content')
 
 
-class CalendarSerializer(serializers.ModelSerializer):
+class PlanningSerializer(serializers.ModelSerializer):
     specific_content = serializers.JSONField()
     class Meta:
-        model = Calendar
+        model = Planning
         fields = ('id', 'id_template', 'id_creator', 'date', 'specific_content')
 
 class ScheduleCinemaSerializer(serializers.ModelSerializer):
