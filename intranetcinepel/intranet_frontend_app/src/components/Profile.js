@@ -145,7 +145,7 @@ class Profile extends Component {
       return (<Redirect to ="/login"/>);
     }
     return (
-      <div className="intranet_classic">
+      <div className="intranet-classic">
         <div className="container">
           <h2>{this.state.username}</h2>
           <p>

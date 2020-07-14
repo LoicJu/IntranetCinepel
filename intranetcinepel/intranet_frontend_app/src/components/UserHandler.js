@@ -319,8 +319,8 @@ class userHandler extends Component {
       usersList.push(
         <CollectionItem key={User.id}>
           <h4>{User.username}</h4>
-          <Button className="buttonUser" onClick={this.handleShowModalEdit.bind(this, User)}>Editer</Button>
-          <Button className="buttonDelete" onClick={e =>
+          <Button className="button-user" onClick={this.handleShowModalEdit.bind(this, User)}>Editer</Button>
+          <Button className="button-delete" onClick={e =>
             window.confirm("Etes-vous sûr de vouloir supprimer cet employé ?") &&
             this.deleteUser(User.id)
           }>Supprimer</Button>
@@ -344,15 +344,13 @@ class userHandler extends Component {
     }
     // return the page
     return (
-      <div className="intranet_classic">
+      <div className="intranet-classic">
         <div className="container">
-        <Button className="buttonCreate" variant="info" onClick={this.handleShowModalCreate}>Créer un utilisateur</Button>
+        <Button className="button-create" variant="info" onClick={this.handleShowModalCreate}>Créer un utilisateur</Button>
         {this.state.users.length > 0 &&
-           <div className="intranet_classic">
              <Collection header="Employés">
               {usersList}
             </Collection>
-          </div> 
         }
         <Modal
           open={this.state.showModalCreate}

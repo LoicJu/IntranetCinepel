@@ -9,7 +9,7 @@ class Informations extends Component {
       return (<Redirect to ="/login"/>);
     }
     return (
-      <div className="intranet_classic">
+      <div className="intranet-classic">
         <div className="container">
         <h2>Guide d'utilisateur</h2>
         <p>

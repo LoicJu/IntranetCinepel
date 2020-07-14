@@ -71,7 +71,7 @@ render() {
   }
   return (
     <div className="container pt-4">
-      <div className="intranet_classic">
+      <div className="intranet-classic">
         <form onSubmit={this.submit_form}>
           <div className="form-group">
             <label htmlFor="email">Email</label>

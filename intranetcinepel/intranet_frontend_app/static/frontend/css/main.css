@@ -1,4 +1,5 @@
-.intranet_classic{
+/* basic font color*/
+.intranet-classic{
     color:black;
 }
 
@@ -9,25 +10,28 @@ body {
     padding: 0px;
 }
 
-.buttonUser {
+/* decorate some buttons */
+.button-user {
     margin: 0 1em 0 0;
 }
 
-.buttonCreate {
+.button-create {
     margin: 0.5em 0.5em 0.5em 0.5em;
 }
 
-.buttonDelete {
+.button-delete {
     margin: 0.5em 0.5em 0.5em 0.5em;
 }
-.buttonDelete:hover{
+.button-delete:hover{
     background-color: red;
 }
 
-.selectMonth{
+/* put a margin on the month selector*/
+.select-month{
     margin: 0 0 2em 0;
 }
 
+/* decorate table*/
 .table-container{
     margin: 0 1em;
 }
@@ -36,15 +40,15 @@ body {
     margin: 1em 1em;
 }
 
-.tableManager{
+.table-manager{
     height: 47vh;
 }
 
-.tableUser{
+.table-user{
     height: 70vh;
 }
 
-.tableSchedule{
+.table-schedule{
     height: 70vh;
     width:100%;
 }
@@ -79,6 +83,9 @@ tr:nth-child{
 td{
     border: 1px solid #ddd;
 }
+
+/* input */
+
 .input-values{
     height : 0.8rem !important;
     font-size: 12px !important;
@@ -87,6 +94,7 @@ td{
     color: black !important;
 }
 
+/* navigation */
 nav ul a:hover {
     color:#ffffff;
 }
@@ -99,22 +107,15 @@ nav {
     background-color: #d9d9d9;
 }
 
-.left-container{
-    float:left;
-}
-
-.right_container{
-    overflow: hidden;
-}
-
-.template_planning_users {
-    max-height: 250px;
+/* to show*/
+.show-users {
+    max-height: 200px;
     overflow: scroll;
     list-style-type: none;
 }
 
 .collection .collection-item {
-    line-height: 1rem;
+    line-height: 0.6rem;
 }
 
 .toast{

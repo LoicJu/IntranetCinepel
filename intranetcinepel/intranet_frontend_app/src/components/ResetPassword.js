@@ -66,7 +66,7 @@ render() {
   }
   return (
     <div className="container py-4">
-      <div className="intranet_classic">
+      <div className="intranet-classic">
       {this.state.is_reset &&
         <div>
           <h1>Mise à jour de mot de passe</h1>

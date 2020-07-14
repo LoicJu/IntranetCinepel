@@ -432,11 +432,11 @@ class Planning extends Component {
     }
     if(this.state.is_get){
       table = <ShowTable columns={getHeader(this.state.specificContent)} dataSend={getRowsData(this.state.specificContent)} isManager={this.context.getIsManager()}/>
-      button = <Button className="buttonCreate" variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
+      button = <Button className="button-create" variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
     }
     if(this.context.getIsManager()){
       return (
-      <div className="intranet_classic">
+      <div className="intranet-classic">
         <datalist id="userlist">
           {usernameList}
         </datalist>
@@ -445,10 +445,10 @@ class Planning extends Component {
             <div className="col-lg-6">
               <div className="center">
                 <h1>Planning</h1>
-                <Button className="buttonCreate" onClick={this.handleShowModalCreate}>Créer un planning</Button>
-                <Button className="buttonDelete" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
+                <Button className="button-create" onClick={this.handleShowModalCreate}>Créer un planning</Button>
+                <Button className="button-delete" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
                 <Select 
-                  className="selectMonth"
+                  className="select-month"
                   placeholder="Choisissez le planning"
                   onChange={this.handleGetPlanning}
                   options={this.state.nameAllPlanning}
@@ -457,7 +457,7 @@ class Planning extends Component {
             </div>
             <div className="col-lg-6">
               {this.state.users.length > 0 &&
-                <Collection className="template_planning_users">
+                <Collection className="show-users">
                   {usersList}
                 </Collection>
               }
@@ -480,7 +480,7 @@ class Planning extends Component {
             <div className="form-group">
               <label>Date</label>
               <MonthPickerInput
-                className="selectMonth"
+                className="select-month"
                 year={2020}
                 month={5}
                 onChange={this.handleChangeSubmitMonth}
@@ -506,7 +506,7 @@ class Planning extends Component {
             />
           </p>
           <p>
-            <Button className="buttonCreate" onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
+            <Button className="button-create" onClick={this.deletePlanning} className="btn btn-danger">supprimer</Button>
           </p>
           </Modal>
         </div>
@@ -522,7 +522,7 @@ class Planning extends Component {
       return (<Error status={this.state.error.status} detail={this.state.error.detail}/>);
     }
     return (
-      <div className="intranet_classic">
+      <div className="intranet-classic">
         <div className="container">
           <h1>Planning</h1>
           <Select 

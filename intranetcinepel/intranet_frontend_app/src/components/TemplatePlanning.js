@@ -323,10 +323,10 @@ class TemplatePlanning extends Component {
     }
     if(this.state.is_get){
       table = <ShowTable columns={getHeader(this.state.content)} dataSend={getRowsData(this.state.content)} isManager={this.context.getIsManager()} usernameList={usernameList}/>
-      button = <Button className="buttonCreate" onClick={this.saveTemplate}>Sauvegarder</Button>
+      button = <Button className="button-create" onClick={this.saveTemplate}>Sauvegarder</Button>
     }
     return (
-      <div className="intranet_classic">
+      <div className="intranet-classic">
         <datalist id="userlist">
           {usernameList}
         </datalist>
@@ -335,8 +335,8 @@ class TemplatePlanning extends Component {
             <div className="col-lg-6">
               <div className="center">
                 <h1>Template</h1>
-                <Button className="buttonCreate" onClick={this.handleShowModalCreate}>Créer un template</Button>
-                <Button className="buttonDelete" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
+                <Button className="button-create" onClick={this.handleShowModalCreate}>Créer un template</Button>
+                <Button className="button-delete" onClick={this.handleShowModalDelete}>Supprimer un template</Button>
                 <Select 
                   placeholder="Choisissez le template"
                   onChange={this.handleChangeGet}
@@ -346,7 +346,7 @@ class TemplatePlanning extends Component {
             </div>
             <div className="col-lg-6">
               {this.state.users.length > 0 &&
-                <Collection className="template_planning_users">
+                <Collection className="show-users">
                   {usersList}
                 </Collection>
               }

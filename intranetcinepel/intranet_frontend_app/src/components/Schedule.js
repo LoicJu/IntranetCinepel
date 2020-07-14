@@ -175,7 +175,7 @@ class Schedule extends Component {
     }
     if(this.state.is_get){
       table = <div
-      className="ag-theme-alpine tableSchedule"
+      className="ag-theme-alpine table-schedule"
       >
       <AgGridReact
         columnDefs={this.state.columns}
@@ -186,7 +186,7 @@ class Schedule extends Component {
       </div>
     }
     return (
-      <div className="intranet_classic">
+      <div className="intranet-classic">
         <div className="container">
           <h1>Horaires</h1>
           <div>

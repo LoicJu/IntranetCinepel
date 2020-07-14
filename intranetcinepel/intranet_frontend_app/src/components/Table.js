@@ -59,14 +59,14 @@ function Table({ columns, data, updateMyData, isManager}) {
     defaultColumn = {
       Cell: EditableCell,
     }
-    classTable = "tableManager"
+    classTable = "table-manager"
   }
   else
   {
     defaultColumn = {
       Cell: NonEditableCell,
     }
-    classTable = "tableUser"
+    classTable = "table-user"
   }
   
   const {
