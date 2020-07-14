@@ -56,6 +56,7 @@ MIDDLEWARE = [
 
 CRONJOBS = [
     ('0 */6 * * *', 'intranetapp.cron.my_cron_job')
+    #('* * * * *', 'intranetapp.cron.my_cron_job')
 ]
 
 CORS_ORIGIN_WHITELIST = [

@@ -112,3 +112,6 @@ class Planning(models.Model):
 
 class ScheduleCinema(models.Model):
     content = models.TextField(null=True)
+
+class Information(models.Model):
+    content = models.TextField(null=True)

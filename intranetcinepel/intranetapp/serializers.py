@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Intranet_User, Template, Planning, ScheduleCinema
+from .models import Intranet_User, Template, Planning, ScheduleCinema, Information
 from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):
@@ -49,4 +49,9 @@ class PlanningSerializer(serializers.ModelSerializer):
 class ScheduleCinemaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScheduleCinema
+        fields = ('id', 'content')
+
+class InformationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Information
         fields = ('id', 'content')

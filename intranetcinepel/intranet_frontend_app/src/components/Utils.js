@@ -182,3 +182,29 @@ export function getRowsData(state){
     });
     return datas;
 }
+
+// get header to parse pdf
+export function getHeaderPdf(state){
+  var keys = getKeys(state);
+  var nestedKeys = getNestedKeys(state);
+  return keys.map((key, index)=>{
+    let isNested = false;
+    let nesting = [];
+    for(var obj in nestedKeys){
+      if (nestedKeys[obj].key == key){
+        isNested = true;
+        nesting.push({Header : nestedKeys[obj].value});
+      }
+    }
+    if(isNested){
+      return{
+        nesting
+      }
+    }
+    else{
+      return {
+        Header: key,
+      };
+    }
+  })
+}

@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register(r'template', views.TemplateView)
 router.register(r'planning', views.PlanningView)
 router.register(r'schedule', views.ScheduleCinemaView)
+router.register(r'information', views.InformationView)
 
 urlpatterns = [
     path("", include(router.urls)),

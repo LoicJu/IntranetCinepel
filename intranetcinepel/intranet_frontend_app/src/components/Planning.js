@@ -6,12 +6,18 @@ import axios from 'axios';
 import Select from 'react-select';
 import { Button, Collection , CollectionItem} from 'react-materialize';
 import {ShowTable, updateTableWeekends} from './Table';
-import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData, sameDay} from './Utils';
+import {getMonthName, getDayName, getDaysInMonth, getRowsDataTemplate, setDatas, getHeader, getRowsData, sameDay, getHeaderPdf} from './Utils';
 import MonthPickerInput from 'react-month-picker-input';
 import regeneratorRuntime from "regenerator-runtime";
 import "react-responsive-modal/styles.css";
 import Modal from 'react-responsive-modal';
+
+// for the month picker
 require('react-month-picker-input/dist/react-month-picker-input.css');
+
+// to export to pdf
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 class Planning extends Component {
   _isMounted = false;
@@ -63,6 +69,7 @@ class Planning extends Component {
     this.handleChangeDel = this.handleChangeDel.bind(this);
     this.deletePlanning = this.deletePlanning.bind(this);
     this.savePlanning = this.savePlanning.bind(this);
+    this.exportPlanning = this.exportPlanning.bind(this);
 
     // handle modals
     this.handleShowModalCreate = this.handleShowModalCreate.bind(this);
@@ -321,6 +328,47 @@ class Planning extends Component {
     });
   }
 
+  // to export to pdf
+  exportPlanning(){
+    
+    var headerToParse = getHeaderPdf(this.state.specificContent)
+    var headers=[[]]
+    headerToParse.map(obj=> {
+      if(obj.nesting){
+        obj.nesting.forEach(elem => headers[0].push(elem.Header))
+      }
+      else{
+        headers[0].push(obj.Header)
+      }
+    })
+    var datasToParse = getRowsData(this.state.specificContent)
+    var data = []
+    datasToParse.map(obj=> data.push(Object.values(obj)))
+    
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "landscape"; // portrait or landscape
+
+    const marginLeft = 40;
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    var e = document.getElementById("selectMonth");
+    const title = e.textContent;
+
+    let content = {
+      startY: 50,
+      head: headers,
+      body: data
+    };
+
+    doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save(title + ".pdf")
+    
+  }
+
   // get all templates names and plannings names 
   componentDidMount(){
     this._isMounted = true; 
@@ -426,13 +474,15 @@ class Planning extends Component {
     })
     // data to parse in table
     let table = <div></div>;
-    let button = <div></div>;
+    let buttonSave = <div></div>;
+    let buttonExport = <div></div>
     if (!this.context.getIsAuthenticated()) {
       return (<Redirect to ="/login"/>);
     }
     if(this.state.is_get){
       table = <ShowTable columns={getHeader(this.state.specificContent)} dataSend={getRowsData(this.state.specificContent)} isManager={this.context.getIsManager()}/>
-      button = <Button className="button-create" variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
+      buttonSave = <Button className="button-create" variant="info" onClick={this.savePlanning}>Sauvegarder</Button>
+      buttonExport = <Button className="button-create" variant="info" onClick={this.exportPlanning}>Exporter en pdf</Button>
     }
     if(this.context.getIsManager()){
       return (
@@ -448,6 +498,7 @@ class Planning extends Component {
                 <Button className="button-create" onClick={this.handleShowModalCreate}>Créer un planning</Button>
                 <Button className="button-delete" onClick={this.handleShowModalDelete}>Supprimer un planning</Button>
                 <Select 
+                  id="selectMonth"
                   className="select-month"
                   placeholder="Choisissez le planning"
                   onChange={this.handleGetPlanning}
@@ -515,7 +566,8 @@ class Planning extends Component {
           <h2>{this.state.namePlanning}</h2>
             {table}
         </div>
-        {button}
+        {buttonSave}
+        {buttonExport}
       </div>
       );
     }

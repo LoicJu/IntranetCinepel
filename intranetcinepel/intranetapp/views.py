@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .serializers import UserSerializer, TemplateSerializer, PlanningSerializer, RegisterSerializer, LoginSerializer, ScheduleCinemaSerializer
-from .models import Intranet_User, Template, Planning, ScheduleCinema
+from .serializers import UserSerializer, TemplateSerializer, PlanningSerializer, RegisterSerializer, LoginSerializer, ScheduleCinemaSerializer, InformationSerializer
+from .models import Intranet_User, Template, Planning, ScheduleCinema, Information
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
@@ -167,7 +167,6 @@ class ResetPassord(generics.GenericAPIView):
 
         return Response(response_body)
 
-
 class TemplateView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,]
     queryset = Template.objects.all()
@@ -183,3 +182,8 @@ class ScheduleCinemaView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,]
     queryset = ScheduleCinema.objects.all()
     serializer_class = ScheduleCinemaSerializer
+
+class InformationView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated,]
+    queryset = Information.objects.all()
+    serializer_class = InformationSerializer

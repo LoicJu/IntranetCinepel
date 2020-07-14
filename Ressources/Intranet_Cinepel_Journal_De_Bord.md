@@ -218,4 +218,10 @@ Résolution de problème dans l'horaire et de l'affichage de l'horaire
 
 ## Lundi 13.07.2020
 
+Resolution de quelques bugs et css, ajout du favicon.ico
+
+## Mardi 14.07.2020
+
+Mise en place d'un select dans l'input dans le remplissage des plannings et templates avec les users. Page d'informations.
+A faire : informations sous plusieurs notes (exporter en pdf), sauvegarder planning en pdf, avoir horaire complet
 
