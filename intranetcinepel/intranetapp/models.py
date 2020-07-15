@@ -77,7 +77,6 @@ class Intranet_User(AbstractBaseUser):
         unique=True,
     )
     username = models.CharField(max_length=150)
-    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     date_joined = models.DateTimeField(_('date joined'), auto_now_add=True)
     permission = models.CharField(max_length=50, default='placeur')
@@ -106,7 +105,7 @@ class Template(models.Model):
 # model planning
 class Planning(models.Model):
     id_template = models.ForeignKey(Template, on_delete=models.SET_NULL, blank=True, null=True)
-    id_creator = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
+    id_create = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
     date = models.TextField(null=True)
     specific_content = JSONField()
 
@@ -115,4 +114,5 @@ class ScheduleCinema(models.Model):
 
 class Information(models.Model):
     title = models.CharField(max_length=100, default='Titre')
+    id_create = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
     content = models.TextField(default='')

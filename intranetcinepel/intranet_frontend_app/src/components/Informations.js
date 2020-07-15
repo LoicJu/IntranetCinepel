@@ -53,7 +53,11 @@ class Informations extends Component {
   };
 
   async createInfo(){
-    await axios.post('api/information/',{
+    let authed_user = sessionStorage.getItem('authed_user');
+    var infoFormData = new FormData();
+    infoFormData.append('id_creator', authed_user);
+    
+    await axios.post('api/information/', infoFormData,{
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }

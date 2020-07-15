@@ -244,15 +244,14 @@ class userHandler extends Component {
     this.handleChangeState();
   };
 
-  deleteUser(event){
-    axios.delete('api/users/' + event, {
+  async deleteUser(event){
+    await axios.delete('api/users/' + event, {
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }
     })
     .then((response) => {
-      if (response.status === 204) {
-        this.handleChangeState()
+      if (response.status === 200) {
         this.setState({
           is_delete: true,
         });
@@ -270,6 +269,7 @@ class userHandler extends Component {
         });
       }
     });
+    this.handleChangeState();
   }
   //fetch all users in users
   componentDidMount(){

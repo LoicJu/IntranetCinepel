@@ -175,7 +175,7 @@ class Planning extends Component {
       // we create the formData to post
       var planningFormData = new FormData();
       planningFormData.append('id_template', this.state.idTemplate);
-      planningFormData.append('id_creator', authed_user);
+      planningFormData.append('id_create', authed_user);
       planningFormData.append('date', this.state.datePlanningSubmit);
       planningFormData.append('specific_content', JSON.stringify(this.state.specificContentToSubmit));
       axios.post('api/planning/',  planningFormData, {

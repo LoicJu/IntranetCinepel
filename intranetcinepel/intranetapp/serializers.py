@@ -44,7 +44,7 @@ class PlanningSerializer(serializers.ModelSerializer):
     specific_content = serializers.JSONField()
     class Meta:
         model = Planning
-        fields = ('id', 'id_template', 'id_creator', 'date', 'specific_content')
+        fields = ('id', 'id_template', 'id_create', 'date', 'specific_content')
 
 class ScheduleCinemaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,4 +54,4 @@ class ScheduleCinemaSerializer(serializers.ModelSerializer):
 class InformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Information
-        fields = ('id', 'title', 'content')
+        fields = ('id', 'id_create', 'title', 'content')
