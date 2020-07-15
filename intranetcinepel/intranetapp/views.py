@@ -49,7 +49,7 @@ class AuthAPI(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
-# get all users, only by manager
+# get all users
 class UserList(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated,]
     serializer_class = UserSerializer

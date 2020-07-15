@@ -103,7 +103,7 @@ render() {
               </div>
               <div className="form-group">
                 <small id="resetHelp" className="form-text text-muted">
-                  Vous avez oublié votre mot de passe ? Cliquez <NavLink className="text-danger" to="/resetPassword">ici</NavLink>
+                  Vous avez oublié votre mot de passe ? Cliquez <NavLink className="text-info" to="/resetPassword">ici</NavLink>
                 </small>
               </div>
           </form>
