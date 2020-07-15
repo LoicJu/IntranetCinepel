@@ -92,7 +92,7 @@ class Informations extends Component {
     })
     .then((response) => {
       if (response.status === 200) {
-        var toastHTML = '<span className="toast">Note d\information sauvegardée</span>';
+        var toastHTML = '<span className="toast">Note d\'information sauvegardée</span>';
         M.toast({html: toastHTML});
       }
     })
@@ -109,14 +109,14 @@ class Informations extends Component {
   }
 
   async deleteInfo(e){
-    await axios.delete('api/information/' + e.id + '/',{
+    await axios.delete('api/information/' + e + '/',{
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }
     })
     .then((response) => {
       if (response.status === 204) {
-        var toastHTML = '<span className="toast">Note d\information supprimée</span>';
+        var toastHTML = '<span className="toast">Note d\'information supprimée</span>';
         M.toast({html: toastHTML});
       }
     })
@@ -194,9 +194,12 @@ class Informations extends Component {
                 defaultValue={Info.content}
                 />
               <Button className="button-create" onClick={this.saveInfo.bind(this, Info)}>Sauvegarder</Button>
-              <Button className="button-delete" onClick={this.deleteInfo.bind(this, Info)}>Supprimer</Button>
+              <Button className="button-delete" onClick={e =>
+                window.confirm("Etes-vous sûr de vouloir supprimer cette note d'info ?") &&
+                this.deleteInfo(Info.id)}>Supprimer</Button>
           </CollectionItem>
         )
+        infosList.reverse();
       });
       return (
         <div className="intranet-classic">

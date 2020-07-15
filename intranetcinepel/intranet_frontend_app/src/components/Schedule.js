@@ -86,10 +86,17 @@ class Schedule extends Component {
       );
     // set the datas in datasToRow
     Object.keys(datasToRow).forEach
-      (key => this.state.rowData[datasToRow[key][0]] =
-          {"heure": datasToRow[key][1],
-            [datasToRow[key][2]]: datasToRow[key][3],
+      (key => {
+          if(this.state.rowData[datasToRow[key][0]]){
+            this.state.rowData[datasToRow[key][0]][datasToRow[key][2]] = datasToRow[key][3]
           }
+          else{
+            this.state.rowData[datasToRow[key][0]] =
+            {"heure": datasToRow[key][1],
+              [datasToRow[key][2]]: datasToRow[key][3],
+            }
+          }
+        }
       );    
   }
 
