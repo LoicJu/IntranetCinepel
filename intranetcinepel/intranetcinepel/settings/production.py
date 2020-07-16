@@ -27,7 +27,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '*']
 # to disable the browseable API
 #REST_FRAMEWORK = {
 #    'DEFAULT_RENDERER_CLASSES': (
