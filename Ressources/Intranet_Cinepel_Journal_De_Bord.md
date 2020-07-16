@@ -223,5 +223,13 @@ Resolution de quelques bugs et css, ajout du favicon.ico
 ## Mardi 14.07.2020
 
 Mise en place d'un select dans l'input dans le remplissage des plannings et templates avec les users. Page d'informations.
-A faire : informations sous plusieurs notes (exporter en pdf), sauvegarder planning en pdf, avoir horaire complet
+Fat aujourd'hui : informations sous plusieurs notes, sauvegarder planning en pdf, avoir horaire complet de la semaine.
+
+## Mercredi 15.07.2020
+
+Mise en place de tests Katalon ainsi que sonarCloud et fixtures correctes.
+
+## Jeudi 16.07.2020
+
+Mise en place du container Docker.
 
