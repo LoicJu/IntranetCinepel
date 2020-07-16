@@ -343,7 +343,7 @@ class Planning extends Component {
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
 
-    const marginLeft = 40;
+    const marginLeft = 10;
     const doc = new jsPDF(orientation, unit, size);
 
     doc.setFontSize(15);
@@ -357,7 +357,7 @@ class Planning extends Component {
       body: data
     };
 
-    doc.text(title, marginLeft, 40);
+    doc.text(title, marginLeft, 10);
     doc.autoTable(content);
     doc.save(title + ".pdf")
     
