@@ -78,7 +78,7 @@ class userHandler extends Component {
         });
       }
     });
-  };
+  }
 
   handleShowModalCreate(){
     this.setState({showModalCreate : true})
@@ -111,13 +111,6 @@ class userHandler extends Component {
 
     switch(name) {
       case 'usernameCreate':
-        if(value.length < 4) {
-          errors.username = 'The username is too small !';
-        } else {
-          errors.username = '';
-        }
-        break;
-
       case 'usernameEdit':
         if(value.length < 4) {
           errors.username = 'The username is too small !';
@@ -141,7 +134,7 @@ class userHandler extends Component {
       [name]: value,
       errors,
     });
-  };
+  }
 
   hasErrors() {
     let has_error = false;
@@ -242,7 +235,7 @@ class userHandler extends Component {
       }
     });
     this.handleChangeState();
-  };
+  }
 
   async deleteUser(event){
     await axios.delete('api/users/' + event, {

@@ -100,12 +100,14 @@ export function setDatas(state){
             Object.entries(value1).map(([key2,value2])=>{
             if(key2 in datasToSave[index]){
                 datas[index][key1][key2] = datasToSave[index][key2]
+                return datas[index][key1][key2]
             }
             })
         }
         else{
             if(key1 in datasToSave[index]){
-            datas[index][key1] = datasToSave[index][key1]
+              datas[index][key1] = datasToSave[index][key1]
+              return datas[index][key1]
             }
         }
         });
@@ -172,10 +174,12 @@ export function getRowsData(state){
         if(typeof value1 === 'object'){
             Object.entries(value1).map(([key2,value2])=>{
             rowData[key2] = value2;
+            return rowData[key2];
             })
         }
         else{
             rowData[key1] = value1;
+            return rowData[key1];
         }
         });
         datas.push(rowData)

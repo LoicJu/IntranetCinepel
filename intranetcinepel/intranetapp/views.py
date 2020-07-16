@@ -70,7 +70,7 @@ class UserView(generics.GenericAPIView):
 
             try:
                 user = Intranet_User.objects.get(id__exact=user_id)
-            except Exception as e:
+            except:
                 return self.user_not_found
 
             response_body =  {
@@ -88,7 +88,7 @@ class UserView(generics.GenericAPIView):
             user_id = kwargs['pk']
             try:
                 user = Intranet_User.objects.patch_user(user_id, request)
-            except Exception as e:
+            except:
                 return self.user_not_found
 
             response_body = {
@@ -109,7 +109,7 @@ class UserView(generics.GenericAPIView):
 
                 try:
                     user = Intranet_User.objects.get(id__exact=user_id)
-                except Exception as e:
+                except:
                     return self.user_not_found
 
                 user.delete()
@@ -151,10 +151,10 @@ class ResetPassord(generics.GenericAPIView):
                     user.set_password(new_password)
                     send_mail(self.subject,msg,self.sender,dest,fail_silently=False,html_message=html_msg)
                     user.save()
-                except Exception as e:
+                except:
                     return Response(data={'detail': 'Unexpected error while sending mail. Please try again later.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            except Exception as e1:
+            except:
                 response_body = {
                     'user': None,
                 }

@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { render } from 'react-dom';
-import { Redirect, NavLink } from 'react-router-dom';
 
 class Error extends Component {
   render() {
@@ -8,10 +6,10 @@ class Error extends Component {
         <div className="container pt-4">
             <div className="text-center">
                 <div className="intranet-classic">
-                    <h1 className="text-danger">Oops!</h1>
+                    <h1 className="text-danger">Oups!</h1>
                     <h2 className="mt-3">{this.props.status}</h2>
                     <div>
-                        Sorry, an error has occured. {this.props.detail}
+                        Désolé, une erreur est apparue. {this.props.detail}
                     </div>
                 </div>
             </div>

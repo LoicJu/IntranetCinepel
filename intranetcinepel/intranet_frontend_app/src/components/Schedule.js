@@ -27,7 +27,7 @@ class Schedule extends Component {
     };
     this.setSchedule = this.setSchedule.bind(this)
     this.handleChangeGet = this.handleChangeGet.bind(this)
-  };
+  }
 
 
   
@@ -44,9 +44,7 @@ class Schedule extends Component {
     var columnUnique = columnsToSet.filter(onlyUnique);
     // set state columns to the array
     this.state.columns.push({"headerName" : "heure", "field" : "heure"})
-    Object.keys(columnUnique).forEach
-      (key => this.state.columns.push
-          ({"headerName" : columnUnique[key], "field" : columnUnique[key], resizable: true })
+    Object.keys(columnUnique).forEach(key => this.state.columns.push({"headerName" : columnUnique[key], "field" : columnUnique[key], resizable: true })
       );
     
     // we parse the 4 datas we need
@@ -80,13 +78,9 @@ class Schedule extends Component {
     }
     
     // set all the date in dateData
-    Object.keys(uniqueDates).forEach
-      (key => this.state.dateData.push
-          ({"value" : uniqueDates[key], "label" : getDayNameDate(uniqueDates[key])})
-      );
+    Object.keys(uniqueDates).forEach(key => this.state.dateData.push({"value" : uniqueDates[key], "label" : getDayNameDate(uniqueDates[key])}));
     // set the datas in datasToRow
-    Object.keys(datasToRow).forEach
-      (key => {
+    Object.keys(datasToRow).forEach(key => {
           if(this.state.rowData[datasToRow[key][0]]){
             this.state.rowData[datasToRow[key][0]][datasToRow[key][2]] = datasToRow[key][3]
           }
@@ -152,7 +146,7 @@ class Schedule extends Component {
       window.addEventListener('resize', this.sizeToFit);
 
     }
-  };
+  }
 
   // will size the column with the window
   sizeToFit = () => {

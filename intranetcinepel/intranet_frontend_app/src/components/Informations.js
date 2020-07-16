@@ -20,7 +20,7 @@ class Informations extends Component {
     this.saveInfo = this.saveInfo.bind(this);
     this.createInfo = this.createInfo.bind(this);
     this.deleteInfo = this.deleteInfo.bind(this);
-  };
+  }
   
   handleChangeState(){
     axios.get('api/information/', {
@@ -50,7 +50,7 @@ class Informations extends Component {
         });
       }
     });
-  };
+  }
 
   async createInfo(){
     let authed_user = sessionStorage.getItem('authed_user');

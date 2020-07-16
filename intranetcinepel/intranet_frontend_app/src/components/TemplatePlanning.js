@@ -46,7 +46,7 @@ class TemplatePlanning extends Component {
     this.handleCloseModalCreate = this.handleCloseModalCreate.bind(this);
     this.handleShowModalDelete = this.handleShowModalDelete.bind(this);
     this.handleCloseModalDelete = this.handleCloseModalDelete.bind(this);
-  };
+  }
 
   handleShowModalCreate(){
     this.setState({showModalCreate : true})
@@ -87,11 +87,11 @@ class TemplatePlanning extends Component {
         });
       }
     });
-  };
+  }
 
   handleChangePost(event){    
     this.setState({namePost: event.target.value});
-  };
+  }
 
   // store a new template
   submitTemplate(event) {
@@ -129,7 +129,7 @@ class TemplatePlanning extends Component {
         });
       }
     });
-  };
+  }
 
   // handle change and get 
   handleChangeGet(event){
@@ -159,12 +159,12 @@ class TemplatePlanning extends Component {
       }
     });
     updateTableWeekends();
-  };
+  }
   
   // to handle the change of the select for the state
   handleChangeDel(event){
     this.setState({nameDel: event.value});
-  };
+  }
 
   // delete a template
   deleteTemplate(){
@@ -197,7 +197,7 @@ class TemplatePlanning extends Component {
         });
       }
     });
-  };
+  }
   
   // put, update the tempalte
   saveTemplate(){
@@ -228,7 +228,7 @@ class TemplatePlanning extends Component {
         });
       }
     });
-  };
+  }
 
   
   componentDidMount(){
@@ -287,7 +287,7 @@ class TemplatePlanning extends Component {
         }
       });
     }
-  };
+  }
 
   componentWillUnmount() {
     this._isMounted = false;

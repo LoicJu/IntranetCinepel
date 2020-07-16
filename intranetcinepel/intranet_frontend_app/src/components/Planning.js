@@ -75,7 +75,7 @@ class Planning extends Component {
     this.handleCloseModalCreate = this.handleCloseModalCreate.bind(this);
     this.handleShowModalDelete = this.handleShowModalDelete.bind(this);
     this.handleCloseModalDelete = this.handleCloseModalDelete.bind(this);
-  };
+  }
   
   handleShowModalCreate(){
     this.setState({showModalCreate : true})
@@ -102,9 +102,7 @@ class Planning extends Component {
           nameAllPlanning: [],
           nameIdPlanning : {},
         });
-        Object.keys(response.data).forEach
-          (key => this.state.nameAllPlanning.push
-              ({"value" : new Date(response.data[key].date), 
+        Object.keys(response.data).forEach(key => this.state.nameAllPlanning.push({"value" : new Date(response.data[key].date), 
                 "label" :  getMonthName(new Date(response.data[key].date)) + ' ' + (new Date(response.data[key].date)).getFullYear()}));
         Object.keys(response.data).forEach(key => this.state.nameIdPlanning[response.data[key].date] = response.data[key].id);
       }
@@ -119,13 +117,13 @@ class Planning extends Component {
         });
       }
     });
-  };
+  }
 
   // get the correct id of the template from the planning we want to submit
   handleChangeSubmit(event){
     let id = this.state.nameIdTemplate[event.value];
     this.setState({idTemplate : id});
-  };
+  }
 
   handleChangeSubmitMonth(event){
     let dateEvent = event.split('/')
@@ -200,7 +198,7 @@ class Planning extends Component {
         }
       });
     }
-  };
+  }
 
   parseTemplateToPlanning(){
     const month = this.state.datePlanningSubmit.getMonth();
@@ -400,9 +398,7 @@ class Planning extends Component {
     .then((response) => {
       if (response.status === 200) {
         if (this._isMounted){
-          Object.keys(response.data).forEach
-          (key => this.state.nameAllPlanning.push
-              ({"value" : new Date(response.data[key].date), 
+          Object.keys(response.data).forEach(key => this.state.nameAllPlanning.push({"value" : new Date(response.data[key].date), 
                 "label" :  getMonthName(new Date(response.data[key].date)) + ' ' + (new Date(response.data[key].date)).getFullYear()}));
           Object.keys(response.data).forEach(key => this.state.nameIdPlanning[response.data[key].date] = response.data[key].id);
           this.state.nameAllPlanning.sort((a,b) => a.value - b.value);
@@ -446,7 +442,7 @@ class Planning extends Component {
         });
       }
     });
-  };
+  }
 
   componentWillUnmount() {
     this._isMounted = false;

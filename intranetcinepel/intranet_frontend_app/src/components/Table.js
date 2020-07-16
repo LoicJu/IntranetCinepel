@@ -96,12 +96,12 @@ function Table({ columns, data, updateMyData, isManager}) {
   // Render the UI for your table
   return (
     <>
-      <table className={classTable} id="mytable"{...getTableProps()}>
+      <table summary="Planning" className={classTable} id="mytable"{...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                <th scope="col"{...column.getHeaderProps()}>{column.render('Header')}</th>
               ))}
             </tr>
           ))}
@@ -136,13 +136,13 @@ export function updateTableWeekends(){
     }
     var targetTDsAll = table.querySelectorAll('tr > td');
     // set all transparent
-    for (var i = 0; i < targetTDsAll.length; i++) {
-      targetTDsAll[i].style.backgroundColor = "transparent"
+    for (var j = 0; j < targetTDsAll.length; j++) {
+      targetTDsAll[j].style.backgroundColor = "transparent"
     }
     var targetTDs = table.querySelectorAll('tr > td:first-child');
     // set the weekends to lightgrey
-    for (var i = 0; i < targetTDs.length; i++) {
-      var td = targetTDs[i];
+    for (var k = 0; k < targetTDs.length; k++) {
+      var td = targetTDs[k];
       if(((td.innerHTML.indexOf("Samedi"))>0)||((td.innerHTML.indexOf("Dimanche"))>0))
       {
         var parent = td.parentNode
@@ -150,8 +150,8 @@ export function updateTableWeekends(){
       }      
     }
     // set the case where the username is
-    for (var i = 0; i < targetTDsAll.length; i++) {
-      var td = targetTDsAll[i];
+    for (var l = 0; l < targetTDsAll.length; l++) {
+      var td = targetTDsAll[l];
       var testTd = td.innerHTML.toUpperCase()
       if(testTd.indexOf((sessionStorage.getItem('username')).toUpperCase())>0)
       {
