@@ -11,4 +11,5 @@ RUN apt-get upgrade -y
 RUN apt-get install -y python3 python3-pip npm git
 RUN pip3 install -r requirements.txt
 RUN npm install ./intranetcinepel/intranet_frontend_app/
-RUN python3 ./intranetcinepel/manage.py loaddata intranetapp/fixtures/db.json
+RUN python3 ./intranetcinepel/manage.py migrate
+RUN python3 ./intranetcinepel/manage.py loaddata ./intranetcinepel/intranetapp/fixtures/db.json
