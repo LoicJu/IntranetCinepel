@@ -7,4 +7,6 @@ COPY . .
 RUN apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install -y python3 python3-pip npm git
-RUN npm install ./intranetcinepel/intranet_frontend_app
+RUN pip3 install -r requirements.txt
+RUN npm install ./intranetcinepel/intranet_frontend_app/
+
