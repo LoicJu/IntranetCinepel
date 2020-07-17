@@ -7,7 +7,7 @@ COPY . .
 EXPOSE 8000
 EXPOSE 3000
 RUN apt-get update -y
-RUN apt-get install -y git ngynx
+RUN apt-get install -y git nginx
 RUN pip3 install -r requirements.txt
 RUN npm install ./intranetcinepel/intranet_frontend_app/
 RUN python3 ./intranetcinepel/manage.py migrate
