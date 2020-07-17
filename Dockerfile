@@ -4,8 +4,8 @@ ENV TZ=Europe/Zurich
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /opt
 COPY . .
-EXPOSE 8000
-EXPOSE 3000
+COPY nginxconf.txt /etc/nginx/sites-enabled/default
+EXPOSE 80
 RUN apt-get update -y
 RUN apt-get install -y git nginx
 RUN pip3 install -r requirements.txt
@@ -14,3 +14,7 @@ RUN python3 ./intranetcinepel/manage.py migrate
 RUN python3 ./intranetcinepel/manage.py loaddata ./intranetcinepel/intranetapp/fixtures/db.json
 RUN npm build ./intranetcinepel/intranet_frontend_app/
 RUN python3 ./intranetcinepel/manage.py collectstatic
+WORKDIR /opt/intranetcinepel
+COPY entrypoint.sh ./
+RUN chmod uag+x entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
