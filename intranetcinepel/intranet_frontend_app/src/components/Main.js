@@ -89,8 +89,8 @@ class Main extends Component {
                     <li>
                       <AuthContext.Consumer>
                       {(context) =>
-                        (context.getIsAuthenticated() &&
-                            <NavLink exact to="/profile">Profil</NavLink>
+                        (context.getIsAuthenticated() && context.getIsManager() &&
+                            <NavLink exact to="/userHandler">Gérer les utilisateurs</NavLink>
                         )
                       }
                       </AuthContext.Consumer>
@@ -98,8 +98,8 @@ class Main extends Component {
                     <li>
                       <AuthContext.Consumer>
                       {(context) =>
-                        (context.getIsAuthenticated() && context.getIsManager() &&
-                            <NavLink exact to="/userHandler">Gérer les utilisateurs</NavLink>
+                        (context.getIsAuthenticated() &&
+                            <NavLink exact to="/profile">Profil</NavLink>
                         )
                       }
                       </AuthContext.Consumer>

@@ -166,6 +166,8 @@ class Planning extends Component {
       if(sameDay(date.value,this.state.datePlanningSubmit))
       {
         alreadyExist = true
+        var toastHTML = '<span className="toast">Un planning pour ce mois existe déjà</span>';
+        M.toast({html: toastHTML});
       }
     })
     if(!alreadyExist)
@@ -176,7 +178,7 @@ class Planning extends Component {
       planningFormData.append('id_create', authed_user);
       planningFormData.append('date', this.state.datePlanningSubmit);
       planningFormData.append('specific_content', JSON.stringify(this.state.specificContentToSubmit));
-      axios.post('api/planning/',  planningFormData, {
+      await axios.post('api/planning/',  planningFormData, {
         headers: {
           'Authorization': "Token " + this.context.getToken()
         }
@@ -185,6 +187,8 @@ class Planning extends Component {
         if (response.status === 201) {
           this.handleChangeState();
           this.setState({ is_created: true });
+          var toastHTML = '<span className="toast">Planning créé</span>';
+          M.toast({html: toastHTML});
         }
       })
       .catch((error) => {
@@ -198,6 +202,7 @@ class Planning extends Component {
         }
       });
     }
+    this.handleChangeState();
   }
 
   parseTemplateToPlanning(){

@@ -81,11 +81,11 @@ class Informations extends Component {
     this.handleChangeState();
   }
 
-  saveInfo(e){
+  async saveInfo(e){
     var informationsDataEdit = new FormData();
     informationsDataEdit.append('title', document.getElementById(e.id+"title").value)
-    informationsDataEdit.append('content', document.getElementById(e.id+"content").value);
-    axios.put('api/information/' + e.id + '/', informationsDataEdit,{
+    informationsDataEdit.append('content', document.getElementById(e.id+"content").value)
+    await axios.put('api/information/' + e.id + '/', informationsDataEdit,{
       headers: {
         'Authorization': "Token " + this.context.getToken()
       }
@@ -106,6 +106,7 @@ class Informations extends Component {
         });
       }
     });
+    this.handleChangeState();
   }
 
   async deleteInfo(e){
@@ -178,8 +179,11 @@ class Informations extends Component {
       this.state.infos.map(Info =>{
         let infoIdTitle = Info.id + "title"
         let infoIdContent = Info.id + "content"
+        let dateToShow = new Date(Info.timestamp)
+        dateToShow = dateToShow.getDate() + "-" + dateToShow.getMonth() + "-" + dateToShow.getFullYear()
         infosList.push(
-          <CollectionItem key={Info.id}>
+          <CollectionItem key={Info.timestamp}>
+              <label className="right">{dateToShow}</label>
               <input 
                 id = {infoIdTitle}
                 type="text"
@@ -199,7 +203,11 @@ class Informations extends Component {
                 this.deleteInfo(Info.id)}>Supprimer</Button>
           </CollectionItem>
         )
-        infosList.reverse();
+        infosList.sort(function(a,b){
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+          return new Date(b.key) - new Date(a.key);
+        });
       });
       return (
         <div className="intranet-classic">
@@ -214,12 +222,20 @@ class Informations extends Component {
     }
     else{
       this.state.infos.map(Info =>{
+        let dateToShow = new Date(Info.timestamp)
+        dateToShow = dateToShow.getDate() + "-" + dateToShow.getMonth() + "-" + dateToShow.getFullYear()
         infosList.push(
           <CollectionItem key={Info.id}>
+              <label className="right">{dateToShow}</label>
               <h5>{Info.title}</h5>
               <div>{Info.content}</div>
           </CollectionItem>
         )
+        infosList.sort(function(a,b){
+          // Turn your strings into dates, and then subtract them
+          // to get a value that is either negative, positive, or zero.
+          return new Date(b.key) - new Date(a.key);
+        });
       });
       return(
         <div className="intranet-classic">

@@ -52,6 +52,7 @@ class Schedule extends Component {
     var datasDate = [];
     xml.querySelectorAll('Show').forEach(datas => {
       var eachData = [];
+      var version = '';
       datas.querySelectorAll('ShowTime').forEach(specificData =>{
           eachData.push(getDayDate(specificData.firstChild.data))
           datasDate.push(getDayDate(specificData.firstChild.data))
@@ -62,8 +63,12 @@ class Schedule extends Component {
           eachData.push(specificData.firstChild.data)
         }
       );
+      datas.querySelectorAll('Version').forEach(specificData =>{
+        version=specificData.firstChild.data
+      }
+    );
       datas.querySelectorAll('Name').forEach(specificData =>{
-          eachData.push(specificData.firstChild.data)
+          eachData.push(specificData.firstChild.data + " || version : " + version)
         }
       );
       datasToRow.push(eachData)

@@ -116,3 +116,4 @@ class Information(models.Model):
     title = models.CharField(max_length=100, default='Titre')
     id_create = models.ForeignKey(Intranet_User, on_delete=models.SET_NULL, null=True)
     content = models.TextField(default='')
+    timestamp = models.DateTimeField(auto_now=True)
