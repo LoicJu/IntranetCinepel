@@ -197,6 +197,7 @@ class Schedule extends Component {
           <h1>Horaires</h1>
           <div>
           <Select 
+            className="selector"
             placeholder="Choisissez la date"
             onChange={this.handleChangeGet}
             options={this.state.dateData}

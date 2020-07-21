@@ -380,6 +380,7 @@ class TemplatePlanning extends Component {
               <h4>Choisissez le template à supprimer</h4>
               <div>
                 <Select 
+                  className="selector"
                   onChange={this.handleChangeDel}
                   options={this.state.nameAllTemplate}
                 />

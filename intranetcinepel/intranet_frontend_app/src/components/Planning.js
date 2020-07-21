@@ -525,6 +525,7 @@ class Planning extends Component {
             <div className="form-group">
               <label>Template de base</label>
               <Select 
+                className="selector"
                 placeholder="Choisissez le template de base"
                 onChange={this.handleChangeSubmit}
                 options={this.state.nameAllTemplate}
@@ -554,6 +555,7 @@ class Planning extends Component {
           <h4>Choisissez le planning à supprimer</h4>
           <div>
             <Select 
+              className="selector"
               onChange={this.handleChangeDel}
               options={this.state.nameAllPlanning}
             />
