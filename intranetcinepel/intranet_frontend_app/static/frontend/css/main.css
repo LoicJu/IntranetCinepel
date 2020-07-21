@@ -28,18 +28,13 @@ body {
 
 /* selector*/
 .select-month{
-    display:inline !important;
     margin: 0 0 2em 0;
 }
 
 .select-planning-template{
-    display:inline !important;
     text-align: left;
 }
 
-.selector{
-    display:inline !important;
-}
 /* decorate table*/
 .table-container{
     margin: 0 1em;
