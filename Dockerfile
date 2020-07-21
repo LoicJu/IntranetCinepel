@@ -14,6 +14,7 @@ RUN python3 ./intranetcinepel/manage.py migrate
 RUN python3 ./intranetcinepel/manage.py loaddata ./intranetcinepel/intranetapp/fixtures/db.json
 RUN npm build ./intranetcinepel/intranet_frontend_app/
 RUN python3 ./intranetcinepel/manage.py collectstatic
+RUN python3 ./intranetcinepel/manage.py crontab add
 WORKDIR /opt/intranetcinepel
 COPY entrypoint.sh ./
 RUN chmod uag+x entrypoint.sh
